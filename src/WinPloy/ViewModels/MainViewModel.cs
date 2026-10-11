@@ -531,6 +531,27 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
 
     private async Task RunDeploymentAsync(IReadOnlyList<string> targets, IReadOnlyList<CatalogueEntry> packages, DeployAction action, bool retry)
     {
+        var request = new DeploymentRequest
+        {
+            Targets = targets,
+            Packages = packages,
+            Action = action,
+            Credential = _credential,
+            PackageTimeoutMin = _settings.PackageTimeoutMin,
+            MaxParallel = _settings.MaxParallel,
+            DepotRoot = _settings.DepotRoot,
+            WinRm = WinRmOptions.From(_settings),
+            TransferMode = _settings.TransferMode,
+        };
+
+        // Contrôlé avant de toucher au suivi : rien n'est lancé, donc rien à remettre en état.
+        if (request.Validate() is { } invalid)
+        {
+            _log.Write(invalid, LogService.Error);
+            _dialogs.ShowMessage(invalid, "Déploiement", MessageBoxImage.Warning);
+            return;
+        }
+
         var run = new RunState(targets.Count);
         _run = run;
         IsRunning = true;
@@ -561,20 +582,11 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
 
         _lastRun = new LastRun(packages, action);
-        var request = new DeploymentRequest
-        {
-            Targets = targets,
-            Packages = packages,
-            Action = action,
-            Credential = _credential,
-            PackageTimeoutMin = _settings.PackageTimeoutMin,
-            MaxParallel = _settings.MaxParallel,
-            DepotRoot = _settings.DepotRoot,
-        };
 
+        IReadOnlyList<string> trusted = [];
         try
         {
-            _trustedHosts.Add(targets);
+            trusted = _trustedHosts.Add(targets);
         }
         catch (Exception ex)
         {
@@ -586,7 +598,10 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
                 MessageBoxImage.Warning);
         }
 
-        _log.Write($"=== {action} : {packages.Count} paquet(s) sur {targets.Count} poste(s), {request.MaxParallel} en parallèle ===");
+        var transfer = request.TransferMode == TransferMode.SmbPull ? "SMB" : "WinRM";
+        _log.Write(
+            $"=== {action} : {packages.Count} paquet(s) sur {targets.Count} poste(s), {request.MaxParallel} en parallèle, "
+            + $"WinRM {request.WinRm.Label}, transfert {transfer} ===");
         UpdateRunStatus();
         UpdateSummary();
 
@@ -600,6 +615,9 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
         finally
         {
+            // Les hôtes approuvés ajoutés pour cette opération ne lui survivent pas : la liste du
+            // poste d'administration ne grossit pas, et l'assouplissement reste ponctuel.
+            _trustedHosts.Remove(trusted);
             FinishRun(run);
         }
     }

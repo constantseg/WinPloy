@@ -3,6 +3,18 @@ using WinPloy.Core.Models;
 
 namespace WinPloy.Core.Deployment;
 
+/// <summary>Paramètres de connexion au service WinRM des postes cibles.</summary>
+public sealed record WinRmOptions(int Port, bool UseSsl, bool SkipCertificateCheck)
+{
+    public static readonly WinRmOptions Default = new(AppSettings.DefaultWinRmPort, false, false);
+
+    /// <summary>« 5986/HTTPS » ou « 5985/HTTP », pour les messages d'erreur et le journal.</summary>
+    public string Label => $"{Port}/{(UseSsl ? "HTTPS" : "HTTP")}";
+
+    public static WinRmOptions From(AppSettings settings)
+        => new(settings.WinRmPort, settings.UseSsl, settings.SkipCertificateCheck);
+}
+
 /// <summary>Paramètres figés d'une opération (installation ou désinstallation) sur une liste de postes.</summary>
 public sealed class DeploymentRequest
 {
@@ -21,11 +33,31 @@ public sealed class DeploymentRequest
 
     public required string DepotRoot { get; init; }
 
+    public WinRmOptions WinRm { get; init; } = WinRmOptions.Default;
+
+    /// <summary>Acheminement du dossier des paquets personnalisés vers le poste.</summary>
+    public TransferMode TransferMode { get; init; } = TransferMode.WinRm;
+
     /// <summary>Remplace le délai global calculé (tests).</summary>
     public TimeSpan? JobTimeoutOverride { get; init; }
 
     /// <summary>Délai global par poste : délai par paquet x nombre de paquets + 5 min.</summary>
     public TimeSpan JobTimeout => JobTimeoutOverride ?? TimeSpan.FromMinutes(PackageTimeoutMin * Math.Max(1, Packages.Count) + 5);
+
+    /// <summary>
+    /// Message d'erreur si l'opération ne peut pas être lancée, sinon null.
+    /// Le mode SMB demande au poste cible de se connecter au partage : sans identifiants
+    /// explicites, la session WinRM n'a aucune identité réseau à présenter (double saut).
+    /// </summary>
+    public string? Validate()
+    {
+        if (TransferMode == TransferMode.SmbPull && Credential is null && Packages.Any(p => p.IsCustom))
+        {
+            return "Le mode de transfert SMB demande des identifiants explicites (bouton « Compte ») : "
+                + "la session WinRM ne peut pas présenter le compte courant au serveur de fichiers.";
+        }
+        return null;
+    }
 }
 
 /// <summary>Résultat brut d'un paquet renvoyé par le poste.</summary>

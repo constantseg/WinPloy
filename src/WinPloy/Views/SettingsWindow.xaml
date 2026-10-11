@@ -1,7 +1,7 @@
 <Window x:Class="WinPloy.Views.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Réglages" Width="600"
+        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Réglages" Width="640"
         FocusManager.FocusedElement="{Binding ElementName=TxtCataloguePath}">
     <DockPanel>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
@@ -24,7 +24,7 @@
             <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,18"
                        Text="Chemin UNC accessible à tous les administrateurs, par exemple \\serveur\depot\catalogue.json." />
 
-            <Grid>
+            <Grid Margin="0,0,0,18">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
@@ -37,10 +37,40 @@
                 </StackPanel>
                 <StackPanel Grid.Column="2">
                     <TextBlock Style="{StaticResource FieldLabel}" Text="Postes traités en parallèle" />
-                    <TextBox x:Name="TxtParallel" Margin="0,0,0,6" />
-                    <TextBlock Style="{StaticResource Hint}" Text="De 1 à 50." />
+                    <TextBox x:Name="TxtParallel" Margin="0,0,0,6" TextChanged="TxtParallel_TextChanged" />
+                    <TextBlock x:Name="LblParallelHint" Style="{StaticResource Hint}" TextWrapping="Wrap" Text="De 1 à 200." />
                 </StackPanel>
             </Grid>
+
+            <Separator Margin="0,0,0,16" />
+
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Service WinRM des postes cibles" />
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,4" Text="Port" />
+                    <TextBox x:Name="TxtWinRmPort" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                    <CheckBox x:Name="ChkUseSsl" Content="HTTPS (WinRM over SSL)" Margin="0,0,0,8"
+                              Checked="ChkUseSsl_Changed" Unchecked="ChkUseSsl_Changed" />
+                    <CheckBox x:Name="ChkSkipCertificate" Content="Accepter un certificat non validable" />
+                </StackPanel>
+            </Grid>
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,18" TextWrapping="Wrap"
+                       Text="5985 en HTTP, 5986 en HTTPS. Le port suit automatiquement la case HTTPS tant qu'il garde sa valeur par défaut. Accepter un certificat non validable (autosigné, nom différent) n'a d'effet qu'en HTTPS et affaiblit l'authentification du poste cible : à réserver aux parcs dont les certificats WinRM ne viennent pas d'une autorité de confiance." />
+
+            <TextBlock Style="{StaticResource FieldLabel}" Text="Transfert des paquets personnalisés" />
+            <RadioButton x:Name="RadTransferWinRm" GroupName="Transfer" Margin="0,0,0,6"
+                         Content="Par la session WinRM — le poste cible n'accède jamais au partage" />
+            <RadioButton x:Name="RadTransferSmb" GroupName="Transfer" Margin="0,0,0,6"
+                         Content="Par SMB — le poste cible copie lui-même depuis le partage" />
+            <TextBlock Style="{StaticResource Hint}" TextWrapping="Wrap"
+                       Text="En mode WinRM, le dossier du paquet traverse le poste d'administration bloc par bloc : chaque fichier est mis en cache sur le poste cible et n'est jamais renvoyé deux fois. En mode SMB, le fichier va du serveur de fichiers au poste en un seul saut — nettement plus rapide sur un parc large ou avec de gros installeurs, mais le poste cible doit joindre le partage, et des identifiants explicites sont obligatoires (bouton « Compte »)." />
         </StackPanel>
     </DockPanel>
 </Window>

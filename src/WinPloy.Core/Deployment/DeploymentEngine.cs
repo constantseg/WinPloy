@@ -85,7 +85,14 @@ public sealed class DeploymentEngine
             }
         });
 
-        var work = Task.Run(() => _runner.Run(computer, request, progress, token));
+        // Chaque poste occupe son thread pendant toute l'opération : le pool de threads n'en
+        // injecte qu'un par seconde passé le nombre de cœurs, ce qui étalerait le démarrage de
+        // plusieurs minutes sur un parc large. LongRunning donne un thread dédié tout de suite.
+        var work = Task.Factory.StartNew(
+            () => _runner.Run(computer, request, progress, token),
+            CancellationToken.None,
+            TaskCreationOptions.LongRunning,
+            TaskScheduler.Default);
         _ = work.ContinueWith(
             t =>
             {

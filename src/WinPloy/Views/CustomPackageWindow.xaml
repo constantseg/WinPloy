@@ -1,12 +1,12 @@
 <Window x:Class="WinPloy.Views.CustomPackageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Paquet personnalisé" Width="620"
+        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Paquet personnalisé" Width="640"
         FocusManager.FocusedElement="{Binding ElementName=TxtName}">
     <DockPanel>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource DialogPrimaryButton}" Content="Enregistrer" IsDefault="True" Click="BtnOk_Click" />
+                <Button x:Name="BtnOk" Style="{StaticResource DialogPrimaryButton}" Content="Enregistrer" IsDefault="True" Click="BtnOk_Click" />
                 <Button Style="{StaticResource DialogButton}" Content="Annuler" IsCancel="True" />
             </StackPanel>
         </Border>
@@ -32,8 +32,19 @@
             </DockPanel>
 
             <CheckBox x:Name="ChkRunAsSystem" Content="Exécuter en NT AUTHORITY\SYSTEM" Margin="0,0,0,6" />
-            <TextBlock Style="{StaticResource Hint}" Margin="28,0,0,0"
+            <TextBlock Style="{StaticResource Hint}" Margin="28,0,0,18"
                        Text="Passe par une tâche planifiée temporaire. Sans cette option, le script s'exécute avec le compte de la session WinRM, et non avec l'utilisateur connecté au poste." />
+
+            <CheckBox x:Name="ChkIntegrity" Content="Contrôler l'empreinte SHA-256 du dossier avant chaque déploiement"
+                      Margin="0,0,0,6" Checked="ChkIntegrity_Changed" Unchecked="ChkIntegrity_Changed" />
+            <StackPanel Margin="28,0,0,0">
+                <TextBlock Style="{StaticResource Hint}" TextWrapping="Wrap" Margin="0,0,0,8"
+                           Text="Le contenu du dossier est figé dans le catalogue, fichier par fichier. WinPloy refuse ensuite de déployer un dossier modifié : qui peut écrire dans le dépôt ne peut pas faire exécuter du code sur le parc à votre place. Recalculer l'empreinte après chaque mise à jour volontaire du paquet." />
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="BtnComputeHash" Content="Calculer l'empreinte" Click="BtnComputeHash_Click" />
+                    <TextBlock x:Name="LblIntegrity" Style="{StaticResource Hint}" VerticalAlignment="Center" Margin="12,0,0,0" />
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
     </DockPanel>
 </Window>

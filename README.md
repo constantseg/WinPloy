@@ -26,9 +26,12 @@ en bas : état par poste, détail par paquet et journal.*
 | **Catalogue** | Fichier JSON partagé entre administrateurs, modifiable depuis l'interface |
 | **WinGet** | Recherche en ligne de l'identifiant depuis la fenêtre d'ajout — WinGet n'est pas requis sur le poste d'administration |
 | **Personnalisé** | `.msi` lancé par `msiexec /i` (ou `/x`) `/qn /norestart`, ou script exécuté au choix sous le compte de la session WinRM ou en `NT AUTHORITY\SYSTEM` |
-| **Exécution** | Panier mixte WinGet + personnalisé, postes traités en parallèle (1 à 50), interface jamais bloquée |
+| **Exécution** | Panier mixte WinGet + personnalisé, postes traités en parallèle (1 à 200), interface jamais bloquée |
 | **Suivi** | État par poste, détail par paquet, journal, filtres, arrêt en cours d'opération, relance des seuls échecs |
 | **Traçabilité** | Export CSV des résultats, historique local, journal `gui.log` |
+| **Intégrité** | Empreinte SHA-256 du dossier d'un paquet figée dans le catalogue, contrôlée avant chaque déploiement |
+| **Transfert** | Cache par empreinte sur le poste cible et blocs compressés, ou copie SMB tirée par le poste |
+| **WinRM** | Port et HTTPS réglables ; les hôtes approuvés ajoutés pour une opération sont retirés à la fin |
 
 ## Prérequis
 
@@ -38,16 +41,19 @@ en bas : état par poste, détail par paquet et journal.*
 - Runtime .NET 8 Desktop, ou publication autonome (voir [Compilation](#compilation)).
 - Exécution en administrateur : demandée au lancement par le manifeste de l'application.
 - Accès en lecture/écriture au catalogue, en lecture aux fichiers des paquets personnalisés.
-- Les cibles sont ajoutées à `TrustedHosts` du client WinRM avant chaque opération, et le service WinRM
-  local est démarré s'il est arrêté. Une GPO « Hôtes approuvés » peut bloquer cet ajout.
+- Les cibles sont ajoutées à `TrustedHosts` du client WinRM avant chaque opération, puis **retirées à la
+  fin** : seules les entrées ajoutées par WinPloy sont reprises, jamais celles déjà présentes, et un
+  `TrustedHosts` à `*` est laissé intact. Le service WinRM local est démarré s'il est arrêté. Une GPO
+  « Hôtes approuvés » peut bloquer cet ajout.
 - Facultatif : accès HTTPS à `api.winstall.app` pour la recherche d'identifiants WinGet. Sans cet accès,
   l'identifiant se saisit à la main et la fenêtre propose le lien `https://winget.run/` à copier.
 
 **Postes cibles**
 
-- WinRM activé, port 5985 joignable (GPO recommandée). WinPloy ne configure jamais WinRM ni le pare-feu
-  des cibles.
+- WinRM activé et joignable sur le port réglé — 5985 en HTTP par défaut, 5986 en HTTPS (GPO recommandée).
+  WinPloy ne configure jamais WinRM ni le pare-feu des cibles.
 - WinGet (App Installer) présent pour les paquets WinGet.
+- En mode de transfert SMB uniquement : accès en lecture au partage du dépôt depuis le poste cible.
 
 ## Installation
 
@@ -67,6 +73,13 @@ dotnet build WinPloy.sln -c Release
 dotnet test WinPloy.sln
 ```
 
+Le protocole de réception des fichiers a son propre contrôle, qui n'a besoin ni du réseau ni d'un
+domaine :
+
+```bash
+pwsh -NoProfile -File tests/Remote/ReceiveFiles.Tests.ps1
+```
+
 Publication en un dossier, runtime .NET inclus — rien à installer sur le poste d'administration :
 
 ```bash
@@ -79,8 +92,9 @@ Lancer ensuite `publish\WinPloy.exe`.
 
 1. **Réglages** (icône engrenage) : au premier lancement, indiquer le chemin UNC du catalogue partagé, par exemple
    `\\serveur\depot\catalogue.json`. Le dossier de ce fichier sert de racine au dépôt des paquets
-   personnalisés. Régler au besoin le délai par paquet (1 à 240 min, 30 par défaut) et le nombre de
-   postes traités en parallèle (1 à 50, 10 par défaut).
+   personnalisés. Régler au besoin le délai par paquet (1 à 240 min, 30 par défaut), le nombre de
+   postes traités en parallèle (1 à 200, 10 par défaut), le port WinRM du parc et le mode de
+   transfert — voir [Réglages WinRM et transfert](#réglages-winrm-et-transfert).
 2. **Compte** : par défaut la session WinRM utilise le compte courant. Le bouton « Compte » permet de
    fournir d'autres identifiants d'administration.
 3. **Étape 1 — Postes** : chercher les postes dans l'AD, les ajouter à la liste des postes ciblés.
@@ -106,6 +120,60 @@ poste cible, donc un script posé à la racine du dépôt y copierait tout le d�
 
 Un paquet est considéré réussi si le code de sortie est `0` ou `3010` (redémarrage requis).
 
+Sur le poste cible, le dossier est reconstitué sous `C:\Windows\Temp\WinPloy`, dans un dossier dont
+l'héritage des droits est coupé : seuls `NT AUTHORITY\SYSTEM` et le groupe Administrateurs y ont accès.
+Sans cela, `C:\Windows\Temp` étant accessible en écriture aux utilisateurs standards, un utilisateur du
+poste pourrait remplacer un script juste avant son exécution en SYSTEM. Un dossier pré-créé par un tiers,
+ou transformé en lien, est supprimé et recréé.
+
+### Contrôle d'intégrité des paquets
+
+Le dossier d'un paquet est copié puis exécuté sur le poste, souvent en SYSTEM : qui peut écrire dans le
+dépôt peut faire exécuter du code sur tout le parc. La case **« Contrôler l'empreinte SHA-256 du dossier »**
+de la fenêtre du paquet fige le contenu attendu du dossier dans le catalogue, fichier par fichier. Avant
+chaque déploiement, WinPloy recalcule les empreintes et refuse le paquet si un fichier a été modifié,
+retiré ou ajouté.
+
+```json
+"Files": {
+  "setup.msi":    "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+  "install.ps1":  "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752"
+}
+```
+
+Après chaque mise à jour volontaire du paquet, recalculer l'empreinte depuis la même fenêtre — sinon le
+déploiement sera refusé, ce qui est le comportement voulu. Le contrôle exige que les scripts
+d'installation et de désinstallation vivent dans le même dossier, puisque l'empreinte couvre un dossier.
+
+Un paquet sans `Files` n'est pas contrôlé : les catalogues écrits avant cette version fonctionnent tels
+quels, et les deux formes cohabitent dans le même fichier.
+
+### Réglages WinRM et transfert
+
+| Réglage | Effet |
+|---|---|
+| **Port** | Port du service WinRM des cibles. 5985 en HTTP, 5986 en HTTPS ; le port suit la case HTTPS tant qu'il garde la valeur par défaut de l'autre protocole |
+| **HTTPS** | Session WinRM sur SSL, pour les parcs où le port 5985 est fermé par GPO |
+| **Certificat non validable** | Accepte un certificat autosigné ou au nom différent. Sans effet en HTTP, affaiblit l'authentification du poste cible : à réserver aux parcs sans autorité de certification |
+| **Transfert WinRM** *(défaut)* | Le dossier traverse le poste d'administration bloc par bloc. Le poste cible n'accède jamais au partage |
+| **Transfert SMB** | Le poste cible monte le partage avec les identifiants fournis et copie lui-même le dossier |
+
+En mode WinRM, chaque fichier est identifié par son empreinte et mis en cache sur le poste cible sous
+`C:\Windows\Temp\WinPloy\cache` (purge à 30 jours) : un paquet redéployé, une relance des échecs ou deux
+paquets qui partagent un fichier ne coûtent plus rien sur le réseau. Les blocs sont compressés quand cela
+réduit leur taille, et l'empreinte est revérifiée sur le poste avant chaque usage du cache — une entrée
+modifiée est redemandée, jamais exécutée.
+
+En mode SMB, le fichier va du serveur de fichiers au poste en un seul saut, ce qui déplace la charge du
+poste d'administration vers le serveur de fichiers : c'est le mode à choisir pour un parc large ou de gros
+installeurs. Il impose deux choses — des identifiants explicites (bouton « Compte »), car la session WinRM
+n'a pas d'identité réseau à présenter au serveur de fichiers, et un accès en lecture au partage depuis le
+poste cible. L'empreinte est alors contrôlée sur le poste, après la copie, puisque c'est lui qui a lu le
+dépôt.
+
+Au-delà de 50 postes en parallèle, l'interface signale que le poste d'administration devient le goulot
+d'étranglement en transfert WinRM ; la limite haute est de 200.
+
 ### Catalogue partagé
 
 Le catalogue est un simple tableau JSON, modifiable depuis l'interface ou à la main :
@@ -119,12 +187,14 @@ Le catalogue est un simple tableau JSON, modifiable depuis l'interface ou à la 
     "Name": "MonApp",
     "InstallScript": "\\\\serveur\\depot\\MonApp\\setup.msi",
     "UninstallScript": "\\\\serveur\\depot\\MonApp\\uninstall.ps1",
-    "RunAs": "System"
+    "RunAs": "System",
+    "Files": { "setup.msi": "9f86d081…", "uninstall.ps1": "60303ae2…" }
   }
 ]
 ```
 
-Le type est déduit de l'identifiant : le préfixe `custom:` marque un paquet personnalisé.
+Le type est déduit de l'identifiant : le préfixe `custom:` marque un paquet personnalisé. `Files` est
+facultatif : voir [Contrôle d'intégrité des paquets](#contrôle-dintégrité-des-paquets).
 
 ## Fichiers locaux
 
@@ -136,15 +206,28 @@ Dans `%ProgramData%\WinPloy` :
 | `historique-deploiements.json` | Historique des résultats |
 | `gui.log` | Journal de l'application (rotation à 5 Mo) |
 
+Sur chaque poste cible, dans `C:\Windows\Temp\WinPloy` — dossier réservé à SYSTEM et aux
+administrateurs :
+
+| | |
+|---|---|
+| `cache\` | Fichiers des paquets, nommés par leur empreinte SHA-256. Purgés au bout de 30 jours |
+| `stage_<guid>\` | Dossier d'un paquet pendant son exécution, supprimé juste après |
+
 ## Structure du dépôt
 
 ```
 WinPloy.sln
 Directory.Build.props          Propriétés communes aux trois projets (TFM, version, nullable)
 src/WinPloy.Core/              Bibliothèque : modèles, services, moteur de déploiement WinRM
-  Deployment/Remote/RemoteAction.ps1   Script exécuté sur le poste cible, embarqué dans l'assembly
+  Deployment/Remote/           Scripts exécutés sur le poste cible, embarqués dans l'assembly
+    RemoteAction.ps1             Installation et désinstallation des paquets
+    NewWorkDir.ps1               Dossier de travail aux droits restreints (SYSTEM, Administrateurs)
+    ReceiveFiles.ps1             Réception des blocs et cache adressé par empreinte
+    PullFromShare.ps1            Copie tirée par le poste depuis le partage (mode SMB)
 src/WinPloy/                   Application WPF : fenêtres, ViewModel, thème
 tests/WinPloy.Tests/           Tests unitaires xUnit, sans réseau ni domaine
+tests/Remote/                  Contrôle du protocole de réception, exécuté par PowerShell
 assets/                        Icône de l'application, utilisée à la compilation
 docs/PLAN-CONVERSION.md        Plan de la conversion PowerShell → C#
 docs/images/                   Captures d'écran du README

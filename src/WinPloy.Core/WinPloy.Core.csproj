@@ -13,8 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Script exécuté sur le poste cible dans la session WinRM (Windows PowerShell 5.1). -->
+    <!-- Scripts exécutés sur le poste cible dans la session WinRM (Windows PowerShell 5.1). -->
     <EmbeddedResource Include="Deployment\Remote\RemoteAction.ps1" LogicalName="WinPloy.RemoteAction.ps1" />
+    <EmbeddedResource Include="Deployment\Remote\NewWorkDir.ps1" LogicalName="WinPloy.NewWorkDir.ps1" />
+    <EmbeddedResource Include="Deployment\Remote\ReceiveFiles.ps1" LogicalName="WinPloy.ReceiveFiles.ps1" />
+    <EmbeddedResource Include="Deployment\Remote\PullFromShare.ps1" LogicalName="WinPloy.PullFromShare.ps1" />
   </ItemGroup>
 
   <ItemGroup>

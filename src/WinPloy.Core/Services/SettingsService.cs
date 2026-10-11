@@ -57,6 +57,28 @@ public sealed class SettingsService
                 MaxParallel = ParseClamped(JsonHelpers.AsString(parallel), AppSettings.MinParallel, AppSettings.MaxParallelLimit, AppSettings.DefaultParallel),
             };
         }
+        if (JsonHelpers.TryGetProperty(obj, "UseSsl", out var useSsl))
+        {
+            settings = settings with { UseSsl = ParseBool(JsonHelpers.AsString(useSsl), false) };
+        }
+        if (JsonHelpers.TryGetProperty(obj, "SkipCertificateCheck", out var skipCertificate))
+        {
+            settings = settings with { SkipCertificateCheck = ParseBool(JsonHelpers.AsString(skipCertificate), false) };
+        }
+
+        // Lu après UseSsl : le port par défaut dépend du protocole, et un fichier
+        // écrit par une version antérieure n'a pas de port.
+        settings = settings with
+        {
+            WinRmPort = JsonHelpers.TryGetProperty(obj, "WinRmPort", out var port)
+                ? ParseClamped(JsonHelpers.AsString(port), AppSettings.MinPort, AppSettings.MaxPort, AppSettings.DefaultPortFor(settings.UseSsl))
+                : AppSettings.DefaultPortFor(settings.UseSsl),
+        };
+
+        if (JsonHelpers.TryGetProperty(obj, "TransferMode", out var transferMode))
+        {
+            settings = settings with { TransferMode = ParseTransferMode(JsonHelpers.AsString(transferMode)) };
+        }
         return settings;
     }
 
@@ -69,6 +91,10 @@ public sealed class SettingsService
                 ["CataloguePath"] = settings.CataloguePath,
                 ["PackageTimeoutMin"] = settings.PackageTimeoutMin,
                 ["MaxParallel"] = settings.MaxParallel,
+                ["WinRmPort"] = settings.WinRmPort,
+                ["UseSsl"] = settings.UseSsl,
+                ["SkipCertificateCheck"] = settings.SkipCertificateCheck,
+                ["TransferMode"] = settings.TransferMode.ToString(),
             };
             var dir = Path.GetDirectoryName(_file);
             if (!string.IsNullOrEmpty(dir))
@@ -94,4 +120,14 @@ public sealed class SettingsService
             ? value
             : fallback;
     }
+
+    /// <summary>Booléen écrit en JSON (true) ou en texte ("true"), sinon <paramref name="fallback"/>.</summary>
+    public static bool ParseBool(string? text, bool fallback)
+        => bool.TryParse((text ?? "").Trim('"'), out var value) ? value : fallback;
+
+    /// <summary>Mode de transfert nommé, sinon WinRM.</summary>
+    public static TransferMode ParseTransferMode(string? text)
+        => Enum.TryParse<TransferMode>((text ?? "").Trim('"'), ignoreCase: true, out var mode)
+            ? mode
+            : TransferMode.WinRm;
 }

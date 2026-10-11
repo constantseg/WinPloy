@@ -11,8 +11,6 @@ namespace WinPloy.Core.Deployment;
 /// </summary>
 internal sealed class RemoteSession : IDisposable
 {
-    public const int WinRmPort = 5985;
-
     private const string ShellUri = "http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
     private const int OpenTimeoutMs = 30000;
 
@@ -25,19 +23,26 @@ internal sealed class RemoteSession : IDisposable
         _cancellationToken = cancellationToken;
     }
 
-    public static RemoteSession Open(string computer, PSCredential? credential, CancellationToken cancellationToken)
+    public static RemoteSession Open(string computer, WinRmOptions options, PSCredential? credential, CancellationToken cancellationToken)
     {
         var lastError = "";
         foreach (var candidate in CredentialCandidates.Build(computer, credential))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var connection = new WSManConnectionInfo(false, computer, WinRmPort, "/wsman", ShellUri, candidate)
+            var connection = new WSManConnectionInfo(options.UseSsl, computer, options.Port, "/wsman", ShellUri, candidate)
             {
                 AuthenticationMechanism = AuthenticationMechanism.Negotiate,
                 OpenTimeout = OpenTimeoutMs,
                 // Pas de délai par opération : une installation peut durer longtemps.
                 OperationTimeout = 0,
             };
+            if (options.UseSsl && options.SkipCertificateCheck)
+            {
+                connection.SkipCACheck = true;
+                connection.SkipCNCheck = true;
+                connection.SkipRevocationCheck = true;
+            }
+
             var runspace = RunspaceFactory.CreateRunspace(connection);
             try
             {
@@ -53,7 +58,7 @@ internal sealed class RemoteSession : IDisposable
 
         cancellationToken.ThrowIfCancellationRequested();
         var who = credential is null ? "le contexte courant" : $"le compte '{credential.UserName}'";
-        throw new TargetException($"Ouverture de session WinRM refusée sur {computer} avec {who}. {lastError}");
+        throw new TargetException($"Ouverture de session WinRM refusée sur {computer} ({options.Label}) avec {who}. {lastError}");
     }
 
     /// <summary>Exécute un script dans la session. Les erreurs non bloquantes sont ajoutées à <paramref name="errors"/>.</summary>
@@ -94,6 +99,13 @@ internal sealed class RemoteSession : IDisposable
         return output;
     }
 
+    /// <summary>Dernière valeur non vide renvoyée par un script, convertie en texte.</summary>
+    public string InvokeForText(string script, string whenEmpty, params object?[] arguments)
+        => InvokeOrThrow(script, arguments)
+            .Select(o => o?.BaseObject?.ToString())
+            .LastOrDefault(s => !string.IsNullOrEmpty(s))
+            ?? throw new TargetException(whenEmpty);
+
     public void Dispose()
     {
         try
@@ -123,8 +135,20 @@ internal sealed class RemoteSession : IDisposable
 internal static class RemoteScripts
 {
     private static readonly Lazy<string> Action = new(() => Load("WinPloy.RemoteAction.ps1"));
+    private static readonly Lazy<string> WorkDir = new(() => Load("WinPloy.NewWorkDir.ps1"));
+    private static readonly Lazy<string> Pull = new(() => Load("WinPloy.PullFromShare.ps1"));
+    private static readonly Lazy<string> Receive = new(() => Load("WinPloy.ReceiveFiles.ps1"));
 
     public static string RemoteAction => Action.Value;
+
+    /// <summary>Crée un dossier de travail protégé (SYSTEM et Administrateurs seulement).</summary>
+    public static string NewWorkDir => WorkDir.Value;
+
+    /// <summary>Le poste tire le dossier du paquet depuis le partage.</summary>
+    public static string PullFromShare => Pull.Value;
+
+    /// <summary>Réception d'un bloc de fichier et gestion du cache adressé par empreinte.</summary>
+    public static string ReceiveFiles => Receive.Value;
 
     private static string Load(string name)
     {

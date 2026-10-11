@@ -2,6 +2,10 @@
 
 Source : `Winploy-GUI.ps1` (v1.0.0, 1679 lignes). Cible : solution `WinPloy.sln`, application WPF `net8.0-windows`.
 
+> Ce document décrit la conversion telle qu'elle a été menée pour la version 2.0. Les évolutions
+> ultérieures (contrôle d'intégrité, réglages WinRM, modes de transfert) sont décrites dans le README.
+
+
 ## 1. Objectifs
 
 - Reproduire toutes les fonctions du script, avec la même interface (mêmes zones, libellés, couleurs, raccourcis).

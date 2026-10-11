@@ -4,12 +4,13 @@
 #   CustomPkgs : objets { Id, Name, Leaf, StageDir, RunAs } (dossier déjà copié dans StageDir)
 #   Action     : 'Install' ou 'Uninstall'
 #   TimeoutMin : délai par paquet, en minutes
-param($WingetPkgs, $CustomPkgs, $Action, [int]$TimeoutMin)
+#   WorkRoot   : dossier de travail déjà créé et protégé par WinPloy (SYSTEM et administrateurs seulement) ;
+#                les scripts intermédiaires y sont écrits avant d'être exécutés en SYSTEM
+param($WingetPkgs, $CustomPkgs, $Action, [int]$TimeoutMin, [string]$WorkRoot)
 
 $ErrorActionPreference = 'Stop'
 $results = New-Object System.Collections.Generic.List[object]
-$workRoot = Join-Path $env:windir 'Temp\WinPloy'
-New-Item -Path $workRoot -ItemType Directory -Force | Out-Null
+$workRoot = $WorkRoot
 
 function New-Result {
     param($Pkg, [bool]$Ok, [string]$Message)
