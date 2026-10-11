@@ -1,10 +1,14 @@
 # WinPloy
 
-Déploiement et désinstallation d'applications sur un parc Windows en domaine Active Directory, depuis un
-poste d'administration, via WinRM. Application de bureau Windows (C# .NET 8 + WPF).
+Pousser une application sur un lot de postes Windows, à la demande, depuis un poste d'administration.
+Application de bureau Windows (C# .NET 8 + WPF).
 
-On choisit des postes, on choisit des applications, on clique sur **Exécuter** : WinPloy ouvre une session
-WinRM sur chaque poste, installe ou désinstalle, et affiche l'avancement poste par poste.
+On choisit des postes dans l'Active Directory, on choisit des applications WinGet ou ses propres paquets,
+on clique sur **Exécuter** : WinPloy ouvre une session WinRM sur chaque poste, installe ou désinstalle, et
+affiche l'avancement poste par poste.
+
+Un outil d'action ponctuelle, pas de gestion de parc : aucun agent à installer, aucun serveur à monter,
+aucun état conservé entre deux opérations. Voir [Ce que WinPloy n'est pas](#ce-que-winploy-nest-pas).
 
 ![Interface de WinPloy : postes, applications et déploiement en trois volets, suivi en bas](docs/images/interface.png)
 
@@ -13,8 +17,8 @@ en bas : état par poste, détail par paquet et journal.*
 
 - **Applications WinGet** : installées depuis la source `winget` du poste cible, en SYSTEM.
 - **Paquets personnalisés** : un `.msi` ou un script (`ps1`, `bat`, `cmd`, `exe`) posé sur un partage.
-  Le dossier du script est copié sur le poste par la session WinRM, exécuté, puis supprimé : le poste
-  cible n'a jamais besoin d'accéder au partage.
+  Le dossier du script est copié sur le poste, exécuté, puis supprimé. Par défaut la copie passe par la
+  session WinRM, donc le poste cible n'a jamais besoin d'accéder au partage.
 
 ---
 
@@ -32,6 +36,21 @@ en bas : état par poste, détail par paquet et journal.*
 | **Intégrité** | Empreinte SHA-256 du dossier d'un paquet figée dans le catalogue, contrôlée avant chaque déploiement |
 | **Transfert** | Cache par empreinte sur le poste cible et blocs compressés, ou copie SMB tirée par le poste |
 | **WinRM** | Port et HTTPS réglables ; `TrustedHosts` laissé intact tant que Kerberos suffit |
+
+## Ce que WinPloy n'est pas
+
+WinPloy ne gère pas l'état d'un parc. Il ne fait ni inventaire, ni conformité, ni remédiation, ni
+planification, ni mise à jour automatique : il exécute une opération, sur les postes choisis, au moment
+où on le lui demande.
+
+Pour gérer un parc dans la durée, les outils existent et sont mûrs — Intune, SCCM, Action1, PDQ Deploy,
+WAPT, ou Chocolatey poussé par GPO. Si l'un d'eux est déjà en place, ou qu'il peut l'être, il répond mieux
+au besoin.
+
+WinPloy a été écrit pour le cas où rien de tout cela n'est disponible : un domaine Active Directory, des
+postes avec WinRM activé par GPO, pas de serveur de déploiement, pas de licence, et un poste
+d'administration. Il tient dans un dossier, se lance en double-cliquant, et ne laisse sur les postes qu'un
+cache de fichiers purgé au bout de trente jours.
 
 ## Prérequis
 
