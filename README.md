@@ -7,8 +7,8 @@ On choisit des postes dans l'Active Directory, on choisit des applications WinGe
 on clique sur **Exécuter** : WinPloy ouvre une session WinRM sur chaque poste, installe ou désinstalle, et
 affiche l'avancement poste par poste.
 
-Un outil d'action ponctuelle, pas de gestion de parc : aucun agent à installer, aucun serveur à monter,
-aucun état conservé entre deux opérations. Voir [Ce que WinPloy n'est pas](#ce-que-winploy-nest-pas).
+Un outil d'installation ponctuelle, pas de gestion de parc : aucun agent sur les postes, aucun serveur à
+monter, rien à préparer d'avance. Voir [Installation ponctuelle](#installation-ponctuelle).
 
 ![Interface de WinPloy : postes, applications et déploiement en trois volets, suivi en bas](docs/images/interface.png)
 
@@ -37,20 +37,17 @@ en bas : état par poste, détail par paquet et journal.*
 | **Transfert** | Cache par empreinte sur le poste cible et blocs compressés, ou copie SMB tirée par le poste |
 | **WinRM** | Port et HTTPS réglables ; `TrustedHosts` laissé intact tant que Kerberos suffit |
 
-## Ce que WinPloy n'est pas
+## Installation ponctuelle
 
-WinPloy ne gère pas l'état d'un parc. Il ne fait ni inventaire, ni conformité, ni remédiation, ni
-planification, ni mise à jour automatique : il exécute une opération, sur les postes choisis, au moment
-où on le lui demande.
+« Installer cette application sur ces douze postes, maintenant. » C'est le besoin que WinPloy couvre, et
+c'est tout ce qu'il couvre. On décompresse, on lance, on choisit les postes, on choisit les applications,
+on exécute, on lit le résultat. Rien à installer sur le poste d'administration, rien à déployer sur les
+cibles, rien à préparer d'avance, rien qui tourne entre deux opérations.
 
-Pour gérer un parc dans la durée, les outils existent et sont mûrs — Intune, SCCM, Action1, PDQ Deploy,
-WAPT, ou Chocolatey poussé par GPO. Si l'un d'eux est déjà en place, ou qu'il peut l'être, il répond mieux
-au besoin.
-
-WinPloy a été écrit pour le cas où rien de tout cela n'est disponible : un domaine Active Directory, des
-postes avec WinRM activé par GPO, pas de serveur de déploiement, pas de licence, et un poste
-d'administration. Il tient dans un dossier, se lance en double-cliquant, et ne laisse sur les postes qu'un
-cache de fichiers purgé au bout de trente jours.
+Cette simplicité est le but, pas une étape vers autre chose. WinPloy ne gère donc pas l'état d'un parc :
+ni inventaire, ni conformité, ni remédiation, ni planification, ni mise à jour automatique. Intune, SCCM,
+Action1, PDQ Deploy, WAPT ou Chocolatey poussé par GPO font ce travail, et le font mieux — mais les
+mobiliser pour poser une application sur quelques postes est disproportionné, quand on les a.
 
 ## Prérequis
 
