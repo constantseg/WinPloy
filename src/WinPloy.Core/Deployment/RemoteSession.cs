@@ -26,12 +26,13 @@ internal sealed class RemoteSession : IDisposable
     public static RemoteSession Open(string computer, WinRmOptions options, PSCredential? credential, CancellationToken cancellationToken)
     {
         var lastError = "";
+        var mayNeedTrustedHost = false;
         foreach (var candidate in CredentialCandidates.Build(computer, credential))
         {
             cancellationToken.ThrowIfCancellationRequested();
             var connection = new WSManConnectionInfo(options.UseSsl, computer, options.Port, "/wsman", ShellUri, candidate)
             {
-                AuthenticationMechanism = AuthenticationMechanism.Negotiate,
+                AuthenticationMechanism = CredentialCandidates.MechanismFor(computer, candidate),
                 OpenTimeout = OpenTimeoutMs,
                 // Pas de délai par opération : une installation peut durer longtemps.
                 OperationTimeout = 0,
@@ -52,13 +53,17 @@ internal sealed class RemoteSession : IDisposable
             catch (Exception ex)
             {
                 lastError = ex.Message;
+                mayNeedTrustedHost |= CredentialCandidates.MayNeedTrustedHost(computer, candidate);
                 runspace.Dispose();
             }
         }
 
         cancellationToken.ThrowIfCancellationRequested();
         var who = credential is null ? "le contexte courant" : $"le compte '{credential.UserName}'";
-        throw new TargetException($"Ouverture de session WinRM refusée sur {computer} ({options.Label}) avec {who}. {lastError}");
+        var message = $"Ouverture de session WinRM refusée sur {computer} ({options.Label}) avec {who}. {lastError}";
+        throw mayNeedTrustedHost
+            ? new TrustedHostsRequiredException(message)
+            : new TargetException(message);
     }
 
     /// <summary>Exécute un script dans la session. Les erreurs non bloquantes sont ajoutées à <paramref name="errors"/>.</summary>

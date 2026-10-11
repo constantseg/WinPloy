@@ -178,11 +178,27 @@ domaine, joint par son nom ou son FQDN, porte la confiance par lui-même. La lis
 que lorsque Kerberos ne peut pas s'appliquer et que l'authentification retombe sur NTLM — connexion par
 adresse IP, compte local, poste hors domaine ou hors forêt.
 
-WinPloy n'y touche donc pas. Un poste n'y est ajouté que si le client WinRM a refusé la session en
-désignant lui-même `TrustedHosts` comme la cause, et seulement celui-là ; la session est alors retentée
-une fois. Un refus pour droits insuffisants ou mot de passe erroné ne déclenche rien, puisque la liste
-n'y changerait rien. Ce qui a été ajouté est retiré à la fin de l'opération : les entrées déjà présentes
-ne sont jamais reprises, et un `TrustedHosts` à `*` est laissé intact.
+WinPloy n'y touche donc pas, et le mécanisme d'authentification est choisi pour que la question ne se
+pose pas :
+
+| Cible et compte | Mécanisme | `TrustedHosts` |
+|---|---|---|
+| Poste nommé, compte courant | `Default`, donc Kerberos | jamais touché |
+| Poste nommé, compte de domaine (`DOMAINE\u`, `u@domaine`) | `Negotiate`, qui choisit Kerberos | jamais touché |
+| Poste nommé, compte local (`POSTE\u`, `.\u`) ou nom de compte nu | `Negotiate`, donc NTLM | ajouté si l'ouverture échoue |
+| Cible désignée par son adresse IP | pas de SPN, Kerberos impossible | ajouté si l'ouverture échoue |
+
+Le premier cas méritait ce tableau : imposer `Negotiate` au compte courant suffit à faire refuser la
+session sous HTTP — *« les informations d'identification par défaut avec négociation sous HTTP ne peuvent
+être utilisées que si l'ordinateur cible figure dans la liste TrustedHosts »* — et WinPloy s'inventait
+ainsi un besoin d'hôtes approuvés qu'il n'avait pas.
+
+Un poste n'est donc ajouté que lorsque WinPloy sait, d'après la cible et le compte, que Kerberos ne peut
+pas s'appliquer ; la session est alors retentée une fois, et le refus d'origine part dans le journal. Le
+message d'erreur du client WinRM, lui, ne décide de rien : il joint le même texte d'aide citant
+`TrustedHosts` à des échecs qui n'ont rien à voir avec la liste. Ce qui a été ajouté est retiré à la fin
+de l'opération : les entrées déjà présentes ne sont jamais reprises, et un `TrustedHosts` à `*` est
+laissé intact.
 
 Dans un domaine correctement configuré, la liste reste donc vide d'un bout à l'autre, et le service WinRM
 local n'est même pas démarré — il n'est nécessaire que pour lire et écrire cette configuration, jamais

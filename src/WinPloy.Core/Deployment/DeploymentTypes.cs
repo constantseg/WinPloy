@@ -79,9 +79,21 @@ public sealed record TargetResult(string Id, string Name, string Statut, string 
 public sealed record TargetStatus(string Message, string WinRM);
 
 /// <summary>Erreur attendue sur un poste : le message est affiché tel quel.</summary>
-public sealed class TargetException : Exception
+public class TargetException : Exception
 {
     public TargetException(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Toutes les tentatives d'ouverture ont échoué, et au moins une ne pouvait pas passer par
+/// Kerberos : ajouter la cible à <c>TrustedHosts</c> a une chance de la débloquer.
+/// </summary>
+public sealed class TrustedHostsRequiredException : TargetException
+{
+    public TrustedHostsRequiredException(string message)
         : base(message)
     {
     }

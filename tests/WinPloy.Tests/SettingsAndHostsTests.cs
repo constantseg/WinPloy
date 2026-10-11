@@ -1,3 +1,4 @@
+using System.Management.Automation.Runspaces;
 using WinPloy.Core.Deployment;
 using WinPloy.Core.Models;
 using WinPloy.Core.Services;
@@ -217,28 +218,6 @@ internal static class Credentials
 
 public class TrustedHostsGateTests
 {
-    /// <summary>Message réel du client WinRM quand l'authentification retombe sur NTLM.</summary>
-    private const string WinRmRefusal =
-        "The WinRM client cannot process the request. If the authentication scheme is different from "
-        + "Kerberos, or if the client computer is not joined to a domain, then HTTPS transport must be "
-        + "used or the destination machine must be added to the TrustedHosts configuration setting.";
-
-    [Fact]
-    public void NeedsTrustedHost_RecognisesTheWinRmRefusal()
-    {
-        Assert.True(FriendlyErrors.NeedsTrustedHost(WinRmRefusal));
-    }
-
-    [Fact]
-    public void NeedsTrustedHost_IgnoresUnrelatedFailures()
-    {
-        // Droits insuffisants ou mot de passe erroné : la liste des hôtes approuvés n'y changera rien.
-        Assert.False(FriendlyErrors.NeedsTrustedHost("Access is denied."));
-        Assert.False(FriendlyErrors.NeedsTrustedHost("Authentification WinRM impossible (0x8009030e)."));
-        Assert.False(FriendlyErrors.NeedsTrustedHost(""));
-        Assert.False(FriendlyErrors.NeedsTrustedHost(null));
-    }
-
     [Fact]
     public void Gate_AuthorizesOncePerComputer()
     {
@@ -308,4 +287,58 @@ public class TrustedHostsGateTests
             return added ? computers.ToArray() : [];
         },
         _ => { });
+}
+
+/// <summary>
+/// Choix du mécanisme d'authentification et décision de toucher ou non à TrustedHosts.
+/// Déduits de la cible et du compte : le client WinRM joint le même texte d'aide citant
+/// TrustedHosts à des échecs qui n'ont rien à voir avec la liste, donc le message ne décide rien.
+/// </summary>
+public class AuthenticationMechanismTests
+{
+    [Fact]
+    public void CurrentContext_OnNamedHost_UsesDefault_SoKerberosApplies()
+    {
+        // Imposer Negotiate ici ferait refuser la session sous HTTP tant que la cible n'est pas
+        // dans TrustedHosts : « les informations d'identification par défaut avec négociation
+        // sous HTTP ne peuvent être utilisées que si... ».
+        Assert.Equal(AuthenticationMechanism.Default, CredentialCandidates.MechanismFor("PC1", null));
+        Assert.False(CredentialCandidates.MayNeedTrustedHost("PC1", null));
+    }
+
+    [Fact]
+    public void CurrentContext_OnAddress_UsesImplicitCredentials()
+    {
+        // Pas de SPN pour une adresse : Kerberos est impossible.
+        Assert.Equal(
+            AuthenticationMechanism.NegotiateWithImplicitCredential,
+            CredentialCandidates.MechanismFor("10.0.0.12", null));
+        Assert.True(CredentialCandidates.MayNeedTrustedHost("10.0.0.12", null));
+    }
+
+    [Fact]
+    public void ExplicitCredential_UsesNegotiate()
+    {
+        Assert.Equal(AuthenticationMechanism.Negotiate, CredentialCandidates.MechanismFor("PC1", User(@"DOMAINE\admin")));
+    }
+
+    [Theory]
+    [InlineData(@"DOMAINE\admin", false)]
+    [InlineData("admin@domaine.local", false)]
+    [InlineData(@"PC1\admin", true)]
+    [InlineData(@"pc1\admin", true)]
+    [InlineData(@".\admin", true)]
+    [InlineData("admin", true)]
+    public void MayNeedTrustedHost_FollowsTheAccountForm(string user, bool expected)
+    {
+        // Un nom nu peut désigner un compte local : CredentialCandidates l'essaie aussi en POSTE\nom.
+        Assert.Equal(expected, CredentialCandidates.MayNeedTrustedHost("PC1", User(user)));
+    }
+
+    private static System.Management.Automation.PSCredential User(string name)
+    {
+        var password = new System.Security.SecureString();
+        password.AppendChar('x');
+        return new System.Management.Automation.PSCredential(name, password);
+    }
 }

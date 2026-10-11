@@ -83,10 +83,9 @@ public sealed class TargetRunner : ITargetRunner
     }
 
     /// <summary>
-    /// Ouvre la session. Sur un domaine, Kerberos suffit et <c>TrustedHosts</c> n'entre pas en jeu.
-    /// Le poste n'y est ajouté, puis réessayé une fois, que si le client WinRM a lui-même désigné
-    /// cette liste comme la cause du refus — connexion par adresse IP, compte local, poste hors
-    /// domaine, c'est-à-dire un repli sur NTLM.
+    /// Ouvre la session. Sur un domaine, Kerberos suffit : <c>TrustedHosts</c> n'entre pas en jeu et
+    /// n'est pas modifié. Le poste n'y est ajouté, puis réessayé une fois, que si aucune tentative ne
+    /// pouvait passer par Kerberos — cible désignée par son adresse, ou compte local.
     /// </summary>
     private static RemoteSession OpenSession(
         string computer,
@@ -98,15 +97,17 @@ public sealed class TargetRunner : ITargetRunner
         {
             return RemoteSession.Open(computer, request.WinRm, request.Credential, cancellationToken);
         }
-        catch (TargetException ex) when (request.TrustedHosts is not null && FriendlyErrors.NeedsTrustedHost(ex.Message))
+        catch (TrustedHostsRequiredException refusal) when (request.TrustedHosts is not null)
         {
             if (!request.TrustedHosts.TryAuthorize(computer))
             {
                 throw;
             }
 
+            // Le refus d'origine part dans le journal : sans lui, un ajout inattendu dans
+            // TrustedHosts ne se diagnostique qu'en surveillant la configuration du client WinRM.
             progress.Report(new TargetStatus(
-                "Kerberos indisponible : poste ajouté aux hôtes approuvés WinRM, nouvel essai...",
+                $"Kerberos inapplicable, poste ajouté aux hôtes approuvés WinRM et nouvel essai. Refus initial : {refusal.Message}",
                 "Vérification..."));
             return RemoteSession.Open(computer, request.WinRm, request.Credential, cancellationToken);
         }
