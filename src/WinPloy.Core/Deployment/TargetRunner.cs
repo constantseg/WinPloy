@@ -33,7 +33,7 @@ public sealed class TargetRunner : ITargetRunner
         }
         progress.Report(new TargetStatus("WinRM joignable, ouverture de la session...", "Accessible"));
 
-        using var session = RemoteSession.Open(computer, winrm, request.Credential, cancellationToken);
+        using var session = OpenSession(computer, request, progress, cancellationToken);
         progress.Report(new TargetStatus("Session WinRM ouverte, exécution...", "Actif"));
 
         // Dossier de travail protégé : seuls SYSTEM et les administrateurs locaux y ont accès.
@@ -80,6 +80,36 @@ public sealed class TargetRunner : ITargetRunner
         }
         results.AddRange(remote);
         return results;
+    }
+
+    /// <summary>
+    /// Ouvre la session. Sur un domaine, Kerberos suffit et <c>TrustedHosts</c> n'entre pas en jeu.
+    /// Le poste n'y est ajouté, puis réessayé une fois, que si le client WinRM a lui-même désigné
+    /// cette liste comme la cause du refus — connexion par adresse IP, compte local, poste hors
+    /// domaine, c'est-à-dire un repli sur NTLM.
+    /// </summary>
+    private static RemoteSession OpenSession(
+        string computer,
+        DeploymentRequest request,
+        IProgress<TargetStatus> progress,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return RemoteSession.Open(computer, request.WinRm, request.Credential, cancellationToken);
+        }
+        catch (TargetException ex) when (request.TrustedHosts is not null && FriendlyErrors.NeedsTrustedHost(ex.Message))
+        {
+            if (!request.TrustedHosts.TryAuthorize(computer))
+            {
+                throw;
+            }
+
+            progress.Report(new TargetStatus(
+                "Kerberos indisponible : poste ajouté aux hôtes approuvés WinRM, nouvel essai...",
+                "Vérification..."));
+            return RemoteSession.Open(computer, request.WinRm, request.Credential, cancellationToken);
+        }
     }
 
     private static PSObject Stage(

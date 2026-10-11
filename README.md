@@ -31,7 +31,7 @@ en bas : état par poste, détail par paquet et journal.*
 | **Traçabilité** | Export CSV des résultats, historique local, journal `gui.log` |
 | **Intégrité** | Empreinte SHA-256 du dossier d'un paquet figée dans le catalogue, contrôlée avant chaque déploiement |
 | **Transfert** | Cache par empreinte sur le poste cible et blocs compressés, ou copie SMB tirée par le poste |
-| **WinRM** | Port et HTTPS réglables ; les hôtes approuvés ajoutés pour une opération sont retirés à la fin |
+| **WinRM** | Port et HTTPS réglables ; `TrustedHosts` laissé intact tant que Kerberos suffit |
 
 ## Prérequis
 
@@ -41,10 +41,7 @@ en bas : état par poste, détail par paquet et journal.*
 - Runtime .NET 8 Desktop, ou publication autonome (voir [Compilation](#compilation)).
 - Exécution en administrateur : demandée au lancement par le manifeste de l'application.
 - Accès en lecture/écriture au catalogue, en lecture aux fichiers des paquets personnalisés.
-- Les cibles sont ajoutées à `TrustedHosts` du client WinRM avant chaque opération, puis **retirées à la
-  fin** : seules les entrées ajoutées par WinPloy sont reprises, jamais celles déjà présentes, et un
-  `TrustedHosts` à `*` est laissé intact. Le service WinRM local est démarré s'il est arrêté. Une GPO
-  « Hôtes approuvés » peut bloquer cet ajout.
+- `TrustedHosts` du client WinRM n'est pas modifié — voir [Hôtes approuvés](#hôtes-approuvés).
 - Facultatif : accès HTTPS à `api.winstall.app` pour la recherche d'identifiants WinGet. Sans cet accès,
   l'identifiant se saisit à la main et la fenêtre propose le lien `https://winget.run/` à copier.
 
@@ -173,6 +170,29 @@ dépôt.
 
 Au-delà de 50 postes en parallèle, l'interface signale que le poste d'administration devient le goulot
 d'étranglement en transfert WinRM ; la limite haute est de 200.
+
+### Hôtes approuvés
+
+Sur un domaine, `TrustedHosts` ne sert à rien : WinRM authentifie en Kerberos, et un poste joint au
+domaine, joint par son nom ou son FQDN, porte la confiance par lui-même. La liste ne devient nécessaire
+que lorsque Kerberos ne peut pas s'appliquer et que l'authentification retombe sur NTLM — connexion par
+adresse IP, compte local, poste hors domaine ou hors forêt.
+
+WinPloy n'y touche donc pas. Un poste n'y est ajouté que si le client WinRM a refusé la session en
+désignant lui-même `TrustedHosts` comme la cause, et seulement celui-là ; la session est alors retentée
+une fois. Un refus pour droits insuffisants ou mot de passe erroné ne déclenche rien, puisque la liste
+n'y changerait rien. Ce qui a été ajouté est retiré à la fin de l'opération : les entrées déjà présentes
+ne sont jamais reprises, et un `TrustedHosts` à `*` est laissé intact.
+
+Dans un domaine correctement configuré, la liste reste donc vide d'un bout à l'autre, et le service WinRM
+local n'est même pas démarré — il n'est nécessaire que pour lire et écrire cette configuration, jamais
+pour les sessions sortantes.
+
+Si le parc exige vraiment des cibles non Kerberos, mieux vaut pousser `TrustedHosts` par GPO
+(*Configuration ordinateur > Modèles d'administration > Composants Windows > Gestion à distance de
+Windows > Client WinRM*) et passer les écouteurs en HTTPS avec un vrai certificat : le chiffrement
+devient la protection, plutôt que la liste. Une GPO qui impose `TrustedHosts` empêche toute modification
+locale — WinPloy le détecte et le signale dans le journal au lieu d'échouer en silence.
 
 ### Catalogue partagé
 

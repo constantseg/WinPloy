@@ -531,6 +531,13 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
 
     private async Task RunDeploymentAsync(IReadOnlyList<string> targets, IReadOnlyList<CatalogueEntry> packages, DeployAction action, bool retry)
     {
+        // Les hôtes approuvés ne sont touchés qu'en dernier recours, poste par poste, et seulement
+        // si le client WinRM désigne TrustedHosts comme la cause du refus : sur un domaine, Kerberos
+        // suffit et la liste reste intacte.
+        var trustedHosts = new TrustedHostsGate(
+            _trustedHosts.Add,
+            message => _log.Write(message, LogService.Warning));
+
         var request = new DeploymentRequest
         {
             Targets = targets,
@@ -542,6 +549,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             DepotRoot = _settings.DepotRoot,
             WinRm = WinRmOptions.From(_settings),
             TransferMode = _settings.TransferMode,
+            TrustedHosts = trustedHosts,
         };
 
         // Contrôlé avant de toucher au suivi : rien n'est lancé, donc rien à remettre en état.
@@ -583,21 +591,6 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
 
         _lastRun = new LastRun(packages, action);
 
-        IReadOnlyList<string> trusted = [];
-        try
-        {
-            trusted = _trustedHosts.Add(targets);
-        }
-        catch (Exception ex)
-        {
-            var message = $"Mise à jour de TrustedHosts impossible : {ex.Message}";
-            _log.Write(message, LogService.Error);
-            _dialogs.ShowMessage(
-                $"{message}\r\n\r\nLes sessions WinRM risquent d'échouer. Une GPO « Hôtes approuvés » peut bloquer cette modification.",
-                "TrustedHosts",
-                MessageBoxImage.Warning);
-        }
-
         var transfer = request.TransferMode == TransferMode.SmbPull ? "SMB" : "WinRM";
         _log.Write(
             $"=== {action} : {packages.Count} paquet(s) sur {targets.Count} poste(s), {request.MaxParallel} en parallèle, "
@@ -615,9 +608,8 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
         finally
         {
-            // Les hôtes approuvés ajoutés pour cette opération ne lui survivent pas : la liste du
-            // poste d'administration ne grossit pas, et l'assouplissement reste ponctuel.
-            _trustedHosts.Remove(trusted);
+            // Le plus souvent il n'y a rien à retirer : aucun poste n'a eu besoin de la liste.
+            _trustedHosts.Remove(trustedHosts.Added);
             FinishRun(run);
         }
     }

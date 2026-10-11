@@ -214,3 +214,98 @@ internal static class Credentials
         return new System.Management.Automation.PSCredential(@"DOMAINE\admin", password);
     }
 }
+
+public class TrustedHostsGateTests
+{
+    /// <summary>Message réel du client WinRM quand l'authentification retombe sur NTLM.</summary>
+    private const string WinRmRefusal =
+        "The WinRM client cannot process the request. If the authentication scheme is different from "
+        + "Kerberos, or if the client computer is not joined to a domain, then HTTPS transport must be "
+        + "used or the destination machine must be added to the TrustedHosts configuration setting.";
+
+    [Fact]
+    public void NeedsTrustedHost_RecognisesTheWinRmRefusal()
+    {
+        Assert.True(FriendlyErrors.NeedsTrustedHost(WinRmRefusal));
+    }
+
+    [Fact]
+    public void NeedsTrustedHost_IgnoresUnrelatedFailures()
+    {
+        // Droits insuffisants ou mot de passe erroné : la liste des hôtes approuvés n'y changera rien.
+        Assert.False(FriendlyErrors.NeedsTrustedHost("Access is denied."));
+        Assert.False(FriendlyErrors.NeedsTrustedHost("Authentification WinRM impossible (0x8009030e)."));
+        Assert.False(FriendlyErrors.NeedsTrustedHost(""));
+        Assert.False(FriendlyErrors.NeedsTrustedHost(null));
+    }
+
+    [Fact]
+    public void Gate_AuthorizesOncePerComputer()
+    {
+        var calls = new List<string>();
+        var gate = Gate(calls, added: true);
+
+        Assert.True(gate.TryAuthorize("PC1"));
+        // Deuxième refus pour une autre raison : ne pas réécrire ni boucler.
+        Assert.False(gate.TryAuthorize("PC1"));
+        Assert.True(gate.TryAuthorize("PC2"));
+
+        Assert.Equal(["PC1", "PC2"], calls);
+        Assert.Equal(["PC1", "PC2"], gate.Added);
+    }
+
+    [Fact]
+    public void Gate_ComputerAlreadyTrusted_ReportsNoChange()
+    {
+        // Le poste était déjà dans la liste : rien n'a été écrit, donc rien à retirer ensuite.
+        var gate = Gate([], added: false);
+
+        Assert.False(gate.TryAuthorize("PC1"));
+        Assert.Empty(gate.Added);
+    }
+
+    [Fact]
+    public void Gate_WriteRefused_IsReportedAndSwallowed()
+    {
+        var warnings = new List<string>();
+        var gate = new TrustedHostsGate(
+            _ => throw new InvalidOperationException("TrustedHosts est imposé par GPO"),
+            warnings.Add);
+
+        Assert.False(gate.TryAuthorize("PC1"));
+        Assert.Empty(gate.Added);
+        Assert.Contains("PC1", warnings.Single());
+        Assert.Contains("imposé par GPO", warnings.Single());
+    }
+
+    [Fact]
+    public void Gate_NothingAuthorized_LeavesNothingToUndo()
+    {
+        // Le cas courant sur un domaine : Kerberos suffit, la liste n'est jamais touchée.
+        Assert.Empty(Gate([], added: false).Added);
+    }
+
+    [Fact]
+    public void Request_WithoutGate_NeverTouchesTrustedHosts()
+    {
+        var request = new DeploymentRequest
+        {
+            Targets = ["PC1"],
+            Packages = [CatalogueEntry.Create("Git.Git", "Git")!],
+            Action = DeployAction.Install,
+            PackageTimeoutMin = 30,
+            MaxParallel = 10,
+            DepotRoot = @"\\srv\d",
+        };
+
+        Assert.Null(request.TrustedHosts);
+    }
+
+    private static TrustedHostsGate Gate(List<string> calls, bool added) => new(
+        computers =>
+        {
+            calls.AddRange(computers);
+            return added ? computers.ToArray() : [];
+        },
+        _ => { });
+}

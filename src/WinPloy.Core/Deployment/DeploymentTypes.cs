@@ -38,6 +38,12 @@ public sealed class DeploymentRequest
     /// <summary>Acheminement du dossier des paquets personnalisés vers le poste.</summary>
     public TransferMode TransferMode { get; init; } = TransferMode.WinRm;
 
+    /// <summary>
+    /// Autorise un poste dans <c>TrustedHosts</c> quand le client WinRM refuse la session pour
+    /// cette raison. Null = ne jamais y toucher.
+    /// </summary>
+    public ITrustedHostsGate? TrustedHosts { get; init; }
+
     /// <summary>Remplace le délai global calculé (tests).</summary>
     public TimeSpan? JobTimeoutOverride { get; init; }
 
