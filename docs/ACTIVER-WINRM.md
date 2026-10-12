@@ -1,5 +1,7 @@
 # Activer WinRM sur les postes cibles
 
+**Français** · [English](ENABLE-WINRM.md)
+
 WinPloy ne configure jamais WinRM ni le pare-feu des cibles : c'est au parc d'être prêt. Ce document
 donne les deux façons de le préparer — par GPO pour un parc, à la main pour un poste isolé — en HTTP
 (port 5985, le défaut de WinPloy) ou en HTTPS (port 5986).

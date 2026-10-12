@@ -26,6 +26,7 @@ public class WinRmSettingsTests : IDisposable
         Assert.False(settings.UseSsl);
         Assert.False(settings.SkipCertificateCheck);
         Assert.Equal(TransferMode.WinRm, settings.TransferMode);
+        Assert.Equal(AppSettings.SystemLanguage, settings.Language);
     }
 
     [Theory]
@@ -64,6 +65,17 @@ public class WinRmSettingsTests : IDisposable
         Assert.Equal(TransferMode.WinRm, _service.Load().TransferMode);
     }
 
+    [Theory]
+    [InlineData("fr", "fr")]
+    [InlineData("EN", "en")]
+    [InlineData("", "")]
+    [InlineData("de", "")]
+    [InlineData(null, "")]
+    public void ParseLanguage_KeepsOnlySupportedLanguages(string? text, string expected)
+    {
+        Assert.Equal(expected, SettingsService.ParseLanguage(text));
+    }
+
     [Fact]
     public void Save_ThenLoad_RoundTripsEveryWinRmSetting()
     {
@@ -76,6 +88,7 @@ public class WinRmSettingsTests : IDisposable
             UseSsl = true,
             SkipCertificateCheck = true,
             TransferMode = TransferMode.SmbPull,
+            Language = "en",
         };
 
         Assert.True(_service.TrySave(expected, out var error));

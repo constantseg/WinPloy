@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -8,8 +9,7 @@ public static class PackageValidation
     public static readonly IReadOnlyList<string> ScriptExtensions = [".msi", ".ps1", ".bat", ".cmd", ".exe"];
 
     /// <summary>Filtre de la boîte « Parcourir… », aligné sur <see cref="ScriptExtensions" />.</summary>
-    public const string FileDialogFilter =
-        "Installeurs et scripts (*.msi;*.ps1;*.bat;*.cmd;*.exe)|*.msi;*.ps1;*.bat;*.cmd;*.exe|Paquet Windows Installer (*.msi)|*.msi|Tous les fichiers|*.*";
+    public static string FileDialogFilter => Strings.FileDialogFilter;
 
     private static readonly Regex WingetIdPattern = new(@"^[A-Za-z0-9][A-Za-z0-9._+-]*$");
     private static readonly Regex InvalidIdChars = new(@"[^\w\.-]+");
@@ -29,19 +29,19 @@ public static class PackageValidation
         fileExists ??= File.Exists;
         if (!path.StartsWith(@"\\", StringComparison.Ordinal))
         {
-            return $@"{label} : chemin UNC requis (\\serveur\partage\...), accessible à tous les administrateurs.";
+            return string.Format(Strings.ScriptUncRequired, label);
         }
         if (!ScriptExtensions.Contains(Path.GetExtension(path).ToLowerInvariant()))
         {
-            return $"{label} : extension non supportée (msi, ps1, bat, cmd, exe).";
+            return string.Format(Strings.ScriptBadExtension, label);
         }
         if (!fileExists(path))
         {
-            return $"{label} : fichier introuvable ({path}).";
+            return string.Format(Strings.ScriptNotFound, label, path);
         }
         if (SameDirectory(Path.GetDirectoryName(path) ?? "", depotRoot))
         {
-            return $"{label} : placer le script dans un sous-dossier dédié (le dossier entier est copié sur le poste).";
+            return string.Format(Strings.ScriptAtDepotRoot, label);
         }
         return null;
     }

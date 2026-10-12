@@ -59,16 +59,29 @@ $missing = @(Invoke-Recv ([pscustomobject]@{ Mode='Plan'; CacheDir=$cache; Stage
 if ($missing.Count -ne 1) { throw "Une entrée de cache modifiée doit être redemandée" }
 Write-Host "OK  Une entrée de cache modifiée est redemandée, jamais réutilisée"
 
-# 7. Bloc corrompu : Commit refuse.
+# 7. Bloc corrompu : Commit refuse, avec le message fourni dans la langue de l'interface.
+$text = @{ TransferCorrupted = 'Fichier transféré corrompu : empreinte {0} au lieu de {1}.' }
+Invoke-Recv ([pscustomobject]@{ Mode='Chunk'; CacheDir=$cache; Sha=$sha; Data=[Text.Encoding]::UTF8.GetBytes('tronque'); Compressed=$false; Append=$false })
+try {
+    Invoke-Recv ([pscustomobject]@{ Mode='Commit'; CacheDir=$cache; Sha=$sha; Text=$text })
+    throw "Commit aurait dû refuser un bloc corrompu"
+} catch {
+    $message = $_.Exception.Message
+    if ($message -notmatch 'corrompu' -or $message -notmatch $sha) { throw "Message inattendu : $message" }
+}
+Write-Host "OK  Commit refuse un transfert corrompu"
+
+# 8. Sans table de textes, le message reste lisible : clé puis valeurs.
 Invoke-Recv ([pscustomobject]@{ Mode='Chunk'; CacheDir=$cache; Sha=$sha; Data=[Text.Encoding]::UTF8.GetBytes('tronque'); Compressed=$false; Append=$false })
 try {
     Invoke-Recv ([pscustomobject]@{ Mode='Commit'; CacheDir=$cache; Sha=$sha })
     throw "Commit aurait dû refuser un bloc corrompu"
 } catch {
-    if ($_.Exception.Message -notmatch 'corrompu') { throw "Message inattendu : $($_.Exception.Message)" }
+    $message = $_.Exception.Message
+    if ($message -notmatch '^TransferCorrupted ' -or $message -notmatch $sha) { throw "Message inattendu : $message" }
 }
-Write-Host "OK  Commit refuse un transfert corrompu"
+Write-Host "OK  Sans table de textes, le message garde sa clé et ses valeurs"
 
 Remove-Item -LiteralPath $root -Recurse -Force
 Write-Host ""
-Write-Host "ReceiveFiles.ps1 : 7/7"
+Write-Host "ReceiveFiles.ps1 : 8/8"

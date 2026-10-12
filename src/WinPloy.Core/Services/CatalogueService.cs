@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
@@ -34,7 +35,7 @@ public sealed class CatalogueService
         var path = CataloguePath;
         if (!File.Exists(path))
         {
-            throw new CatalogueException($"Catalogue introuvable : {path}");
+            throw new CatalogueException(string.Format(Strings.CatalogueNotFound, path));
         }
 
         return JsonHelpers.ToArray(JsonHelpers.ParseFile(path))
@@ -86,12 +87,12 @@ public sealed class CatalogueService
         try
         {
             var entries = Read();
-            _log.Write($"Catalogue chargé : {entries.Count} application(s).");
+            _log.Write(string.Format(Strings.CatalogueLoaded, entries.Count));
             return entries;
         }
         catch (Exception ex)
         {
-            _log.Write($"Catalogue illisible : {ex.Message}", LogService.Error);
+            _log.Write(string.Format(Strings.CatalogueUnreadable, ex.Message), LogService.Error);
             return [];
         }
     }
@@ -110,11 +111,11 @@ public sealed class CatalogueService
         {
             if (current.Any(e => e.HasSameId(entry.Id)))
             {
-                throw new CatalogueException($"Un paquet avec l'Id '{entry.Id}' existe déjà dans le catalogue.");
+                throw new CatalogueException(string.Format(Strings.CatalogueDuplicateId, entry.Id));
             }
             return current.Append(entry);
         });
-        _log.Write($"Paquet ajouté : {entry.Name} ({entry.Id}).");
+        _log.Write(string.Format(Strings.CataloguePackageAdded, entry.Name, entry.Id));
         return updated;
     }
 
@@ -124,15 +125,15 @@ public sealed class CatalogueService
         {
             if (!entry.HasSameId(oldId) && current.Any(e => e.HasSameId(entry.Id)))
             {
-                throw new CatalogueException($"Un paquet avec l'Id '{entry.Id}' existe déjà dans le catalogue.");
+                throw new CatalogueException(string.Format(Strings.CatalogueDuplicateId, entry.Id));
             }
             if (!current.Any(e => e.HasSameId(oldId)))
             {
-                throw new CatalogueException($"Le paquet '{oldId}' n'existe plus dans le catalogue (supprimé par un autre administrateur ?).");
+                throw new CatalogueException(string.Format(Strings.CataloguePackageGone, oldId));
             }
             return current.Select(e => e.HasSameId(oldId) ? entry : e);
         });
-        _log.Write($"Paquet modifié : {entry.Name} ({entry.Id}).");
+        _log.Write(string.Format(Strings.CataloguePackageUpdated, entry.Name, entry.Id));
         return updated;
     }
 
@@ -141,7 +142,7 @@ public sealed class CatalogueService
         var updated = Edit(current => current.Where(e => !ids.Any(e.HasSameId)));
         foreach (var id in ids)
         {
-            _log.Write($"Paquet retiré du catalogue : {id}.");
+            _log.Write(string.Format(Strings.CataloguePackageRemoved, id));
         }
         return updated;
     }

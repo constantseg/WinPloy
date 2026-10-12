@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -21,8 +22,9 @@ public interface IDeploymentObserver
 /// </summary>
 public sealed class DeploymentEngine
 {
-    public const string StoppedByUserMessage = "Arrêté par l'utilisateur. Une action déjà lancée sur le poste peut continuer.";
-    public const string NotStartedMessage = "Non lancé (arrêt demandé).";
+    public static string StoppedByUserMessage => Strings.StoppedByUser;
+
+    public static string NotStartedMessage => Strings.NotStarted;
 
     private readonly ITargetRunner _runner;
 
@@ -114,7 +116,7 @@ public sealed class DeploymentEngine
         {
             var result = stopToken.IsCancellationRequested
                 ? TargetResult.ForAll(ResultStatus.Stopped, StoppedByUserMessage)
-                : TargetResult.ForAll(ResultStatus.Failed, $"Délai global de {request.JobTimeout.TotalMinutes:0} min dépassé, opération arrêtée.");
+                : TargetResult.ForAll(ResultStatus.Failed, string.Format(Strings.JobTimeout, request.JobTimeout.TotalMinutes));
             results = new[] { result };
         }
         catch (Exception ex)

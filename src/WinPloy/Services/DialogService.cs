@@ -2,6 +2,7 @@ using System.Windows;
 using Microsoft.Win32;
 using WinPloy.Core.Models;
 using WinPloy.Core.Services;
+using WinPloy.Properties;
 using WinPloy.Views;
 using PSCredential = System.Management.Automation.PSCredential;
 
@@ -97,7 +98,7 @@ public static class ClipboardHelper
         }
         catch (Exception ex)
         {
-            log.Write($"Copie impossible : {ex.Message}", LogService.Warning);
+            log.Write(string.Format(Strings.Clipboard_CopyFailed, ex.Message), LogService.Warning);
         }
     }
 }

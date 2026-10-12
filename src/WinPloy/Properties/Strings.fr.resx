@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Common_Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Parcourir…</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Erreur</value>
+  </data>
+  <data name="Common_Close" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="Common_Copy" xml:space="preserve">
+    <value>Copier</value>
+  </data>
+  <data name="App_UnexpectedError" xml:space="preserve">
+    <value>Erreur inattendue : {0}</value>
+  </data>
+  <data name="Clipboard_CopyFailed" xml:space="preserve">
+    <value>Copie impossible : {0}</value>
+  </data>
+  <data name="Status_Pending" xml:space="preserve">
+    <value>En attente</value>
+  </data>
+  <data name="Status_Running" xml:space="preserve">
+    <value>En cours</value>
+  </data>
+  <data name="Status_Ok" xml:space="preserve">
+    <value>Réussi</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Échec</value>
+  </data>
+  <data name="Status_Stopped" xml:space="preserve">
+    <value>Arrêté</value>
+  </data>
+  <data name="Main_Account" xml:space="preserve">
+    <value>Compte</value>
+  </data>
+  <data name="Main_AccountTooltip" xml:space="preserve">
+    <value>Compte utilisé pour ouvrir les sessions WinRM</value>
+  </data>
+  <data name="Main_SettingsTooltip" xml:space="preserve">
+    <value>Réglages</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value>À propos de WinPloy</value>
+  </data>
+  <data name="Main_Install" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="Main_Uninstall" xml:space="preserve">
+    <value>Désinstaller</value>
+  </data>
+  <data name="Main_Run" xml:space="preserve">
+    <value>Exécuter</value>
+  </data>
+  <data name="Main_RunTooltip" xml:space="preserve">
+    <value>Lancer l'opération sur les postes ciblés avec les applications choisies</value>
+  </data>
+  <data name="Main_Stop" xml:space="preserve">
+    <value>Arrêter</value>
+  </data>
+  <data name="Main_StopTooltip" xml:space="preserve">
+    <value>Arrêter les opérations en cours</value>
+  </data>
+  <data name="Main_Retry" xml:space="preserve">
+    <value>Relancer les échecs</value>
+  </data>
+  <data name="Main_RetryTooltip" xml:space="preserve">
+    <value>Relancer la même opération uniquement sur les postes en échec ou arrêtés</value>
+  </data>
+  <data name="Main_Computers" xml:space="preserve">
+    <value>Postes</value>
+  </data>
+  <data name="Main_All" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="Main_AllTooltip" xml:space="preserve">
+    <value>Ajouter tous les postes trouvés</value>
+  </data>
+  <data name="Main_Add" xml:space="preserve">
+    <value>Ajouter</value>
+  </data>
+  <data name="Main_AddTooltip" xml:space="preserve">
+    <value>Ajouter les postes sélectionnés aux postes ciblés</value>
+  </data>
+  <data name="Main_PcSearchPlaceholder" xml:space="preserve">
+    <value>Nom du poste, puis Entrée</value>
+  </data>
+  <data name="Main_PcSearchTooltip" xml:space="preserve">
+    <value>Recherche dans Active Directory. Le joker * est accepté.</value>
+  </data>
+  <data name="Main_PcListEmpty" xml:space="preserve">
+    <value>Saisissez un nom de poste et appuyez sur Entrée.</value>
+  </data>
+  <data name="Main_PcListTooltip" xml:space="preserve">
+    <value>Double-clic pour ajouter le poste</value>
+  </data>
+  <data name="Main_AddWingetTooltip" xml:space="preserve">
+    <value>Ajouter une application WinGet au catalogue</value>
+  </data>
+  <data name="Main_File" xml:space="preserve">
+    <value>Fichier</value>
+  </data>
+  <data name="Main_AddFileTooltip" xml:space="preserve">
+    <value>Ajouter un paquet personnalisé au catalogue : .msi, .ps1, .bat, .cmd ou .exe</value>
+  </data>
+  <data name="Main_EditPackageTooltip" xml:space="preserve">
+    <value>Modifier l'application sélectionnée</value>
+  </data>
+  <data name="Main_RemovePackagesTooltip" xml:space="preserve">
+    <value>Supprimer les applications sélectionnées du catalogue</value>
+  </data>
+  <data name="Main_RefreshCatalogueTooltip" xml:space="preserve">
+    <value>Recharger le catalogue partagé</value>
+  </data>
+  <data name="Main_Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="Main_AddToDeployment" xml:space="preserve">
+    <value>Ajouter au déploiement</value>
+  </data>
+  <data name="Main_AddToDeploymentTooltip" xml:space="preserve">
+    <value>Ajouter les applications sélectionnées au déploiement</value>
+  </data>
+  <data name="Main_PkgFilterPlaceholder" xml:space="preserve">
+    <value>Filtrer les applications</value>
+  </data>
+  <data name="Main_PkgFilterTooltip" xml:space="preserve">
+    <value>Filtre par nom ou identifiant. Échap pour effacer.</value>
+  </data>
+  <data name="Main_ColName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="Main_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Main_ColId" xml:space="preserve">
+    <value>Identifiant</value>
+  </data>
+  <data name="Main_Deployment" xml:space="preserve">
+    <value>Déploiement</value>
+  </data>
+  <data name="Main_RemoveTargetsTooltip" xml:space="preserve">
+    <value>Retirer les postes sélectionnés</value>
+  </data>
+  <data name="Main_ClearTargetsTooltip" xml:space="preserve">
+    <value>Vider la liste des postes</value>
+  </data>
+  <data name="Main_TargetedComputers" xml:space="preserve">
+    <value>Postes ciblés</value>
+  </data>
+  <data name="Main_TargetsEmpty" xml:space="preserve">
+    <value>Ajoutez des postes (étape 1).</value>
+  </data>
+  <data name="Main_RemoveBasketTooltip" xml:space="preserve">
+    <value>Retirer les applications sélectionnées</value>
+  </data>
+  <data name="Main_ClearBasketTooltip" xml:space="preserve">
+    <value>Vider la liste des applications</value>
+  </data>
+  <data name="Main_BasketEmpty" xml:space="preserve">
+    <value>Ajoutez des applications (étape 2).</value>
+  </data>
+  <data name="Main_TabHosts" xml:space="preserve">
+    <value>Suivi par poste</value>
+  </data>
+  <data name="Main_DetailSplitterTooltip" xml:space="preserve">
+    <value>Glisser pour changer la hauteur du détail</value>
+  </data>
+  <data name="Main_CopyDetailTooltip" xml:space="preserve">
+    <value>Copier le détail dans le presse-papiers</value>
+  </data>
+  <data name="Main_ColComputer" xml:space="preserve">
+    <value>Poste</value>
+  </data>
+  <data name="Main_ColState" xml:space="preserve">
+    <value>État</value>
+  </data>
+  <data name="Main_ColDetail" xml:space="preserve">
+    <value>Détail</value>
+  </data>
+  <data name="Main_ColDuration" xml:space="preserve">
+    <value>Durée</value>
+  </data>
+  <data name="Main_HostsEmpty" xml:space="preserve">
+    <value>Choisissez des postes et des applications, puis cliquez sur Exécuter.</value>
+  </data>
+  <data name="Main_TabResults" xml:space="preserve">
+    <value>Détail par paquet</value>
+  </data>
+  <data name="Main_ColTime" xml:space="preserve">
+    <value>Heure</value>
+  </data>
+  <data name="Main_ColApplication" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="Main_ColStatus" xml:space="preserve">
+    <value>Statut</value>
+  </data>
+  <data name="Main_ColMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Main_ResultsEmpty" xml:space="preserve">
+    <value>Double-clic sur une ligne pour lire le message complet.</value>
+  </data>
+  <data name="Main_TabLog" xml:space="preserve">
+    <value>Journal</value>
+  </data>
+  <data name="Main_FilterAll" xml:space="preserve">
+    <value>{0} poste(s)</value>
+  </data>
+  <data name="Main_FilterAllTooltip" xml:space="preserve">
+    <value>Afficher tous les postes</value>
+  </data>
+  <data name="Main_FilterRunning" xml:space="preserve">
+    <value>{0} en cours</value>
+  </data>
+  <data name="Main_FilterRunningTooltip" xml:space="preserve">
+    <value>Afficher les postes en cours ou en attente</value>
+  </data>
+  <data name="Main_FilterOk" xml:space="preserve">
+    <value>{0} réussi(s)</value>
+  </data>
+  <data name="Main_FilterOkTooltip" xml:space="preserve">
+    <value>Afficher les postes réussis</value>
+  </data>
+  <data name="Main_FilterFailed" xml:space="preserve">
+    <value>{0} échec(s)</value>
+  </data>
+  <data name="Main_FilterFailedTooltip" xml:space="preserve">
+    <value>Afficher les postes en échec ou arrêtés</value>
+  </data>
+  <data name="Main_HostFilterPlaceholder" xml:space="preserve">
+    <value>Poste…</value>
+  </data>
+  <data name="Main_HostFilterTooltip" xml:space="preserve">
+    <value>Filtrer le suivi par nom de poste</value>
+  </data>
+  <data name="Main_ExportTooltip" xml:space="preserve">
+    <value>Exporter les résultats détaillés (CSV)</value>
+  </data>
+  <data name="VM_NoHostSelected" xml:space="preserve">
+    <value>Sélectionnez un poste pour afficher son détail.</value>
+  </data>
+  <data name="VM_CurrentContext" xml:space="preserve">
+    <value>courant</value>
+  </data>
+  <data name="VM_NoSearch" xml:space="preserve">
+    <value>Aucune recherche</value>
+  </data>
+  <data name="VM_Ready" xml:space="preserve">
+    <value>Prêt.</value>
+  </data>
+  <data name="VM_Started" xml:space="preserve">
+    <value>WinPloy {0} démarré.</value>
+  </data>
+  <data name="VM_CloseConfirm" xml:space="preserve">
+    <value>Des opérations sont en cours. Fermer WinPloy les arrête.&#xA;&#xA;Fermer quand même ?</value>
+  </data>
+  <data name="VM_SettingsSaved" xml:space="preserve">
+    <value>Réglages enregistrés. Catalogue : {0}</value>
+  </data>
+  <data name="VM_AboutText" xml:space="preserve">
+    <value>WinPloy {0}&#xA;&#xA;Déploiement d'applications WinGet et de paquets personnalisés sur des postes Active Directory.&#xA;&#xA;Auteur : Constant Segretain</value>
+  </data>
+  <data name="VM_SettingsSaveFailed" xml:space="preserve">
+    <value>Impossible d'enregistrer les réglages : {0}</value>
+  </data>
+  <data name="VM_ComputersFound" xml:space="preserve">
+    <value>{0} poste(s) trouvé(s)</value>
+  </data>
+  <data name="VM_AdSearchLog" xml:space="preserve">
+    <value>Recherche AD : {0} poste(s).</value>
+  </data>
+  <data name="VM_RemoveConfirm" xml:space="preserve">
+    <value>Supprimer {0} paquet(s) du catalogue ?&#xA;&#xA;{1}&#xA;&#xA;Les scripts sur le partage ne sont pas supprimés.</value>
+  </data>
+  <data name="VM_Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="VM_Catalogue" xml:space="preserve">
+    <value>Catalogue</value>
+  </data>
+  <data name="VM_NoTarget" xml:space="preserve">
+    <value>Aucun poste sélectionné.</value>
+  </data>
+  <data name="VM_EmptyBasket" xml:space="preserve">
+    <value>Panier vide.</value>
+  </data>
+  <data name="VM_InstallConfirm" xml:space="preserve">
+    <value>Installer {0} application(s) ({1}) sur {2} poste(s) ?</value>
+  </data>
+  <data name="VM_UninstallConfirm" xml:space="preserve">
+    <value>Désinstaller {0} application(s) ({1}) sur {2} poste(s) ?</value>
+  </data>
+  <data name="VM_ConfirmTitle" xml:space="preserve">
+    <value>Confirmer l'opération</value>
+  </data>
+  <data name="VM_StopConfirm" xml:space="preserve">
+    <value>Arrêter les opérations en cours ?&#xA;&#xA;Une installation déjà lancée sur un poste peut continuer et doit être vérifiée sur ce poste.</value>
+  </data>
+  <data name="VM_Stopping" xml:space="preserve">
+    <value>Arrêt en cours…</value>
+  </data>
+  <data name="VM_StopLog" xml:space="preserve">
+    <value>=== Arrêt demandé par l'utilisateur. ===</value>
+  </data>
+  <data name="VM_Queued" xml:space="preserve">
+    <value>En file d'attente.</value>
+  </data>
+  <data name="VM_RunLog" xml:space="preserve">
+    <value>=== {0} : {1} paquet(s) sur {2} poste(s), {3} en parallèle, WinRM {4}, transfert {5} ===</value>
+  </data>
+  <data name="VM_InternalError" xml:space="preserve">
+    <value>Erreur interne du suivi : {0}</value>
+  </data>
+  <data name="VM_DoneStatus" xml:space="preserve">
+    <value>Terminé : {0}/{1} poste(s).</value>
+  </data>
+  <data name="VM_StoppedStatus" xml:space="preserve">
+    <value>Arrêté : {0}/{1} poste(s).</value>
+  </data>
+  <data name="VM_DoneLog" xml:space="preserve">
+    <value>=== Opération terminée. ===</value>
+  </data>
+  <data name="VM_StoppedLog" xml:space="preserve">
+    <value>=== Opération arrêtée. ===</value>
+  </data>
+  <data name="VM_WinRmChecking" xml:space="preserve">
+    <value>Vérification…</value>
+  </data>
+  <data name="VM_WinRmControl" xml:space="preserve">
+    <value>Contrôle WinRM…</value>
+  </data>
+  <data name="VM_HostStarted" xml:space="preserve">
+    <value>{0} : démarré.</value>
+  </data>
+  <data name="VM_HostStatus" xml:space="preserve">
+    <value>{0} : {1}</value>
+  </data>
+  <data name="VM_HostDone" xml:space="preserve">
+    <value>{0} : terminé.</value>
+  </data>
+  <data name="VM_Processing" xml:space="preserve">
+    <value>Traitement : {0}/{1} poste(s) terminé(s)</value>
+  </data>
+  <data name="VM_StoppingProgress" xml:space="preserve">
+    <value>Arrêt en cours… {0}/{1} poste(s) terminé(s)</value>
+  </data>
+  <data name="VM_DetailLine" xml:space="preserve">
+    <value>[{0}] {1} : {2}</value>
+  </data>
+  <data name="VM_ExportFileName" xml:space="preserve">
+    <value>WinPloy-resultats-{0:yyyyMMdd-HHmm}.csv</value>
+  </data>
+  <data name="VM_Exported" xml:space="preserve">
+    <value>Résultats exportés : {0}</value>
+  </data>
+  <data name="VM_ExportFailed" xml:space="preserve">
+    <value>Export impossible : {0}</value>
+  </data>
+  <data name="Cred_Title" xml:space="preserve">
+    <value>Compte WinRM</value>
+  </data>
+  <data name="Cred_UseAccount" xml:space="preserve">
+    <value>Utiliser ce compte</value>
+  </data>
+  <data name="Cred_CurrentAccount" xml:space="preserve">
+    <value>Compte courant</value>
+  </data>
+  <data name="Cred_CurrentAccountTooltip" xml:space="preserve">
+    <value>Ouvrir les sessions avec le compte qui exécute WinPloy</value>
+  </data>
+  <data name="Cred_Hint" xml:space="preserve">
+    <value>Compte administrateur des postes ciblés. Il sert à ouvrir les sessions WinRM pour toute l'opération.</value>
+  </data>
+  <data name="Cred_User" xml:space="preserve">
+    <value>Utilisateur</value>
+  </data>
+  <data name="Cred_UserPlaceholder" xml:space="preserve">
+    <value>DOMAINE\utilisateur, POSTE\utilisateur ou .\utilisateur</value>
+  </data>
+  <data name="Cred_Password" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="Cred_UserRequired" xml:space="preserve">
+    <value>Nom d'utilisateur requis.</value>
+  </data>
+  <data name="Cred_Credentials" xml:space="preserve">
+    <value>Identifiants</value>
+  </data>
+  <data name="Custom_WindowTitle" xml:space="preserve">
+    <value>Paquet personnalisé</value>
+  </data>
+  <data name="Custom_CreateTitle" xml:space="preserve">
+    <value>Créer un paquet personnalisé</value>
+  </data>
+  <data name="Custom_EditTitle" xml:space="preserve">
+    <value>Modifier le paquet personnalisé</value>
+  </data>
+  <data name="Custom_Hint" xml:space="preserve">
+    <value>Le dossier du script est copié sur le poste par la session WinRM, exécuté, puis supprimé. Types acceptés : msi, ps1, bat, cmd, exe. Un .msi est lancé par msiexec /i (ou /x) /qn /norestart. Codes de succès : 0 et 3010.</value>
+  </data>
+  <data name="Custom_Name" xml:space="preserve">
+    <value>Nom du paquet</value>
+  </data>
+  <data name="Custom_InstallScript" xml:space="preserve">
+    <value>Script d'installation</value>
+  </data>
+  <data name="Custom_UninstallScript" xml:space="preserve">
+    <value>Script de désinstallation</value>
+  </data>
+  <data name="Custom_InstallPlaceholder" xml:space="preserve">
+    <value>\\serveur\depot\Paquet\install.ps1</value>
+  </data>
+  <data name="Custom_UninstallPlaceholder" xml:space="preserve">
+    <value>\\serveur\depot\Paquet\uninstall.ps1</value>
+  </data>
+  <data name="Custom_RunAsSystem" xml:space="preserve">
+    <value>Exécuter en NT AUTHORITY\SYSTEM</value>
+  </data>
+  <data name="Custom_RunAsSystemHint" xml:space="preserve">
+    <value>Passe par une tâche planifiée temporaire. Sans cette option, le script s'exécute avec le compte de la session WinRM, et non avec l'utilisateur connecté au poste.</value>
+  </data>
+  <data name="Custom_Integrity" xml:space="preserve">
+    <value>Contrôler l'empreinte SHA-256 du dossier avant chaque déploiement</value>
+  </data>
+  <data name="Custom_IntegrityHint" xml:space="preserve">
+    <value>Le contenu du dossier est figé dans le catalogue, fichier par fichier. WinPloy refuse ensuite de déployer un dossier modifié : qui peut écrire dans le dépôt ne peut pas faire exécuter du code sur le parc à votre place. Recalculer l'empreinte après chaque mise à jour volontaire du paquet.</value>
+  </data>
+  <data name="Custom_ComputeHash" xml:space="preserve">
+    <value>Calculer l'empreinte</value>
+  </data>
+  <data name="Custom_HashFileCount" xml:space="preserve">
+    <value>{0} fichier(s) dans l'empreinte.</value>
+  </data>
+  <data name="Custom_HashPending" xml:space="preserve">
+    <value>Empreinte non calculée : elle le sera à l'enregistrement.</value>
+  </data>
+  <data name="Custom_HashCaption" xml:space="preserve">
+    <value>Empreinte</value>
+  </data>
+  <data name="Custom_InstallFirst" xml:space="preserve">
+    <value>Indiquer d'abord le script d'installation : son dossier est celui dont l'empreinte est calculée.</value>
+  </data>
+  <data name="Custom_FolderUnreachable" xml:space="preserve">
+    <value>Dossier du paquet inaccessible : {0}</value>
+  </data>
+  <data name="Custom_Computing" xml:space="preserve">
+    <value>Calcul en cours…</value>
+  </data>
+  <data name="Custom_HashFailed" xml:space="preserve">
+    <value>Calcul de l'empreinte impossible : {0}</value>
+  </data>
+  <data name="Custom_NoFiles" xml:space="preserve">
+    <value>Aucun fichier trouvé dans {0}.</value>
+  </data>
+  <data name="Custom_NameRequired" xml:space="preserve">
+    <value>Nom du paquet requis.</value>
+  </data>
+  <data name="Custom_InstallRequired" xml:space="preserve">
+    <value>Script d'installation requis.</value>
+  </data>
+  <data name="Custom_SameFolderRequired" xml:space="preserve">
+    <value>Contrôle d'empreinte : les deux scripts doivent être dans le même dossier, puisque l'empreinte couvre un seul dossier de paquet.</value>
+  </data>
+  <data name="Details_Title" xml:space="preserve">
+    <value>Détail du résultat</value>
+  </data>
+  <data name="Details_Computer" xml:space="preserve">
+    <value>Ordinateur  : {0}</value>
+  </data>
+  <data name="Details_Package" xml:space="preserve">
+    <value>Paquet      : {0}</value>
+  </data>
+  <data name="Details_Id" xml:space="preserve">
+    <value>Identifiant : {0}</value>
+  </data>
+  <data name="Details_Status" xml:space="preserve">
+    <value>Statut      : {0}</value>
+  </data>
+  <data name="Details_Date" xml:space="preserve">
+    <value>Date/heure  : {0}</value>
+  </data>
+  <data name="Details_Message" xml:space="preserve">
+    <value>Message :</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Réglages</value>
+  </data>
+  <data name="Settings_Hint" xml:space="preserve">
+    <value>Enregistrés pour ce poste d'administration dans ProgramData\WinPloy\config.json.</value>
+  </data>
+  <data name="Settings_Catalogue" xml:space="preserve">
+    <value>Catalogue partagé (fichier JSON)</value>
+  </data>
+  <data name="Settings_CatalogueHint" xml:space="preserve">
+    <value>Chemin UNC accessible à tous les administrateurs, par exemple \\serveur\depot\catalogue.json.</value>
+  </data>
+  <data name="Settings_Timeout" xml:space="preserve">
+    <value>Délai par paquet (minutes)</value>
+  </data>
+  <data name="Settings_Parallel" xml:space="preserve">
+    <value>Postes traités en parallèle</value>
+  </data>
+  <data name="Settings_Range" xml:space="preserve">
+    <value>De {0} à {1}.</value>
+  </data>
+  <data name="Settings_ParallelHigh" xml:space="preserve">
+    <value>De {0} à {1}. Au-delà de {2}, le poste d'administration devient le goulot d'étranglement en transfert WinRM : préférer le mode SMB.</value>
+  </data>
+  <data name="Settings_WinRm" xml:space="preserve">
+    <value>Service WinRM des postes cibles</value>
+  </data>
+  <data name="Settings_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Settings_Https" xml:space="preserve">
+    <value>HTTPS (WinRM over SSL)</value>
+  </data>
+  <data name="Settings_SkipCert" xml:space="preserve">
+    <value>Accepter un certificat non validable</value>
+  </data>
+  <data name="Settings_WinRmHint" xml:space="preserve">
+    <value>5985 en HTTP, 5986 en HTTPS. Le port suit automatiquement la case HTTPS tant qu'il garde sa valeur par défaut. Accepter un certificat non validable (autosigné, nom différent) n'a d'effet qu'en HTTPS et affaiblit l'authentification du poste cible : à réserver aux parcs dont les certificats WinRM ne viennent pas d'une autorité de confiance.</value>
+  </data>
+  <data name="Settings_Transfer" xml:space="preserve">
+    <value>Transfert des paquets personnalisés</value>
+  </data>
+  <data name="Settings_TransferWinRm" xml:space="preserve">
+    <value>Par la session WinRM — le poste cible n'accède jamais au partage</value>
+  </data>
+  <data name="Settings_TransferSmb" xml:space="preserve">
+    <value>Par SMB — le poste cible copie lui-même depuis le partage</value>
+  </data>
+  <data name="Settings_TransferHint" xml:space="preserve">
+    <value>En mode WinRM, le dossier du paquet traverse le poste d'administration bloc par bloc : chaque fichier est mis en cache sur le poste cible et n'est jamais renvoyé deux fois. En mode SMB, le fichier va du serveur de fichiers au poste en un seul saut — nettement plus rapide sur un parc large ou avec de gros installeurs, mais le poste cible doit joindre le partage, et des identifiants explicites sont obligatoires (bouton « Compte »).</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="Settings_LanguageAuto" xml:space="preserve">
+    <value>Langue de Windows</value>
+  </data>
+  <data name="Settings_LanguageHint" xml:space="preserve">
+    <value>Appliquée au prochain démarrage de WinPloy.</value>
+  </data>
+  <data name="Settings_CatalogueFilter" xml:space="preserve">
+    <value>Catalogue JSON (*.json)|*.json|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="Settings_CatalogueRequired" xml:space="preserve">
+    <value>Le chemin du catalogue est obligatoire.</value>
+  </data>
+  <data name="Settings_TimeoutInvalid" xml:space="preserve">
+    <value>Le délai doit être compris entre {0} et {1} minutes.</value>
+  </data>
+  <data name="Settings_ParallelInvalid" xml:space="preserve">
+    <value>Le parallélisme doit être compris entre {0} et {1}.</value>
+  </data>
+  <data name="Settings_PortInvalid" xml:space="preserve">
+    <value>Le port WinRM doit être compris entre {0} et {1}.</value>
+  </data>
+  <data name="Winget_WindowTitle" xml:space="preserve">
+    <value>Application WinGet</value>
+  </data>
+  <data name="Winget_AddTitle" xml:space="preserve">
+    <value>Ajouter une application WinGet</value>
+  </data>
+  <data name="Winget_EditTitle" xml:space="preserve">
+    <value>Modifier l'application WinGet</value>
+  </data>
+  <data name="Winget_Hint" xml:space="preserve">
+    <value>L'application est installée depuis la source winget, en SYSTEM, sur chaque poste ciblé. WinGet n'a pas besoin d'être installé sur ce poste d'administration.</value>
+  </data>
+  <data name="Winget_SearchLabel" xml:space="preserve">
+    <value>Chercher une application dans le dépôt WinGet</value>
+  </data>
+  <data name="Winget_Search" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="Winget_SearchPlaceholder" xml:space="preserve">
+    <value>Nom de l'application, puis Entrée</value>
+  </data>
+  <data name="Winget_SearchTooltip" xml:space="preserve">
+    <value>Recherche en ligne dans le dépôt communautaire winget-pkgs</value>
+  </data>
+  <data name="Winget_NoResults" xml:space="preserve">
+    <value>Aucun résultat affiché.</value>
+  </data>
+  <data name="Winget_ResultsTooltip" xml:space="preserve">
+    <value>Sélectionnez une application pour remplir le nom et l'identifiant</value>
+  </data>
+  <data name="Winget_LinkTooltip" xml:space="preserve">
+    <value>Cliquer pour copier le lien dans le presse-papiers</value>
+  </data>
+  <data name="Winget_DisplayName" xml:space="preserve">
+    <value>Nom affiché</value>
+  </data>
+  <data name="Winget_Id" xml:space="preserve">
+    <value>Identifiant WinGet</value>
+  </data>
+  <data name="Winget_IdPlaceholder" xml:space="preserve">
+    <value>Exemple : Git.Git</value>
+  </data>
+  <data name="Winget_Searching" xml:space="preserve">
+    <value>Recherche en ligne…</value>
+  </data>
+  <data name="Winget_NotFound" xml:space="preserve">
+    <value>Aucune application trouvée pour « {0} ».</value>
+  </data>
+  <data name="Winget_Found" xml:space="preserve">
+    <value>{0} application(s) trouvée(s). Cliquez sur une ligne pour remplir les champs ci-dessous.</value>
+  </data>
+  <data name="Winget_SearchLog" xml:space="preserve">
+    <value>Recherche WinGet : {0}</value>
+  </data>
+  <data name="Winget_SearchFailed" xml:space="preserve">
+    <value>Recherche impossible : {0}</value>
+  </data>
+  <data name="Winget_LinkCopied" xml:space="preserve">
+    <value>Lien copié : {0}</value>
+  </data>
+  <data name="Winget_NameIdRequired" xml:space="preserve">
+    <value>Nom et identifiant requis.</value>
+  </data>
+  <data name="Winget_InvalidId" xml:space="preserve">
+    <value>Identifiant WinGet invalide : {0}</value>
+  </data>
+</root>

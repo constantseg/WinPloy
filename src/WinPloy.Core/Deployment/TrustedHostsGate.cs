@@ -1,3 +1,5 @@
+using WinPloy.Core.Properties;
+
 namespace WinPloy.Core.Deployment;
 
 /// <summary>
@@ -71,7 +73,7 @@ public sealed class TrustedHostsGate : ITrustedHostsGate
             }
             catch (Exception ex)
             {
-                _warn($"{computer} : ajout aux hôtes approuvés WinRM impossible ({ex.Message}).");
+                _warn(string.Format(Strings.TrustedHostsAddFailed, computer, ex.Message));
                 return false;
             }
         }

@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.IO.Compression;
 using System.Management.Automation;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -11,14 +12,14 @@ internal sealed record CopyReport(int Files, int FromCache, long BytesSent, long
     {
         get
         {
-            var cache = FromCache > 0 ? $", {FromCache} déjà en cache" : "";
+            var cache = FromCache > 0 ? string.Format(Strings.CopyCached, FromCache) : "";
             return BytesSent == BytesTotal
-                ? $"{Files} fichier(s) copié(s) ({Megabytes(BytesSent)}){cache}"
-                : $"{Files} fichier(s) copié(s), {Megabytes(BytesSent)} envoyés sur {Megabytes(BytesTotal)}{cache}";
+                ? string.Format(Strings.CopySummary, Files, Megabytes(BytesSent), cache)
+                : string.Format(Strings.CopySummaryPartial, Files, Megabytes(BytesSent), Megabytes(BytesTotal), cache);
         }
     }
 
-    public static string Megabytes(long bytes) => $"{bytes / 1024d / 1024d:0.#} Mo";
+    public static string Megabytes(long bytes) => string.Format(Strings.Megabytes, bytes / 1024d / 1024d);
 }
 
 /// <summary>
@@ -91,9 +92,9 @@ internal static class RemoteFileCopier
         if (files.Count > 0)
         {
             progress?.Report(toSend.Count == 0
-                ? $"{files.Count} fichier(s) déjà en cache sur le poste, rien à envoyer."
-                : $"Copie de {toSend.Count} fichier(s) ({CopyReport.Megabytes(bytesToSend)})"
-                    + (fromCache > 0 ? $", {fromCache} déjà en cache." : "."));
+                ? string.Format(Strings.CopyAllCached, files.Count)
+                : string.Format(Strings.CopyStarting, toSend.Count, CopyReport.Megabytes(bytesToSend))
+                    + (fromCache > 0 ? string.Format(Strings.CopyStartingCached, fromCache) : "."));
         }
 
         var sent = 0L;
@@ -104,7 +105,7 @@ internal static class RemoteFileCopier
 
         session.InvokeOrThrow(
             RemoteScripts.ReceiveFiles,
-            Request("Materialize", cacheDir, stageDir, items, directories));
+            Request("Materialize", cacheDir, stageDir, items, directories, RemoteTexts.Build()));
 
         return new CopyReport(files.Count, fromCache, bytesToSend, bytesTotal);
     }
@@ -143,7 +144,7 @@ internal static class RemoteFileCopier
             if (bytesToSend > 0 && read > 0)
             {
                 progress?.Report(
-                    $"Envoi de {file.Relative} — {CopyReport.Megabytes(sent)} sur {CopyReport.Megabytes(bytesToSend)}");
+                    string.Format(Strings.CopySending, file.Relative, CopyReport.Megabytes(sent), CopyReport.Megabytes(bytesToSend)));
             }
             if (read < buffer.Length)
             {
@@ -154,7 +155,7 @@ internal static class RemoteFileCopier
         // L'empreinte est revérifiée sur le poste avant que le bloc rejoigne le cache.
         session.InvokeOrThrow(
             RemoteScripts.ReceiveFiles,
-            PsObjects.New(("Mode", "Commit"), ("CacheDir", cacheDir), ("Sha", file.Sha256)));
+            PsObjects.New(("Mode", "Commit"), ("CacheDir", cacheDir), ("Sha", file.Sha256), ("Text", RemoteTexts.Build())));
     }
 
     /// <summary>
@@ -199,13 +200,15 @@ internal static class RemoteFileCopier
         string cacheDir,
         string stageDir,
         object? items,
-        object? directories = null)
+        object? directories = null,
+        object? texts = null)
         => PsObjects.New(
             ("Mode", mode),
             ("CacheDir", cacheDir),
             ("StageDir", stageDir),
             ("Items", items),
-            ("Dirs", directories));
+            ("Dirs", directories),
+            ("Text", texts));
 
     private sealed class PackageFile
     {

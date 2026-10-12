@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using WinPloy.Properties;
 using PSCredential = System.Management.Automation.PSCredential;
 
 namespace WinPloy.Views;
@@ -21,7 +22,7 @@ public partial class CredentialWindow : Window
         var user = TxtUser.Text.Trim();
         if (user.Length == 0)
         {
-            MessageBox.Show(this, "Nom d'utilisateur requis.", "Identifiants", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, Strings.Cred_UserRequired, Strings.Cred_Credentials, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 

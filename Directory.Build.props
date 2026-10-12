@@ -9,7 +9,9 @@
     <Product>WinPloy</Product>
     <Copyright>Copyright 2026 Constant Segretain</Copyright>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <!-- Le SDK PowerShell embarque de nombreuses ressources localisées : seules les ressources françaises sont gardées. -->
+    <!-- Interface en anglais (ressources neutres) et en français (Properties\Strings.fr.resx).
+         Le SDK PowerShell embarque de nombreuses ressources localisées : seules les françaises sont gardées. -->
+    <NeutralLanguage>en</NeutralLanguage>
     <SatelliteResourceLanguages>fr</SatelliteResourceLanguages>
   </PropertyGroup>
 </Project>

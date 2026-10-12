@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Common_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Common_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Browse…</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Common_Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Common_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="App_UnexpectedError" xml:space="preserve">
+    <value>Unexpected error: {0}</value>
+  </data>
+  <data name="Clipboard_CopyFailed" xml:space="preserve">
+    <value>Copy failed: {0}</value>
+  </data>
+  <data name="Status_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Status_Running" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="Status_Ok" xml:space="preserve">
+    <value>Succeeded</value>
+  </data>
+  <data name="Status_Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Status_Stopped" xml:space="preserve">
+    <value>Stopped</value>
+  </data>
+  <data name="Main_Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Main_AccountTooltip" xml:space="preserve">
+    <value>Account used to open the WinRM sessions</value>
+  </data>
+  <data name="Main_SettingsTooltip" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value>About WinPloy</value>
+  </data>
+  <data name="Main_Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Main_Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="Main_Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="Main_RunTooltip" xml:space="preserve">
+    <value>Run the operation on the targeted computers with the chosen applications</value>
+  </data>
+  <data name="Main_Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="Main_StopTooltip" xml:space="preserve">
+    <value>Stop the running operations</value>
+  </data>
+  <data name="Main_Retry" xml:space="preserve">
+    <value>Retry failures</value>
+  </data>
+  <data name="Main_RetryTooltip" xml:space="preserve">
+    <value>Run the same operation again, only on failed or stopped computers</value>
+  </data>
+  <data name="Main_Computers" xml:space="preserve">
+    <value>Computers</value>
+  </data>
+  <data name="Main_All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="Main_AllTooltip" xml:space="preserve">
+    <value>Add all the computers found</value>
+  </data>
+  <data name="Main_Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Main_AddTooltip" xml:space="preserve">
+    <value>Add the selected computers to the targeted computers</value>
+  </data>
+  <data name="Main_PcSearchPlaceholder" xml:space="preserve">
+    <value>Computer name, then Enter</value>
+  </data>
+  <data name="Main_PcSearchTooltip" xml:space="preserve">
+    <value>Search in Active Directory. The * wildcard is accepted.</value>
+  </data>
+  <data name="Main_PcListEmpty" xml:space="preserve">
+    <value>Type a computer name and press Enter.</value>
+  </data>
+  <data name="Main_PcListTooltip" xml:space="preserve">
+    <value>Double-click to add the computer</value>
+  </data>
+  <data name="Main_AddWingetTooltip" xml:space="preserve">
+    <value>Add a WinGet application to the catalogue</value>
+  </data>
+  <data name="Main_File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="Main_AddFileTooltip" xml:space="preserve">
+    <value>Add a custom package to the catalogue: .msi, .ps1, .bat, .cmd or .exe</value>
+  </data>
+  <data name="Main_EditPackageTooltip" xml:space="preserve">
+    <value>Edit the selected application</value>
+  </data>
+  <data name="Main_RemovePackagesTooltip" xml:space="preserve">
+    <value>Delete the selected applications from the catalogue</value>
+  </data>
+  <data name="Main_RefreshCatalogueTooltip" xml:space="preserve">
+    <value>Reload the shared catalogue</value>
+  </data>
+  <data name="Main_Applications" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="Main_AddToDeployment" xml:space="preserve">
+    <value>Add to deployment</value>
+  </data>
+  <data name="Main_AddToDeploymentTooltip" xml:space="preserve">
+    <value>Add the selected applications to the deployment</value>
+  </data>
+  <data name="Main_PkgFilterPlaceholder" xml:space="preserve">
+    <value>Filter applications</value>
+  </data>
+  <data name="Main_PkgFilterTooltip" xml:space="preserve">
+    <value>Filter by name or ID. Esc to clear.</value>
+  </data>
+  <data name="Main_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Main_ColType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Main_ColId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Main_Deployment" xml:space="preserve">
+    <value>Deployment</value>
+  </data>
+  <data name="Main_RemoveTargetsTooltip" xml:space="preserve">
+    <value>Remove the selected computers</value>
+  </data>
+  <data name="Main_ClearTargetsTooltip" xml:space="preserve">
+    <value>Clear the computer list</value>
+  </data>
+  <data name="Main_TargetedComputers" xml:space="preserve">
+    <value>Targeted computers</value>
+  </data>
+  <data name="Main_TargetsEmpty" xml:space="preserve">
+    <value>Add computers (step 1).</value>
+  </data>
+  <data name="Main_RemoveBasketTooltip" xml:space="preserve">
+    <value>Remove the selected applications</value>
+  </data>
+  <data name="Main_ClearBasketTooltip" xml:space="preserve">
+    <value>Clear the application list</value>
+  </data>
+  <data name="Main_BasketEmpty" xml:space="preserve">
+    <value>Add applications (step 2).</value>
+  </data>
+  <data name="Main_TabHosts" xml:space="preserve">
+    <value>Progress by computer</value>
+  </data>
+  <data name="Main_DetailSplitterTooltip" xml:space="preserve">
+    <value>Drag to change the height of the details</value>
+  </data>
+  <data name="Main_CopyDetailTooltip" xml:space="preserve">
+    <value>Copy the details to the clipboard</value>
+  </data>
+  <data name="Main_ColComputer" xml:space="preserve">
+    <value>Computer</value>
+  </data>
+  <data name="Main_ColState" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="Main_ColDetail" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Main_ColDuration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="Main_HostsEmpty" xml:space="preserve">
+    <value>Choose computers and applications, then click Run.</value>
+  </data>
+  <data name="Main_TabResults" xml:space="preserve">
+    <value>Details by package</value>
+  </data>
+  <data name="Main_ColTime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="Main_ColApplication" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="Main_ColStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Main_ColMessage" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="Main_ResultsEmpty" xml:space="preserve">
+    <value>Double-click a row to read the full message.</value>
+  </data>
+  <data name="Main_TabLog" xml:space="preserve">
+    <value>Log</value>
+  </data>
+  <data name="Main_FilterAll" xml:space="preserve">
+    <value>{0} computer(s)</value>
+  </data>
+  <data name="Main_FilterAllTooltip" xml:space="preserve">
+    <value>Show all computers</value>
+  </data>
+  <data name="Main_FilterRunning" xml:space="preserve">
+    <value>{0} running</value>
+  </data>
+  <data name="Main_FilterRunningTooltip" xml:space="preserve">
+    <value>Show running or pending computers</value>
+  </data>
+  <data name="Main_FilterOk" xml:space="preserve">
+    <value>{0} succeeded</value>
+  </data>
+  <data name="Main_FilterOkTooltip" xml:space="preserve">
+    <value>Show successful computers</value>
+  </data>
+  <data name="Main_FilterFailed" xml:space="preserve">
+    <value>{0} failed</value>
+  </data>
+  <data name="Main_FilterFailedTooltip" xml:space="preserve">
+    <value>Show failed or stopped computers</value>
+  </data>
+  <data name="Main_HostFilterPlaceholder" xml:space="preserve">
+    <value>Computer…</value>
+  </data>
+  <data name="Main_HostFilterTooltip" xml:space="preserve">
+    <value>Filter the progress by computer name</value>
+  </data>
+  <data name="Main_ExportTooltip" xml:space="preserve">
+    <value>Export the detailed results (CSV)</value>
+  </data>
+  <data name="VM_NoHostSelected" xml:space="preserve">
+    <value>Select a computer to see its details.</value>
+  </data>
+  <data name="VM_CurrentContext" xml:space="preserve">
+    <value>current</value>
+  </data>
+  <data name="VM_NoSearch" xml:space="preserve">
+    <value>No search</value>
+  </data>
+  <data name="VM_Ready" xml:space="preserve">
+    <value>Ready.</value>
+  </data>
+  <data name="VM_Started" xml:space="preserve">
+    <value>WinPloy {0} started.</value>
+  </data>
+  <data name="VM_CloseConfirm" xml:space="preserve">
+    <value>Operations are running. Closing WinPloy stops them.&#xA;&#xA;Close anyway?</value>
+  </data>
+  <data name="VM_SettingsSaved" xml:space="preserve">
+    <value>Settings saved. Catalogue: {0}</value>
+  </data>
+  <data name="VM_AboutText" xml:space="preserve">
+    <value>WinPloy {0}&#xA;&#xA;Deployment of WinGet applications and custom packages to Active Directory computers.&#xA;&#xA;Author: Constant Segretain</value>
+  </data>
+  <data name="VM_SettingsSaveFailed" xml:space="preserve">
+    <value>Could not save the settings: {0}</value>
+  </data>
+  <data name="VM_ComputersFound" xml:space="preserve">
+    <value>{0} computer(s) found</value>
+  </data>
+  <data name="VM_AdSearchLog" xml:space="preserve">
+    <value>AD search: {0} computer(s).</value>
+  </data>
+  <data name="VM_RemoveConfirm" xml:space="preserve">
+    <value>Delete {0} package(s) from the catalogue?&#xA;&#xA;{1}&#xA;&#xA;The scripts on the share are not deleted.</value>
+  </data>
+  <data name="VM_Confirmation" xml:space="preserve">
+    <value>Confirmation</value>
+  </data>
+  <data name="VM_Catalogue" xml:space="preserve">
+    <value>Catalogue</value>
+  </data>
+  <data name="VM_NoTarget" xml:space="preserve">
+    <value>No computer selected.</value>
+  </data>
+  <data name="VM_EmptyBasket" xml:space="preserve">
+    <value>No application to deploy.</value>
+  </data>
+  <data name="VM_InstallConfirm" xml:space="preserve">
+    <value>Install {0} application(s) ({1}) on {2} computer(s)?</value>
+  </data>
+  <data name="VM_UninstallConfirm" xml:space="preserve">
+    <value>Uninstall {0} application(s) ({1}) from {2} computer(s)?</value>
+  </data>
+  <data name="VM_ConfirmTitle" xml:space="preserve">
+    <value>Confirm the operation</value>
+  </data>
+  <data name="VM_StopConfirm" xml:space="preserve">
+    <value>Stop the running operations?&#xA;&#xA;An installation already started on a computer may continue and must be checked on that computer.</value>
+  </data>
+  <data name="VM_Stopping" xml:space="preserve">
+    <value>Stopping…</value>
+  </data>
+  <data name="VM_StopLog" xml:space="preserve">
+    <value>=== Stop requested by the user. ===</value>
+  </data>
+  <data name="VM_Queued" xml:space="preserve">
+    <value>Queued.</value>
+  </data>
+  <data name="VM_RunLog" xml:space="preserve">
+    <value>=== {0}: {1} package(s) on {2} computer(s), {3} in parallel, WinRM {4}, {5} transfer ===</value>
+  </data>
+  <data name="VM_InternalError" xml:space="preserve">
+    <value>Internal tracking error: {0}</value>
+  </data>
+  <data name="VM_DoneStatus" xml:space="preserve">
+    <value>Completed: {0}/{1} computer(s).</value>
+  </data>
+  <data name="VM_StoppedStatus" xml:space="preserve">
+    <value>Stopped: {0}/{1} computer(s).</value>
+  </data>
+  <data name="VM_DoneLog" xml:space="preserve">
+    <value>=== Operation completed. ===</value>
+  </data>
+  <data name="VM_StoppedLog" xml:space="preserve">
+    <value>=== Operation stopped. ===</value>
+  </data>
+  <data name="VM_WinRmChecking" xml:space="preserve">
+    <value>Checking…</value>
+  </data>
+  <data name="VM_WinRmControl" xml:space="preserve">
+    <value>Checking WinRM…</value>
+  </data>
+  <data name="VM_HostStarted" xml:space="preserve">
+    <value>{0}: started.</value>
+  </data>
+  <data name="VM_HostStatus" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="VM_HostDone" xml:space="preserve">
+    <value>{0}: finished.</value>
+  </data>
+  <data name="VM_Processing" xml:space="preserve">
+    <value>Processing: {0}/{1} computer(s) finished</value>
+  </data>
+  <data name="VM_StoppingProgress" xml:space="preserve">
+    <value>Stopping… {0}/{1} computer(s) finished</value>
+  </data>
+  <data name="VM_DetailLine" xml:space="preserve">
+    <value>[{0}] {1}: {2}</value>
+  </data>
+  <data name="VM_ExportFileName" xml:space="preserve">
+    <value>WinPloy-results-{0:yyyyMMdd-HHmm}.csv</value>
+  </data>
+  <data name="VM_Exported" xml:space="preserve">
+    <value>Results exported: {0}</value>
+  </data>
+  <data name="VM_ExportFailed" xml:space="preserve">
+    <value>Export failed: {0}</value>
+  </data>
+  <data name="Cred_Title" xml:space="preserve">
+    <value>WinRM account</value>
+  </data>
+  <data name="Cred_UseAccount" xml:space="preserve">
+    <value>Use this account</value>
+  </data>
+  <data name="Cred_CurrentAccount" xml:space="preserve">
+    <value>Current account</value>
+  </data>
+  <data name="Cred_CurrentAccountTooltip" xml:space="preserve">
+    <value>Open the sessions with the account running WinPloy</value>
+  </data>
+  <data name="Cred_Hint" xml:space="preserve">
+    <value>Administrator account on the targeted computers. It is used to open the WinRM sessions for the whole operation.</value>
+  </data>
+  <data name="Cred_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="Cred_UserPlaceholder" xml:space="preserve">
+    <value>DOMAIN\user, COMPUTER\user or .\user</value>
+  </data>
+  <data name="Cred_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Cred_UserRequired" xml:space="preserve">
+    <value>User name required.</value>
+  </data>
+  <data name="Cred_Credentials" xml:space="preserve">
+    <value>Credentials</value>
+  </data>
+  <data name="Custom_WindowTitle" xml:space="preserve">
+    <value>Custom package</value>
+  </data>
+  <data name="Custom_CreateTitle" xml:space="preserve">
+    <value>Create a custom package</value>
+  </data>
+  <data name="Custom_EditTitle" xml:space="preserve">
+    <value>Edit the custom package</value>
+  </data>
+  <data name="Custom_Hint" xml:space="preserve">
+    <value>The script's folder is copied to the computer through the WinRM session, run, then deleted. Accepted types: msi, ps1, bat, cmd, exe. An .msi is run with msiexec /i (or /x) /qn /norestart. Success codes: 0 and 3010.</value>
+  </data>
+  <data name="Custom_Name" xml:space="preserve">
+    <value>Package name</value>
+  </data>
+  <data name="Custom_InstallScript" xml:space="preserve">
+    <value>Install script</value>
+  </data>
+  <data name="Custom_UninstallScript" xml:space="preserve">
+    <value>Uninstall script</value>
+  </data>
+  <data name="Custom_InstallPlaceholder" xml:space="preserve">
+    <value>\\server\depot\Package\install.ps1</value>
+  </data>
+  <data name="Custom_UninstallPlaceholder" xml:space="preserve">
+    <value>\\server\depot\Package\uninstall.ps1</value>
+  </data>
+  <data name="Custom_RunAsSystem" xml:space="preserve">
+    <value>Run as NT AUTHORITY\SYSTEM</value>
+  </data>
+  <data name="Custom_RunAsSystemHint" xml:space="preserve">
+    <value>Goes through a temporary scheduled task. Without this option, the script runs with the WinRM session account, not with the user logged on to the computer.</value>
+  </data>
+  <data name="Custom_Integrity" xml:space="preserve">
+    <value>Check the folder's SHA-256 hash before each deployment</value>
+  </data>
+  <data name="Custom_IntegrityHint" xml:space="preserve">
+    <value>The folder's content is frozen in the catalogue, file by file. WinPloy then refuses to deploy a modified folder: whoever can write to the repository cannot run code on your computers in your place. Recompute the hash after each intended update of the package.</value>
+  </data>
+  <data name="Custom_ComputeHash" xml:space="preserve">
+    <value>Compute hash</value>
+  </data>
+  <data name="Custom_HashFileCount" xml:space="preserve">
+    <value>{0} file(s) in the hash.</value>
+  </data>
+  <data name="Custom_HashPending" xml:space="preserve">
+    <value>Hash not computed yet: it will be when saving.</value>
+  </data>
+  <data name="Custom_HashCaption" xml:space="preserve">
+    <value>Hash</value>
+  </data>
+  <data name="Custom_InstallFirst" xml:space="preserve">
+    <value>Enter the install script first: the hash is computed on its folder.</value>
+  </data>
+  <data name="Custom_FolderUnreachable" xml:space="preserve">
+    <value>Package folder unreachable: {0}</value>
+  </data>
+  <data name="Custom_Computing" xml:space="preserve">
+    <value>Computing…</value>
+  </data>
+  <data name="Custom_HashFailed" xml:space="preserve">
+    <value>Could not compute the hash: {0}</value>
+  </data>
+  <data name="Custom_NoFiles" xml:space="preserve">
+    <value>No files found in {0}.</value>
+  </data>
+  <data name="Custom_NameRequired" xml:space="preserve">
+    <value>Package name required.</value>
+  </data>
+  <data name="Custom_InstallRequired" xml:space="preserve">
+    <value>Install script required.</value>
+  </data>
+  <data name="Custom_SameFolderRequired" xml:space="preserve">
+    <value>Hash check: both scripts must be in the same folder, since the hash covers a single package folder.</value>
+  </data>
+  <data name="Details_Title" xml:space="preserve">
+    <value>Result details</value>
+  </data>
+  <data name="Details_Computer" xml:space="preserve">
+    <value>Computer : {0}</value>
+  </data>
+  <data name="Details_Package" xml:space="preserve">
+    <value>Package  : {0}</value>
+  </data>
+  <data name="Details_Id" xml:space="preserve">
+    <value>ID       : {0}</value>
+  </data>
+  <data name="Details_Status" xml:space="preserve">
+    <value>Status   : {0}</value>
+  </data>
+  <data name="Details_Date" xml:space="preserve">
+    <value>Date/time: {0}</value>
+  </data>
+  <data name="Details_Message" xml:space="preserve">
+    <value>Message:</value>
+  </data>
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Settings_Hint" xml:space="preserve">
+    <value>Saved for this admin computer in ProgramData\WinPloy\config.json.</value>
+  </data>
+  <data name="Settings_Catalogue" xml:space="preserve">
+    <value>Shared catalogue (JSON file)</value>
+  </data>
+  <data name="Settings_CatalogueHint" xml:space="preserve">
+    <value>UNC path accessible to all administrators, for example \\server\depot\catalogue.json.</value>
+  </data>
+  <data name="Settings_Timeout" xml:space="preserve">
+    <value>Time limit per package (minutes)</value>
+  </data>
+  <data name="Settings_Parallel" xml:space="preserve">
+    <value>Computers processed in parallel</value>
+  </data>
+  <data name="Settings_Range" xml:space="preserve">
+    <value>From {0} to {1}.</value>
+  </data>
+  <data name="Settings_ParallelHigh" xml:space="preserve">
+    <value>From {0} to {1}. Above {2}, the admin computer becomes the bottleneck in WinRM transfer: prefer SMB mode.</value>
+  </data>
+  <data name="Settings_WinRm" xml:space="preserve">
+    <value>WinRM service on the target computers</value>
+  </data>
+  <data name="Settings_Port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="Settings_Https" xml:space="preserve">
+    <value>HTTPS (WinRM over SSL)</value>
+  </data>
+  <data name="Settings_SkipCert" xml:space="preserve">
+    <value>Accept a certificate that cannot be validated</value>
+  </data>
+  <data name="Settings_WinRmHint" xml:space="preserve">
+    <value>5985 for HTTP, 5986 for HTTPS. The port follows the HTTPS box as long as it keeps its default value. Accepting a certificate that cannot be validated (self-signed, different name) only applies to HTTPS and weakens the authentication of the target computer: keep it for fleets whose WinRM certificates do not come from a trusted authority.</value>
+  </data>
+  <data name="Settings_Transfer" xml:space="preserve">
+    <value>Custom package transfer</value>
+  </data>
+  <data name="Settings_TransferWinRm" xml:space="preserve">
+    <value>Through the WinRM session — the target computer never accesses the share</value>
+  </data>
+  <data name="Settings_TransferSmb" xml:space="preserve">
+    <value>Through SMB — the target computer copies from the share itself</value>
+  </data>
+  <data name="Settings_TransferHint" xml:space="preserve">
+    <value>In WinRM mode, the package folder goes through the admin computer chunk by chunk: each file is cached on the target computer and is never sent twice. In SMB mode, the file goes from the file server to the computer in a single hop — much faster on a large fleet or with big installers, but the target computer must reach the share, and explicit credentials are required (“Account” button).</value>
+  </data>
+  <data name="Settings_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Settings_LanguageAuto" xml:space="preserve">
+    <value>Windows language</value>
+  </data>
+  <data name="Settings_LanguageHint" xml:space="preserve">
+    <value>Applied the next time WinPloy starts.</value>
+  </data>
+  <data name="Settings_CatalogueFilter" xml:space="preserve">
+    <value>JSON catalogue (*.json)|*.json|All files (*.*)|*.*</value>
+  </data>
+  <data name="Settings_CatalogueRequired" xml:space="preserve">
+    <value>The catalogue path is required.</value>
+  </data>
+  <data name="Settings_TimeoutInvalid" xml:space="preserve">
+    <value>The time limit must be between {0} and {1} minutes.</value>
+  </data>
+  <data name="Settings_ParallelInvalid" xml:space="preserve">
+    <value>Parallelism must be between {0} and {1}.</value>
+  </data>
+  <data name="Settings_PortInvalid" xml:space="preserve">
+    <value>The WinRM port must be between {0} and {1}.</value>
+  </data>
+  <data name="Winget_WindowTitle" xml:space="preserve">
+    <value>WinGet application</value>
+  </data>
+  <data name="Winget_AddTitle" xml:space="preserve">
+    <value>Add a WinGet application</value>
+  </data>
+  <data name="Winget_EditTitle" xml:space="preserve">
+    <value>Edit the WinGet application</value>
+  </data>
+  <data name="Winget_Hint" xml:space="preserve">
+    <value>The application is installed from the winget source, as SYSTEM, on each targeted computer. WinGet does not need to be installed on this admin computer.</value>
+  </data>
+  <data name="Winget_SearchLabel" xml:space="preserve">
+    <value>Search for an application in the WinGet repository</value>
+  </data>
+  <data name="Winget_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Winget_SearchPlaceholder" xml:space="preserve">
+    <value>Application name, then Enter</value>
+  </data>
+  <data name="Winget_SearchTooltip" xml:space="preserve">
+    <value>Online search in the winget-pkgs community repository</value>
+  </data>
+  <data name="Winget_NoResults" xml:space="preserve">
+    <value>No results shown.</value>
+  </data>
+  <data name="Winget_ResultsTooltip" xml:space="preserve">
+    <value>Select an application to fill in the name and ID</value>
+  </data>
+  <data name="Winget_LinkTooltip" xml:space="preserve">
+    <value>Click to copy the link to the clipboard</value>
+  </data>
+  <data name="Winget_DisplayName" xml:space="preserve">
+    <value>Display name</value>
+  </data>
+  <data name="Winget_Id" xml:space="preserve">
+    <value>WinGet ID</value>
+  </data>
+  <data name="Winget_IdPlaceholder" xml:space="preserve">
+    <value>Example: Git.Git</value>
+  </data>
+  <data name="Winget_Searching" xml:space="preserve">
+    <value>Searching online…</value>
+  </data>
+  <data name="Winget_NotFound" xml:space="preserve">
+    <value>No application found for “{0}”.</value>
+  </data>
+  <data name="Winget_Found" xml:space="preserve">
+    <value>{0} application(s) found. Click a row to fill in the fields below.</value>
+  </data>
+  <data name="Winget_SearchLog" xml:space="preserve">
+    <value>WinGet search: {0}</value>
+  </data>
+  <data name="Winget_SearchFailed" xml:space="preserve">
+    <value>Search failed: {0}</value>
+  </data>
+  <data name="Winget_LinkCopied" xml:space="preserve">
+    <value>Link copied: {0}</value>
+  </data>
+  <data name="Winget_NameIdRequired" xml:space="preserve">
+    <value>Name and ID required.</value>
+  </data>
+  <data name="Winget_InvalidId" xml:space="preserve">
+    <value>Invalid WinGet ID: {0}</value>
+  </data>
+</root>

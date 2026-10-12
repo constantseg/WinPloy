@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
@@ -53,7 +54,7 @@ public sealed class WingetSearchService
         var text = (query ?? "").Trim();
         if (text.Length < MinQueryLength)
         {
-            throw new WingetSearchException($"Saisir au moins {MinQueryLength} caractères.");
+            throw new WingetSearchException(string.Format(Strings.WingetQueryTooShort, MinQueryLength));
         }
 
         string json;
@@ -62,7 +63,7 @@ public sealed class WingetSearchService
             using var response = await Client.GetAsync(SearchEndpoint + Uri.EscapeDataString(text), cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
-                throw new WingetSearchException($"Le service de recherche a répondu {(int)response.StatusCode} ({response.ReasonPhrase}).");
+                throw new WingetSearchException(string.Format(Strings.WingetHttpStatus, (int)response.StatusCode, response.ReasonPhrase));
             }
             json = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -72,11 +73,11 @@ public sealed class WingetSearchService
         }
         catch (OperationCanceledException)
         {
-            throw new WingetSearchException("Délai dépassé : le service de recherche ne répond pas.");
+            throw new WingetSearchException(Strings.WingetTimeout);
         }
         catch (HttpRequestException ex)
         {
-            throw new WingetSearchException($"Recherche en ligne impossible ({ex.Message}). Vérifier l'accès Internet ou le proxy du poste.");
+            throw new WingetSearchException(string.Format(Strings.WingetUnreachable, ex.Message));
         }
 
         try
@@ -85,7 +86,7 @@ public sealed class WingetSearchService
         }
         catch (JsonException)
         {
-            throw new WingetSearchException("Réponse du service de recherche illisible.");
+            throw new WingetSearchException(Strings.WingetBadResponse);
         }
     }
 

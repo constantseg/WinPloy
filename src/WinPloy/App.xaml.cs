@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using WinPloy.Core.Services;
+using WinPloy.Properties;
 using WinPloy.Services;
 using WinPloy.ViewModels;
 using WinPloy.Views;
@@ -28,6 +29,7 @@ public partial class App : Application
         }
 
         _log = new LogService(paths.LogFile);
+        UiLanguage.Apply(new SettingsService(paths.ConfigFile, _log).Load().Language);
         var viewModel = new MainViewModel(paths, _log, new DialogService(_log));
         var window = new MainWindow(viewModel);
         MainWindow = window;
@@ -37,7 +39,7 @@ public partial class App : Application
 
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        _log?.Write($"Erreur inattendue : {e.Exception.Message}", LogService.Error);
+        _log?.Write(string.Format(Strings.App_UnexpectedError, e.Exception.Message), LogService.Error);
         MessageBox.Show(e.Exception.Message, "WinPloy", MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }

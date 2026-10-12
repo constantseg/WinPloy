@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -48,7 +49,7 @@ public static class PackageIntegrity
         }
         if (!Directory.Exists(directory))
         {
-            return $"dossier du paquet introuvable : {directory}";
+            return string.Format(Strings.IntegrityFolderNotFound, directory);
         }
 
         // Chemin relatif attendu -> chemin réel du fichier. Le fichier est ouvert par le chemin
@@ -64,16 +65,16 @@ public static class PackageIntegrity
         {
             if (!actual.TryGetValue(relative, out var path))
             {
-                return $"fichier attendu absent du dépôt : {relative}";
+                return string.Format(Strings.IntegrityFileMissing, relative);
             }
             if (!string.Equals(ComputeFile(path), hash, StringComparison.OrdinalIgnoreCase))
             {
-                return $"empreinte SHA-256 différente de celle du catalogue : {relative}";
+                return string.Format(Strings.IntegrityHashMismatch, relative);
             }
         }
 
         var extra = actual.Keys.Where(k => !expected.ContainsKey(k)).OrderBy(k => k, StringComparer.OrdinalIgnoreCase).FirstOrDefault();
-        return extra is null ? null : $"fichier ajouté depuis le calcul de l'empreinte : {extra}";
+        return extra is null ? null : string.Format(Strings.IntegrityFileAdded, extra);
     }
 
     /// <summary>Chemin relatif au dossier du paquet, séparateurs Windows (clé du manifeste).</summary>

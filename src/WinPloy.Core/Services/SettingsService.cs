@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json.Nodes;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
@@ -79,6 +80,10 @@ public sealed class SettingsService
         {
             settings = settings with { TransferMode = ParseTransferMode(JsonHelpers.AsString(transferMode)) };
         }
+        if (JsonHelpers.TryGetProperty(obj, "Language", out var language))
+        {
+            settings = settings with { Language = ParseLanguage(JsonHelpers.AsString(language)) };
+        }
         return settings;
     }
 
@@ -95,6 +100,7 @@ public sealed class SettingsService
                 ["UseSsl"] = settings.UseSsl,
                 ["SkipCertificateCheck"] = settings.SkipCertificateCheck,
                 ["TransferMode"] = settings.TransferMode.ToString(),
+                ["Language"] = settings.Language,
             };
             var dir = Path.GetDirectoryName(_file);
             if (!string.IsNullOrEmpty(dir))
@@ -108,7 +114,7 @@ public sealed class SettingsService
         catch (Exception ex)
         {
             error = ex.Message;
-            _log.Write($"Impossible d'enregistrer les réglages : {ex.Message}", LogService.Error);
+            _log.Write(string.Format(Strings.SettingsSaveFailed, ex.Message), LogService.Error);
             return false;
         }
     }
@@ -124,6 +130,13 @@ public sealed class SettingsService
     /// <summary>Booléen écrit en JSON (true) ou en texte ("true"), sinon <paramref name="fallback"/>.</summary>
     public static bool ParseBool(string? text, bool fallback)
         => bool.TryParse((text ?? "").Trim('"'), out var value) ? value : fallback;
+
+    /// <summary>Langue proposée par WinPloy (« en », « fr »), sinon langue de Windows.</summary>
+    public static string ParseLanguage(string? text)
+    {
+        var language = (text ?? "").Trim('"').Trim().ToLowerInvariant();
+        return AppSettings.SupportedLanguages.Contains(language) ? language : AppSettings.SystemLanguage;
+    }
 
     /// <summary>Mode de transfert nommé, sinon WinRM.</summary>
     public static TransferMode ParseTransferMode(string? text)

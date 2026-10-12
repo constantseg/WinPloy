@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="StoppedByUser" xml:space="preserve">
+    <value>Arrêté par l'utilisateur. Une action déjà lancée sur le poste peut continuer.</value>
+  </data>
+  <data name="NotStarted" xml:space="preserve">
+    <value>Non lancé (arrêt demandé).</value>
+  </data>
+  <data name="JobTimeout" xml:space="preserve">
+    <value>Délai global de {0:0} min dépassé, opération arrêtée.</value>
+  </data>
+  <data name="NoResult" xml:space="preserve">
+    <value>Aucun résultat renvoyé par le poste.</value>
+  </data>
+  <data name="AuthFailed" xml:space="preserve">
+    <value>Authentification WinRM impossible (0x8009030e). Vérifier le format du compte (DOMAINE\utilisateur ou POSTE\utilisateur). Détail : {0}</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Accès refusé : le compte n'a pas les droits administrateur sur le poste. Détail : {0}</value>
+  </data>
+  <data name="OutcomeAllOk" xml:space="preserve">
+    <value>{0} paquet(s) traité(s) avec succès.</value>
+  </data>
+  <data name="OutcomeSomeFailed" xml:space="preserve">
+    <value>{0}/{1} en échec : {2}</value>
+  </data>
+  <data name="IntegrityFolderNotFound" xml:space="preserve">
+    <value>dossier du paquet introuvable : {0}</value>
+  </data>
+  <data name="IntegrityFileMissing" xml:space="preserve">
+    <value>fichier attendu absent du dépôt : {0}</value>
+  </data>
+  <data name="IntegrityHashMismatch" xml:space="preserve">
+    <value>empreinte SHA-256 différente de celle du catalogue : {0}</value>
+  </data>
+  <data name="IntegrityFileAdded" xml:space="preserve">
+    <value>fichier ajouté depuis le calcul de l'empreinte : {0}</value>
+  </data>
+  <data name="TrustedHostsAddFailed" xml:space="preserve">
+    <value>{0} : ajout aux hôtes approuvés WinRM impossible ({1}).</value>
+  </data>
+  <data name="FileDialogFilter" xml:space="preserve">
+    <value>Installeurs et scripts (*.msi;*.ps1;*.bat;*.cmd;*.exe)|*.msi;*.ps1;*.bat;*.cmd;*.exe|Paquet Windows Installer (*.msi)|*.msi|Tous les fichiers|*.*</value>
+  </data>
+  <data name="ScriptUncRequired" xml:space="preserve">
+    <value>{0} : chemin UNC requis (\\serveur\partage\...), accessible à tous les administrateurs.</value>
+  </data>
+  <data name="ScriptBadExtension" xml:space="preserve">
+    <value>{0} : extension non supportée (msi, ps1, bat, cmd, exe).</value>
+  </data>
+  <data name="ScriptNotFound" xml:space="preserve">
+    <value>{0} : fichier introuvable ({1}).</value>
+  </data>
+  <data name="ScriptAtDepotRoot" xml:space="preserve">
+    <value>{0} : placer le script dans un sous-dossier dédié (le dossier entier est copié sur le poste).</value>
+  </data>
+  <data name="SmbNeedsCredential" xml:space="preserve">
+    <value>Le mode de transfert SMB demande des identifiants explicites (bouton « Compte ») : la session WinRM ne peut pas présenter le compte courant au serveur de fichiers.</value>
+  </data>
+  <data name="AllPackages" xml:space="preserve">
+    <value>(tous)</value>
+  </data>
+  <data name="SessionCurrentContext" xml:space="preserve">
+    <value>le contexte courant</value>
+  </data>
+  <data name="SessionAccount" xml:space="preserve">
+    <value>le compte '{0}'</value>
+  </data>
+  <data name="SessionRefused" xml:space="preserve">
+    <value>Ouverture de session WinRM refusée sur {0} ({1}) avec {2}. {3}</value>
+  </data>
+  <data name="ResourceNotFound" xml:space="preserve">
+    <value>Ressource introuvable : {0}</value>
+  </data>
+  <data name="CopyCached" xml:space="preserve">
+    <value>, {0} déjà en cache</value>
+  </data>
+  <data name="CopySummary" xml:space="preserve">
+    <value>{0} fichier(s) copié(s) ({1}){2}</value>
+  </data>
+  <data name="CopySummaryPartial" xml:space="preserve">
+    <value>{0} fichier(s) copié(s), {1} envoyés sur {2}{3}</value>
+  </data>
+  <data name="Megabytes" xml:space="preserve">
+    <value>{0:0.#} Mo</value>
+  </data>
+  <data name="CopyAllCached" xml:space="preserve">
+    <value>{0} fichier(s) déjà en cache sur le poste, rien à envoyer.</value>
+  </data>
+  <data name="CopyStarting" xml:space="preserve">
+    <value>Copie de {0} fichier(s) ({1})</value>
+  </data>
+  <data name="CopyStartingCached" xml:space="preserve">
+    <value>, {0} déjà en cache.</value>
+  </data>
+  <data name="CopySending" xml:space="preserve">
+    <value>Envoi de {0} — {1} sur {2}</value>
+  </data>
+  <data name="CheckingPort" xml:space="preserve">
+    <value>Vérification du port WinRM {0}...</value>
+  </data>
+  <data name="WinRmChecking" xml:space="preserve">
+    <value>Vérification...</value>
+  </data>
+  <data name="WinRmUnreachable" xml:space="preserve">
+    <value>WinRM injoignable sur {0} (port {1}). Vérifier que le poste est allumé, que WinRM est activé par GPO et que le port des réglages correspond à celui du parc.</value>
+  </data>
+  <data name="WinRmReachableOpening" xml:space="preserve">
+    <value>WinRM joignable, ouverture de la session...</value>
+  </data>
+  <data name="WinRmReachable" xml:space="preserve">
+    <value>Accessible</value>
+  </data>
+  <data name="SessionOpenRunning" xml:space="preserve">
+    <value>Session WinRM ouverte, exécution...</value>
+  </data>
+  <data name="WinRmActive" xml:space="preserve">
+    <value>Actif</value>
+  </data>
+  <data name="WorkDirFailed" xml:space="preserve">
+    <value>Création du dossier de travail impossible sur le poste.</value>
+  </data>
+  <data name="PreparationFailed" xml:space="preserve">
+    <value>Préparation : {0}</value>
+  </data>
+  <data name="TrustedHostsRetry" xml:space="preserve">
+    <value>Kerberos inapplicable, poste ajouté aux hôtes approuvés WinRM et nouvel essai. Refus initial : {0}</value>
+  </data>
+  <data name="NoInstallScript" xml:space="preserve">
+    <value>Aucun script d'installation défini pour ce paquet.</value>
+  </data>
+  <data name="NoUninstallScript" xml:space="preserve">
+    <value>Aucun script de désinstallation défini pour ce paquet.</value>
+  </data>
+  <data name="ScriptUnreachable" xml:space="preserve">
+    <value>Script introuvable depuis la machine d'administration : {0}</value>
+  </data>
+  <data name="ScriptAtRootRuntime" xml:space="preserve">
+    <value>Le script est à la racine du dépôt : tout le dépôt serait copié. Placer chaque paquet dans son propre sous-dossier.</value>
+  </data>
+  <data name="IntegrityChecking" xml:space="preserve">
+    <value>Contrôle d'intégrité de {0}…</value>
+  </data>
+  <data name="IntegrityRefused" xml:space="preserve">
+    <value>Contrôle d'intégrité refusé — {0}. Si la modification est voulue, recalculer l'empreinte depuis la fenêtre du paquet.</value>
+  </data>
+  <data name="StageDirFailed" xml:space="preserve">
+    <value>Création du dossier temporaire impossible sur le poste.</value>
+  </data>
+  <data name="SmbNeedsCredentialRuntime" xml:space="preserve">
+    <value>Mode de transfert SMB : des identifiants explicites sont nécessaires pour que le poste accède au partage (bouton « Compte »).</value>
+  </data>
+  <data name="SmbPulling" xml:space="preserve">
+    <value>{0} : copie depuis le partage par le poste…</value>
+  </data>
+  <data name="PackageCopied" xml:space="preserve">
+    <value>{0} : {1}.</value>
+  </data>
+  <data name="Remote_WingetMissing" xml:space="preserve">
+    <value>winget.exe introuvable sur {0} (App Installer absent).</value>
+  </data>
+  <data name="Remote_InvalidWingetId" xml:space="preserve">
+    <value>Identifiant WinGet invalide : {0}</value>
+  </data>
+  <data name="Remote_InstallTimeout" xml:space="preserve">
+    <value>Installation : délai de {0} min dépassé, tâche arrêtée.</value>
+  </data>
+  <data name="Remote_UninstallTimeout" xml:space="preserve">
+    <value>Désinstallation : délai de {0} min dépassé, tâche arrêtée.</value>
+  </data>
+  <data name="Remote_InstallDone" xml:space="preserve">
+    <value>Installation terminée ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallDone" xml:space="preserve">
+    <value>Désinstallation terminée ({0}){1}</value>
+  </data>
+  <data name="Remote_InstallDoneReboot" xml:space="preserve">
+    <value>Installation terminée, redémarrage requis ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallDoneReboot" xml:space="preserve">
+    <value>Désinstallation terminée, redémarrage requis ({0}){1}</value>
+  </data>
+  <data name="Remote_AlreadyInstalled" xml:space="preserve">
+    <value>Déjà installé ({0})</value>
+  </data>
+  <data name="Remote_NoMatchingPackage" xml:space="preserve">
+    <value>Aucun paquet installé correspondant ({0})</value>
+  </data>
+  <data name="Remote_InstallFailedVc" xml:space="preserve">
+    <value>Installation échouée ({0}) : DLL/runtime Visual C++ manquant.</value>
+  </data>
+  <data name="Remote_UninstallFailedVc" xml:space="preserve">
+    <value>Désinstallation échouée ({0}) : DLL/runtime Visual C++ manquant.</value>
+  </data>
+  <data name="Remote_InstallFailed" xml:space="preserve">
+    <value>Installation échouée ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallFailed" xml:space="preserve">
+    <value>Désinstallation échouée ({0}){1}</value>
+  </data>
+  <data name="Remote_UnsupportedExtension" xml:space="preserve">
+    <value>Extension non supportée : {0}</value>
+  </data>
+  <data name="Remote_SystemTimeout" xml:space="preserve">
+    <value>{0} : délai de {1} min dépassé (SYSTEM), tâche arrêtée.</value>
+  </data>
+  <data name="Remote_ProcessTimeout" xml:space="preserve">
+    <value>{0} : délai de {1} min dépassé, processus arrêté (script interactif ?).</value>
+  </data>
+  <data name="Remote_RebootRequired" xml:space="preserve">
+    <value>, redémarrage requis</value>
+  </data>
+  <data name="Remote_TransferCorrupted" xml:space="preserve">
+    <value>Fichier transféré corrompu : empreinte {0} au lieu de {1}.</value>
+  </data>
+  <data name="Remote_NotInCache" xml:space="preserve">
+    <value>Fichier absent du cache du poste : {0}.</value>
+  </data>
+  <data name="Remote_UnknownMode" xml:space="preserve">
+    <value>Mode de réception inconnu : {0}.</value>
+  </data>
+  <data name="Remote_UncExpected" xml:space="preserve">
+    <value>Chemin UNC attendu pour le mode SMB : {0}</value>
+  </data>
+  <data name="Remote_ShareRoot" xml:space="preserve">
+    <value>Le paquet doit vivre dans un sous-dossier du partage, pas à sa racine : {0}</value>
+  </data>
+  <data name="Remote_ShareFolderNotFound" xml:space="preserve">
+    <value>Dossier introuvable sur le partage depuis le poste : {0}</value>
+  </data>
+  <data name="Remote_UnexpectedCopy" xml:space="preserve">
+    <value>Copie depuis le partage inattendue : {0} dossier(s) reçu(s).</value>
+  </data>
+  <data name="Remote_IntegrityMissing" xml:space="preserve">
+    <value>Contrôle d'empreinte : fichier attendu absent après la copie : {0}</value>
+  </data>
+  <data name="Remote_IntegrityMismatch" xml:space="preserve">
+    <value>Contrôle d'empreinte : {0} ne correspond pas au catalogue (le dépôt a été modifié).</value>
+  </data>
+  <data name="Remote_IntegrityUnexpected" xml:space="preserve">
+    <value>Contrôle d'empreinte : fichier inattendu dans le dossier du paquet : {0}</value>
+  </data>
+  <data name="LogInfo" xml:space="preserve">
+    <value>INFO</value>
+  </data>
+  <data name="LogError" xml:space="preserve">
+    <value>ERREUR</value>
+  </data>
+  <data name="LogWarning" xml:space="preserve">
+    <value>ATTENTION</value>
+  </data>
+  <data name="HistoryWriteFailed" xml:space="preserve">
+    <value>Impossible d'écrire l'historique : {0}</value>
+  </data>
+  <data name="SettingsSaveFailed" xml:space="preserve">
+    <value>Impossible d'enregistrer les réglages : {0}</value>
+  </data>
+  <data name="CatalogueNotFound" xml:space="preserve">
+    <value>Catalogue introuvable : {0}</value>
+  </data>
+  <data name="CatalogueLoaded" xml:space="preserve">
+    <value>Catalogue chargé : {0} application(s).</value>
+  </data>
+  <data name="CatalogueUnreadable" xml:space="preserve">
+    <value>Catalogue illisible : {0}</value>
+  </data>
+  <data name="CatalogueDuplicateId" xml:space="preserve">
+    <value>Un paquet avec l'Id '{0}' existe déjà dans le catalogue.</value>
+  </data>
+  <data name="CataloguePackageGone" xml:space="preserve">
+    <value>Le paquet '{0}' n'existe plus dans le catalogue (supprimé par un autre administrateur ?).</value>
+  </data>
+  <data name="CataloguePackageAdded" xml:space="preserve">
+    <value>Paquet ajouté : {0} ({1}).</value>
+  </data>
+  <data name="CataloguePackageUpdated" xml:space="preserve">
+    <value>Paquet modifié : {0} ({1}).</value>
+  </data>
+  <data name="CataloguePackageRemoved" xml:space="preserve">
+    <value>Paquet retiré du catalogue : {0}.</value>
+  </data>
+  <data name="WingetQueryTooShort" xml:space="preserve">
+    <value>Saisir au moins {0} caractères.</value>
+  </data>
+  <data name="WingetHttpStatus" xml:space="preserve">
+    <value>Le service de recherche a répondu {0} ({1}).</value>
+  </data>
+  <data name="WingetTimeout" xml:space="preserve">
+    <value>Délai dépassé : le service de recherche ne répond pas.</value>
+  </data>
+  <data name="WingetUnreachable" xml:space="preserve">
+    <value>Recherche en ligne impossible ({0}). Vérifier l'accès Internet ou le proxy du poste.</value>
+  </data>
+  <data name="WingetBadResponse" xml:space="preserve">
+    <value>Réponse du service de recherche illisible.</value>
+  </data>
+  <data name="TrustedHostsGpo" xml:space="preserve">
+    <value>TrustedHosts est imposé par GPO : ajouter les postes dans la stratégie de groupe.</value>
+  </data>
+  <data name="TrustedHostsAdded" xml:space="preserve">
+    <value>TrustedHosts WinRM : ajout de {0}.</value>
+  </data>
+  <data name="TrustedHostsRemoved" xml:space="preserve">
+    <value>TrustedHosts WinRM : retrait de {0}.</value>
+  </data>
+  <data name="TrustedHostsRemoveFailed" xml:space="preserve">
+    <value>TrustedHosts WinRM : retrait de {0} impossible ({1}). Les postes restent dans la liste des hôtes approuvés.</value>
+  </data>
+  <data name="TrustedHostsMissing" xml:space="preserve">
+    <value>Paramètre TrustedHosts absent de la configuration du client WinRM.</value>
+  </data>
+  <data name="WinRmServiceStarted" xml:space="preserve">
+    <value>Service WinRM local démarré (nécessaire pour TrustedHosts).</value>
+  </data>
+  <data name="PackageTypeCustom" xml:space="preserve">
+    <value>Personnalisé</value>
+  </data>
+</root>

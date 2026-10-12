@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WinPloy.Converters;
 using WinPloy.Core.Deployment;
 using WinPloy.Core.Models;
 using WinPloy.Core.Services;
+using WinPloy.Properties;
 using WinPloy.Services;
 using PSCredential = System.Management.Automation.PSCredential;
 
@@ -17,10 +20,6 @@ namespace WinPloy.ViewModels;
 
 public sealed partial class MainViewModel : ObservableObject, IDeploymentObserver
 {
-    private const string NoHostSelectedText = "Sélectionnez un poste pour afficher son détail.";
-    // Affiché après « Compte » dans la barre de commandes.
-    private const string CurrentContextText = "courant";
-
     private readonly LogService _log;
     private readonly IDialogService _dialogs;
     private readonly SettingsService _settingsService;
@@ -36,8 +35,9 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     private RunState? _run;
     private LastRun? _lastRun;
 
+    // Affiché après « Compte » dans la barre de commandes.
     [ObservableProperty]
-    private string _credentialLabel = CurrentContextText;
+    private string _credentialLabel = Strings.VM_CurrentContext;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsInstall))]
@@ -50,7 +50,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     private IReadOnlyList<string> _foundComputers = [];
 
     [ObservableProperty]
-    private string _pcFoundLabel = "Aucune recherche";
+    private string _pcFoundLabel = Strings.VM_NoSearch;
 
     [ObservableProperty]
     private string _pkgSearchText = "";
@@ -69,7 +69,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     private bool _canExport;
 
     [ObservableProperty]
-    private string _statusText = "Prêt.";
+    private string _statusText = Strings.VM_Ready;
 
     [ObservableProperty]
     private double _progressValue;
@@ -105,7 +105,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     private HostRow? _selectedHost;
 
     [ObservableProperty]
-    private string _hostDetail = NoHostSelectedText;
+    private string _hostDetail = Strings.VM_NoHostSelected;
 
     public MainViewModel(AppPaths paths, LogService log, IDialogService dialogs)
     {
@@ -180,7 +180,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
 
     public void Initialize()
     {
-        _log.Write($"WinPloy {Version} démarré.");
+        _log.Write(string.Format(Strings.VM_Started, Version));
         UpdateSummary();
         _timer.Start();
         _ = RefreshCatalogueAsync();
@@ -189,10 +189,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     /// <summary>Fermer WinPloy arrête les opérations en cours : confirmation demandée.</summary>
     public bool ConfirmClose()
     {
-        return _run is null || _dialogs.Confirm(
-            "Des opérations sont en cours. Fermer WinPloy les arrête.\r\n\r\nFermer quand même ?",
-            "Fermer",
-            MessageBoxImage.Warning);
+        return _run is null || _dialogs.Confirm(Strings.VM_CloseConfirm, Strings.Common_Close, MessageBoxImage.Warning);
     }
 
     public void Shutdown()
@@ -209,7 +206,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     private void SetCredential()
     {
         _credential = _dialogs.PromptCredential(_credential?.UserName);
-        CredentialLabel = _credential is null ? CurrentContextText : _credential.UserName;
+        CredentialLabel = _credential is null ? Strings.VM_CurrentContext : _credential.UserName;
     }
 
     [RelayCommand]
@@ -222,16 +219,14 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
 
         _settings = updated;
-        _log.Write($"Réglages enregistrés. Catalogue : {updated.CataloguePath}");
+        _log.Write(string.Format(Strings.VM_SettingsSaved, updated.CataloguePath));
         await RefreshCatalogueAsync();
     }
 
     [RelayCommand]
     private void ShowAbout()
     {
-        _dialogs.ShowMessage(
-            $"WinPloy {Version}\r\n\r\nDéploiement d'applications WinGet et de paquets personnalisés sur des postes Active Directory.\r\n\r\nAuteur : Constant Segretain",
-            "À propos de WinPloy");
+        _dialogs.ShowMessage(string.Format(Strings.VM_AboutText, Version), Strings.Main_About);
     }
 
     private bool TrySaveSettings(AppSettings settings)
@@ -241,7 +236,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             return true;
         }
 
-        _dialogs.ShowMessage($"Impossible d'enregistrer les réglages : {error}", "Réglages", MessageBoxImage.Error);
+        _dialogs.ShowMessage(string.Format(Strings.VM_SettingsSaveFailed, error), Strings.Settings_Title, MessageBoxImage.Error);
         return false;
     }
 
@@ -257,8 +252,8 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         {
             var computers = await Task.Run(() => _activeDirectory.SearchComputers(text));
             FoundComputers = computers;
-            PcFoundLabel = $"{computers.Count} poste(s) trouvé(s)";
-            _log.Write($"Recherche AD : {computers.Count} poste(s).");
+            PcFoundLabel = string.Format(Strings.VM_ComputersFound, computers.Count);
+            _log.Write(string.Format(Strings.VM_AdSearchLog, computers.Count));
         }
         catch (Exception ex)
         {
@@ -360,9 +355,9 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             return;
         }
 
-        var list = string.Join("\r\n", selected.Select(e => $"- {e.Name}"));
-        var question = $"Supprimer {selected.Count} paquet(s) du catalogue ?\r\n\r\n{list}\r\n\r\nLes scripts sur le partage ne sont pas supprimés.";
-        if (_dialogs.Confirm(question, "Confirmation", MessageBoxImage.Warning))
+        var list = string.Join("\n", selected.Select(e => $"- {e.Name}"));
+        var question = string.Format(Strings.VM_RemoveConfirm, selected.Count, list);
+        if (_dialogs.Confirm(question, Strings.VM_Confirmation, MessageBoxImage.Warning))
         {
             var ids = selected.Select(e => e.Id).ToList();
             ChangeCatalogue(() => _catalogue.Remove(ids));
@@ -416,7 +411,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         catch (Exception ex)
         {
             _log.Write(ex.Message, LogService.Error);
-            _dialogs.ShowMessage(ex.Message, "Catalogue", MessageBoxImage.Error);
+            _dialogs.ShowMessage(ex.Message, Strings.VM_Catalogue, MessageBoxImage.Error);
             ApplyCatalogue(_catalogue.Import());
         }
     }
@@ -465,24 +460,24 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         var packages = Basket.ToList();
         if (targets.Count == 0)
         {
-            _log.Write("Aucun poste sélectionné.", LogService.Error);
-            StatusText = "Aucun poste sélectionné.";
+            _log.Write(Strings.VM_NoTarget, LogService.Error);
+            StatusText = Strings.VM_NoTarget;
             return;
         }
         if (packages.Count == 0)
         {
-            _log.Write("Panier vide.", LogService.Error);
-            StatusText = "Panier vide.";
+            _log.Write(Strings.VM_EmptyBasket, LogService.Error);
+            StatusText = Strings.VM_EmptyBasket;
             return;
         }
 
         var action = IsUninstall ? DeployAction.Uninstall : DeployAction.Install;
         if (action == DeployAction.Uninstall || targets.Count > 5)
         {
-            var verb = action == DeployAction.Install ? "Installer" : "Désinstaller";
+            var format = action == DeployAction.Install ? Strings.VM_InstallConfirm : Strings.VM_UninstallConfirm;
             var names = string.Join(", ", packages.Select(p => p.Name));
-            var question = $"{verb} {packages.Count} application(s) ({names}) sur {targets.Count} poste(s) ?";
-            if (!_dialogs.Confirm(question, "Confirmer l'opération", MessageBoxImage.Question))
+            var question = string.Format(format, packages.Count, names, targets.Count);
+            if (!_dialogs.Confirm(question, Strings.VM_ConfirmTitle, MessageBoxImage.Question))
             {
                 return;
             }
@@ -515,17 +510,16 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             return;
         }
 
-        var question = "Arrêter les opérations en cours ?\r\n\r\nUne installation déjà lancée sur un poste peut continuer et doit être vérifiée sur ce poste.";
         var run = _run;
-        if (!_dialogs.Confirm(question, "Arrêter", MessageBoxImage.Warning) || _run != run)
+        if (!_dialogs.Confirm(Strings.VM_StopConfirm, Strings.Main_Stop, MessageBoxImage.Warning) || _run != run)
         {
             return;
         }
 
         run.StopRequested = true;
         CanStop = false;
-        StatusText = "Arrêt en cours…";
-        _log.Write("=== Arrêt demandé par l'utilisateur. ===");
+        StatusText = Strings.VM_Stopping;
+        _log.Write(Strings.VM_StopLog);
         run.Stop.Cancel();
     }
 
@@ -556,7 +550,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         if (request.Validate() is { } invalid)
         {
             _log.Write(invalid, LogService.Error);
-            _dialogs.ShowMessage(invalid, "Déploiement", MessageBoxImage.Warning);
+            _dialogs.ShowMessage(invalid, Strings.Main_Deployment, MessageBoxImage.Warning);
             return;
         }
 
@@ -585,16 +579,15 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             }
             row.Etat = HostStates.Pending;
             row.WinRM = "";
-            row.Info = "En file d'attente.";
+            row.Info = Strings.VM_Queued;
             row.Duree = "";
         }
 
         _lastRun = new LastRun(packages, action);
 
         var transfer = request.TransferMode == TransferMode.SmbPull ? "SMB" : "WinRM";
-        _log.Write(
-            $"=== {action} : {packages.Count} paquet(s) sur {targets.Count} poste(s), {request.MaxParallel} en parallèle, "
-            + $"WinRM {request.WinRm.Label}, transfert {transfer} ===");
+        _log.Write(string.Format(
+            Strings.VM_RunLog, action, packages.Count, targets.Count, request.MaxParallel, request.WinRm.Label, transfer));
         UpdateRunStatus();
         UpdateSummary();
 
@@ -604,7 +597,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
         catch (Exception ex)
         {
-            _log.Write($"Erreur interne du suivi : {ex.Message}", LogService.Error);
+            _log.Write(string.Format(Strings.VM_InternalError, ex.Message), LogService.Error);
         }
         finally
         {
@@ -616,13 +609,12 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
 
     private void FinishRun(RunState run)
     {
-        var verb = run.StopRequested ? "Arrêté" : "Terminé";
-        StatusText = $"{verb} : {run.Done}/{run.Total} poste(s).";
+        StatusText = string.Format(run.StopRequested ? Strings.VM_StoppedStatus : Strings.VM_DoneStatus, run.Done, run.Total);
         _run = null;
         IsRunning = false;
         CanStop = false;
         _history.Append(Results.ToList());
-        _log.Write($"=== Opération {verb.ToLowerInvariant()}. ===");
+        _log.Write(run.StopRequested ? Strings.VM_StoppedLog : Strings.VM_DoneLog);
         UpdateSummary();
     }
 
@@ -632,16 +624,16 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         if (FindRow(computer) is { } row)
         {
             row.Etat = HostStates.Running;
-            row.WinRM = "Vérification…";
-            row.Info = "Contrôle WinRM…";
+            row.WinRM = Strings.VM_WinRmChecking;
+            row.Info = Strings.VM_WinRmControl;
         }
-        _log.Write($"{computer} : démarré.");
+        _log.Write(string.Format(Strings.VM_HostStarted, computer));
         UpdateSummary();
     }
 
     public void OnTargetStatus(string computer, TargetStatus status)
     {
-        _log.Write($"{computer} : {status.Message}");
+        _log.Write(string.Format(Strings.VM_HostStatus, computer, status.Message));
         if (FindRow(computer) is { } row)
         {
             row.Info = status.Message;
@@ -685,7 +677,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         }
         if (elapsed is not null)
         {
-            _log.Write($"{computer} : terminé.");
+            _log.Write(string.Format(Strings.VM_HostDone, computer));
         }
         UpdateRunStatus();
         UpdateSummary();
@@ -714,8 +706,8 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
             return;
         }
 
-        var prefix = _run.StopRequested ? "Arrêt en cours…" : "Traitement :";
-        StatusText = $"{prefix} {_run.Done}/{_run.Total} poste(s) terminé(s)";
+        var format = _run.StopRequested ? Strings.VM_StoppingProgress : Strings.VM_Processing;
+        StatusText = string.Format(format, _run.Done, _run.Total);
     }
 
     private void UpdateSummary()
@@ -773,15 +765,16 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         var row = SelectedHost;
         if (row is null)
         {
-            HostDetail = NoHostSelectedText;
+            HostDetail = Strings.VM_NoHostSelected;
             return;
         }
 
-        var head = $"{row.Poste} — {row.Etat}" + (row.Duree.Length > 0 ? $" ({row.Duree})" : "");
+        var head = $"{row.Poste} — {StatusLabelConverter.Label(row.Etat)}" + (row.Duree.Length > 0 ? $" ({row.Duree})" : "");
         var results = Results.Where(r => TextMatch.SameHost(r.Ordinateur, row.Poste)).ToList();
         HostDetail = results.Count == 0
             ? $"{head}\r\n{row.Info}"
-            : head + "\r\n" + string.Join("\r\n", results.Select(r => $"[{r.Statut}] {r.Paquet} : {r.Message}"));
+            : head + "\r\n" + string.Join("\r\n", results.Select(
+                r => string.Format(Strings.VM_DetailLine, StatusLabelConverter.Label(r.Statut), r.Paquet, r.Message)));
     }
 
     [RelayCommand]
@@ -792,7 +785,7 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
     [RelayCommand]
     private void Export()
     {
-        var path = _dialogs.AskCsvPath($"WinPloy-resultats-{DateTime.Now:yyyyMMdd-HHmm}.csv");
+        var path = _dialogs.AskCsvPath(string.Format(CultureInfo.InvariantCulture, Strings.VM_ExportFileName, DateTime.Now));
         if (path is null)
         {
             return;
@@ -801,11 +794,11 @@ public sealed partial class MainViewModel : ObservableObject, IDeploymentObserve
         try
         {
             CsvExporter.Export(path, Results);
-            _log.Write($"Résultats exportés : {path}");
+            _log.Write(string.Format(Strings.VM_Exported, path));
         }
         catch (Exception ex)
         {
-            _log.Write($"Export impossible : {ex.Message}", LogService.Error);
+            _log.Write(string.Format(Strings.VM_ExportFailed, ex.Message), LogService.Error);
         }
     }
 

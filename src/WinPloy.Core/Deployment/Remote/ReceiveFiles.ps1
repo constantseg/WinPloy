@@ -17,9 +17,19 @@
 # $R.Data        : bloc d'octets (Chunk)
 # $R.Compressed  : bloc compressé en gzip (Chunk)
 # $R.Append      : ajouter au fichier en cours au lieu de le créer (Chunk)
+# $R.Text        : messages d'erreur, dans la langue de l'interface (Commit, Materialize)
 param($R)
 
 $ErrorActionPreference = 'Stop'
+$T = $R.Text
+
+# Messages dans la langue de l'interface : table { clé = modèle {0}, {1}... } fournie par WinPloy.
+# Sans table, la clé et les valeurs restent lisibles.
+function Format-Text {
+    param([string]$Key)
+    $template = if ($T) { [string]$T[$Key] } else { '' }
+    if ($template) { $template -f $args } else { (@($Key) + $args) -join ' ' }
+}
 
 function Get-Sha256 {
     param([string]$Path)
@@ -87,7 +97,7 @@ switch ([string]$R.Mode) {
         $actual = Get-Sha256 $part
         if ($actual -ne $sha.ToUpperInvariant()) {
             Remove-Item -LiteralPath $part -Force -ErrorAction SilentlyContinue
-            throw "Fichier transféré corrompu : empreinte $actual au lieu de $sha."
+            throw (Format-Text TransferCorrupted $actual $sha)
         }
         [IO.File]::Delete($final)
         [IO.File]::Move($part, $final)
@@ -103,7 +113,7 @@ switch ([string]$R.Mode) {
             $sha = [string]$item.Sha
             $source = Join-Path $cache $sha
             if (-not (Test-CacheEntry $source $sha)) {
-                throw "Fichier absent du cache du poste : $($item.Rel)."
+                throw (Format-Text NotInCache $item.Rel)
             }
             $destination = Join-Path $stage ([string]$item.Rel)
             [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination))
@@ -112,5 +122,5 @@ switch ([string]$R.Mode) {
         return
     }
 
-    default { throw "Mode de réception inconnu : $($R.Mode)." }
+    default { throw (Format-Text UnknownMode $R.Mode) }
 }

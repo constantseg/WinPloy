@@ -1,32 +1,33 @@
 <Window x:Class="WinPloy.Views.WingetPackageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Application WinGet" Width="660"
+        xmlns:p="clr-namespace:WinPloy.Properties"
+        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="{x:Static p:Strings.Winget_WindowTitle}" Width="660"
         FocusManager.FocusedElement="{Binding ElementName=TxtSearch}">
     <DockPanel>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource DialogPrimaryButton}" Content="Enregistrer" IsDefault="True" Click="BtnOk_Click" />
-                <Button Style="{StaticResource DialogButton}" Content="Annuler" IsCancel="True" />
+                <Button Style="{StaticResource DialogPrimaryButton}" Content="{x:Static p:Strings.Common_Save}" IsDefault="True" Click="BtnOk_Click" />
+                <Button Style="{StaticResource DialogButton}" Content="{x:Static p:Strings.Common_Cancel}" IsCancel="True" />
             </StackPanel>
         </Border>
 
         <StackPanel Margin="24,20,24,24">
             <TextBlock Style="{StaticResource DialogHeading}" Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
             <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,18"
-                       Text="L'application est installée depuis la source winget, en SYSTEM, sur chaque poste ciblé. WinGet n'a pas besoin d'être installé sur ce poste d'administration." />
+                       Text="{x:Static p:Strings.Winget_Hint}" />
 
             <!-- Recherche en ligne : évite d'avoir à lancer « winget search » sur ce poste. -->
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Chercher une application dans le dépôt WinGet" />
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{x:Static p:Strings.Winget_SearchLabel}" />
             <DockPanel Margin="0,0,0,8">
-                <Button x:Name="BtnSearch" DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Tag="&#xE721;" Content="Rechercher"
+                <Button x:Name="BtnSearch" DockPanel.Dock="Right" Style="{StaticResource Btn.Primary}" Tag="&#xE721;" Content="{x:Static p:Strings.Winget_Search}"
                         MinWidth="112" Margin="8,0,0,0" Click="BtnSearch_Click" />
-                <TextBox x:Name="TxtSearch" Style="{StaticResource TextBox.Search}" Tag="Nom de l'application, puis Entrée"
-                         ToolTip="Recherche en ligne dans le dépôt communautaire winget-pkgs" KeyDown="TxtSearch_KeyDown" />
+                <TextBox x:Name="TxtSearch" Style="{StaticResource TextBox.Search}" Tag="{x:Static p:Strings.Winget_SearchPlaceholder}"
+                         ToolTip="{x:Static p:Strings.Winget_SearchTooltip}" KeyDown="TxtSearch_KeyDown" />
             </DockPanel>
 
             <ListBox x:Name="LstResults" Height="176" Margin="0,0,0,6" SelectionChanged="LstResults_SelectionChanged"
-                     Tag="Aucun résultat affiché." ToolTip="Sélectionnez une application pour remplir le nom et l'identifiant">
+                     Tag="{x:Static p:Strings.Winget_NoResults}" ToolTip="{x:Static p:Strings.Winget_ResultsTooltip}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="0,2">
@@ -41,14 +42,14 @@
             <TextBlock x:Name="TxtSearchStatus" Style="{StaticResource Hint}" Margin="0,0,0,10" />
 
             <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,18">
-                <Hyperlink Click="LnkCopy_Click" ToolTip="Cliquer pour copier le lien dans le presse-papiers">https://winget.run/</Hyperlink>
+                <Hyperlink Click="LnkCopy_Click" ToolTip="{x:Static p:Strings.Winget_LinkTooltip}">https://winget.run/</Hyperlink>
             </TextBlock>
 
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Nom affiché" />
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{x:Static p:Strings.Winget_DisplayName}" />
             <TextBox x:Name="TxtName" Margin="0,0,0,16" />
 
-            <TextBlock Style="{StaticResource FieldLabel}" Text="Identifiant WinGet" />
-            <TextBox x:Name="TxtId" Tag="Exemple : Git.Git" />
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{x:Static p:Strings.Winget_Id}" />
+            <TextBox x:Name="TxtId" Tag="{x:Static p:Strings.Winget_IdPlaceholder}" />
         </StackPanel>
     </DockPanel>
 </Window>

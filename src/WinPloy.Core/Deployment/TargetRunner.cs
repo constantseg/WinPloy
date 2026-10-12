@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -23,24 +24,22 @@ public sealed class TargetRunner : ITargetRunner
     public IReadOnlyList<TargetResult> Run(string computer, DeploymentRequest request, IProgress<TargetStatus> progress, CancellationToken cancellationToken)
     {
         var winrm = request.WinRm;
-        progress.Report(new TargetStatus($"Vérification du port WinRM {winrm.Label}...", "Vérification..."));
+        progress.Report(new TargetStatus(string.Format(Strings.CheckingPort, winrm.Label), Strings.WinRmChecking));
         if (!TcpProbe.IsOpen(computer, winrm.Port, TimeSpan.FromSeconds(3), cancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            throw new TargetException(
-                $"WinRM injoignable sur {computer} (port {winrm.Label}). Vérifier que le poste est allumé, "
-                + "que WinRM est activé par GPO et que le port des réglages correspond à celui du parc.");
+            throw new TargetException(string.Format(Strings.WinRmUnreachable, computer, winrm.Label));
         }
-        progress.Report(new TargetStatus("WinRM joignable, ouverture de la session...", "Accessible"));
+        progress.Report(new TargetStatus(Strings.WinRmReachableOpening, Strings.WinRmReachable));
 
         using var session = OpenSession(computer, request, progress, cancellationToken);
-        progress.Report(new TargetStatus("Session WinRM ouverte, exécution...", "Actif"));
+        progress.Report(new TargetStatus(Strings.SessionOpenRunning, Strings.WinRmActive));
 
         // Dossier de travail protégé : seuls SYSTEM et les administrateurs locaux y ont accès.
         // Les scripts exécutés en SYSTEM par tâche planifiée en viennent, de même que le cache.
         var workRoot = session.InvokeForText(
             RemoteScripts.NewWorkDir,
-            "Création du dossier de travail impossible sur le poste.",
+            Strings.WorkDirFailed,
             PsObjects.New(("Parent", ""), ("PruneDays", RemoteFileCopier.CacheRetentionDays)));
         // Chemin sur le poste cible : séparateur Windows, indépendamment de l'hôte.
         var cacheDir = workRoot.TrimEnd('\\') + @"\cache";
@@ -55,7 +54,7 @@ public sealed class TargetRunner : ITargetRunner
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                results.Add(new TargetResult(package.Id, package.Name, ResultStatus.Failed, $"Préparation : {ex.Message}"));
+                results.Add(new TargetResult(package.Id, package.Name, ResultStatus.Failed, string.Format(Strings.PreparationFailed, ex.Message)));
             }
         }
 
@@ -71,7 +70,8 @@ public sealed class TargetRunner : ITargetRunner
             staged.ToArray(),
             request.Action.ToString(),
             request.PackageTimeoutMin,
-            workRoot);
+            workRoot,
+            RemoteTexts.Build());
 
         var remote = output.Select(ToResult).OfType<TargetResult>().ToList();
         if (remote.Count == 0 && errors.Count > 0)
@@ -106,9 +106,7 @@ public sealed class TargetRunner : ITargetRunner
 
             // Le refus d'origine part dans le journal : sans lui, un ajout inattendu dans
             // TrustedHosts ne se diagnostique qu'en surveillant la configuration du client WinRM.
-            progress.Report(new TargetStatus(
-                $"Kerberos inapplicable, poste ajouté aux hôtes approuvés WinRM et nouvel essai. Refus initial : {refusal.Message}",
-                "Vérification..."));
+            progress.Report(new TargetStatus(string.Format(Strings.TrustedHostsRetry, refusal.Message), Strings.WinRmChecking));
             return RemoteSession.Open(computer, request.WinRm, request.Credential, cancellationToken);
         }
     }
@@ -126,35 +124,33 @@ public sealed class TargetRunner : ITargetRunner
         var scriptPath = install ? package.InstallScript : package.UninstallScript;
         if (string.IsNullOrWhiteSpace(scriptPath))
         {
-            throw new TargetException($"Aucun script {(install ? "d'installation" : "de désinstallation")} défini pour ce paquet.");
+            throw new TargetException(install ? Strings.NoInstallScript : Strings.NoUninstallScript);
         }
 
         var sourceDir = Path.GetDirectoryName(scriptPath) ?? "";
         if (!File.Exists(scriptPath))
         {
-            throw new TargetException($"Script introuvable depuis la machine d'administration : {scriptPath}");
+            throw new TargetException(string.Format(Strings.ScriptUnreachable, scriptPath));
         }
         if (request.DepotRoot.Length > 0 && PackageValidation.SameDirectory(sourceDir, request.DepotRoot))
         {
-            throw new TargetException("Le script est à la racine du dépôt : tout le dépôt serait copié. Placer chaque paquet dans son propre sous-dossier.");
+            throw new TargetException(Strings.ScriptAtRootRuntime);
         }
 
         // En mode SMB le poste lit le dépôt lui-même : le contrôle d'intégrité a lieu là-bas,
         // après la copie, et non ici — sinon il ne couvrirait pas le chemin réellement emprunté.
         if (package.HasIntegrityManifest && request.TransferMode == TransferMode.WinRm)
         {
-            progress.Report(new TargetStatus($"Contrôle d'intégrité de {package.Name}…", ""));
+            progress.Report(new TargetStatus(string.Format(Strings.IntegrityChecking, package.Name), ""));
             if (PackageIntegrity.Verify(package.Files, sourceDir) is { } problem)
             {
-                throw new TargetException(
-                    $"Contrôle d'intégrité refusé — {problem}. Si la modification est voulue, "
-                    + "recalculer l'empreinte depuis la fenêtre du paquet.");
+                throw new TargetException(string.Format(Strings.IntegrityRefused, problem));
             }
         }
 
         var stageDir = session.InvokeForText(
             RemoteScripts.NewWorkDir,
-            "Création du dossier temporaire impossible sur le poste.",
+            Strings.StageDirFailed,
             PsObjects.New(("Parent", workRoot), ("PruneDays", 0)));
         try
         {
@@ -190,24 +186,23 @@ public sealed class TargetRunner : ITargetRunner
         {
             if (request.Credential is null)
             {
-                throw new TargetException(
-                    "Mode de transfert SMB : des identifiants explicites sont nécessaires pour que le poste "
-                    + "accède au partage (bouton « Compte »).");
+                throw new TargetException(Strings.SmbNeedsCredentialRuntime);
             }
 
-            progress.Report(new TargetStatus($"{package.Name} : copie depuis le partage par le poste…", ""));
+            progress.Report(new TargetStatus(string.Format(Strings.SmbPulling, package.Name), ""));
             session.InvokeOrThrow(
                 RemoteScripts.PullFromShare,
                 PsObjects.New(
                     ("Source", sourceDir),
                     ("StageDir", stageDir),
                     ("Credential", request.Credential),
+                    ("Text", RemoteTexts.Build()),
                     ("Items", package.Files.Select(f => PsObjects.New(("Rel", f.Key), ("Sha", f.Value))).ToArray())));
             return;
         }
 
         var report = RemoteFileCopier.CopyDirectory(session, sourceDir, stageDir, cacheDir, package.Files, relay, cancellationToken);
-        progress.Report(new TargetStatus($"{package.Name} : {report.Summary}.", ""));
+        progress.Report(new TargetStatus(string.Format(Strings.PackageCopied, package.Name, report.Summary), ""));
     }
 
     private static void RemoveQuietly(RemoteSession session, string stageDir)

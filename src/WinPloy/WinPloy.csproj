@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Textes de l'interface : Strings.resx (anglais, langue neutre) et Strings.fr.resx. -->
+    <Compile Update="Properties\Strings.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Strings.resx" />
+    <EmbeddedResource Update="Properties\Strings.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="Strings.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
   </ItemGroup>
 

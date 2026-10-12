@@ -1,14 +1,17 @@
 using System.Diagnostics;
 using System.Globalization;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
 /// <summary>Journal de l'interface : onglet « Journal » et fichier gui.log (rotation à 5 Mo).</summary>
 public sealed class LogService
 {
-    public const string Info = "INFO";
-    public const string Error = "ERREUR";
-    public const string Warning = "ATTENTION";
+    public static string Info => Strings.LogInfo;
+
+    public static string Error => Strings.LogError;
+
+    public static string Warning => Strings.LogWarning;
 
     private const long MaxBytes = 5 * 1024 * 1024;
 
@@ -20,9 +23,10 @@ public sealed class LogService
     /// <summary>Levé pour chaque ligne écrite, sur le thread de l'appelant.</summary>
     public event Action<string>? LineWritten;
 
-    public void Write(string message, string level = Info)
+    /// <summary>Écrit une ligne. <paramref name="level"/> : <see cref="Info"/> (par défaut), <see cref="Warning"/> ou <see cref="Error"/>.</summary>
+    public void Write(string message, string? level = null)
     {
-        var line = $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}] [{level}] {message}";
+        var line = $"[{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}] [{level ?? Info}] {message}";
         LineWritten?.Invoke(line);
 
         lock (_sync)

@@ -1,7 +1,10 @@
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -59,8 +62,8 @@ internal sealed class RemoteSession : IDisposable
         }
 
         cancellationToken.ThrowIfCancellationRequested();
-        var who = credential is null ? "le contexte courant" : $"le compte '{credential.UserName}'";
-        var message = $"Ouverture de session WinRM refusée sur {computer} ({options.Label}) avec {who}. {lastError}";
+        var who = credential is null ? Strings.SessionCurrentContext : string.Format(Strings.SessionAccount, credential.UserName);
+        var message = string.Format(Strings.SessionRefused, computer, options.Label, who, lastError);
         throw mayNeedTrustedHost
             ? new TrustedHostsRequiredException(message)
             : new TargetException(message);
@@ -158,8 +161,32 @@ internal static class RemoteScripts
     private static string Load(string name)
     {
         using var stream = typeof(RemoteScripts).Assembly.GetManifestResourceStream(name)
-            ?? throw new InvalidOperationException($"Ressource introuvable : {name}");
+            ?? throw new InvalidOperationException(string.Format(Strings.ResourceNotFound, name));
         using var reader = new StreamReader(stream, Encoding.UTF8);
         return reader.ReadToEnd();
+    }
+}
+
+/// <summary>
+/// Messages des scripts exécutés sur le poste, dans la langue de l'interface : le poste les
+/// renvoie tels quels, et ils s'affichent dans le suivi. Ressources « Remote_* », sans le préfixe.
+/// </summary>
+internal static class RemoteTexts
+{
+    private const string Prefix = "Remote_";
+
+    public static Hashtable Build()
+    {
+        var texts = new Hashtable();
+        // Les clés sont lues dans les ressources neutres, les valeurs dans la langue courante.
+        var neutral = Strings.ResourceManager.GetResourceSet(CultureInfo.InvariantCulture, createIfNotExists: true, tryParents: false);
+        foreach (DictionaryEntry entry in neutral!)
+        {
+            if (entry.Key is string key && key.StartsWith(Prefix, StringComparison.Ordinal))
+            {
+                texts[key[Prefix.Length..]] = Strings.ResourceManager.GetString(key, Strings.Culture);
+            }
+        }
+        return texts;
     }
 }

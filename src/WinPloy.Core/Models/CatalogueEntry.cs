@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using WinPloy.Core.Deployment;
+using WinPloy.Core.Properties;
 using WinPloy.Core.Services;
 
 namespace WinPloy.Core.Models;
@@ -66,7 +67,7 @@ public sealed class CatalogueEntry
     public string Label => IsCustom ? $"{Name} [Custom]" : Name;
 
     /// <summary>Libellé du type pour l'interface.</summary>
-    public string TypeLabel => IsCustom ? "Personnalisé" : "WinGet";
+    public string TypeLabel => IsCustom ? Strings.PackageTypeCustom : "WinGet";
 
     /// <summary>Normalise une entrée. Retourne null si l'Id est vide.</summary>
     public static CatalogueEntry? Create(

@@ -3,6 +3,8 @@ using System.Windows;
 using Microsoft.Win32;
 using WinPloy.Core.Models;
 using WinPloy.Core.Services;
+using WinPloy.Properties;
+using WinPloy.Services;
 
 namespace WinPloy.Views;
 
@@ -23,6 +25,11 @@ public partial class SettingsWindow : Window
         ChkSkipCertificate.IsChecked = current.SkipCertificateCheck;
         RadTransferSmb.IsChecked = current.TransferMode == TransferMode.SmbPull;
         RadTransferWinRm.IsChecked = !RadTransferSmb.IsChecked;
+        CmbLanguage.ItemsSource = AppSettings.SupportedLanguages
+            .Select(language => new KeyValuePair<string, string>(language, UiLanguage.DisplayName(language)))
+            .ToList();
+        CmbLanguage.SelectedValue = current.Language;
+        LblTimeoutHint.Text = string.Format(Strings.Settings_Range, AppSettings.MinTimeoutMin, AppSettings.MaxTimeoutMin);
         _loaded = true;
         UpdateParallelHint();
     }
@@ -34,7 +41,7 @@ public partial class SettingsWindow : Window
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "Catalogue JSON (*.json)|*.json|Tous les fichiers (*.*)|*.*",
+            Filter = Strings.Settings_CatalogueFilter,
             CheckFileExists = false,
         };
         if (dialog.ShowDialog(this) == true)
@@ -70,9 +77,8 @@ public partial class SettingsWindow : Window
 
         var parallel = SettingsService.ParseClamped(TxtParallel.Text.Trim(), AppSettings.MinParallel, AppSettings.MaxParallelLimit, -1);
         LblParallelHint.Text = parallel > AppSettings.RecommendedMaxParallel
-            ? $"De {AppSettings.MinParallel} à {AppSettings.MaxParallelLimit}. Au-delà de {AppSettings.RecommendedMaxParallel}, "
-                + "le poste d'administration devient le goulot d'étranglement en transfert WinRM : préférer le mode SMB."
-            : $"De {AppSettings.MinParallel} à {AppSettings.MaxParallelLimit}.";
+            ? string.Format(Strings.Settings_ParallelHigh, AppSettings.MinParallel, AppSettings.MaxParallelLimit, AppSettings.RecommendedMaxParallel)
+            : string.Format(Strings.Settings_Range, AppSettings.MinParallel, AppSettings.MaxParallelLimit);
     }
 
     private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -84,22 +90,22 @@ public partial class SettingsWindow : Window
 
         if (path.Length == 0)
         {
-            Warn("Le chemin du catalogue est obligatoire.");
+            Warn(Strings.Settings_CatalogueRequired);
             return;
         }
         if (timeout < 0)
         {
-            Warn($"Le délai doit être compris entre {AppSettings.MinTimeoutMin} et {AppSettings.MaxTimeoutMin} minutes.");
+            Warn(string.Format(Strings.Settings_TimeoutInvalid, AppSettings.MinTimeoutMin, AppSettings.MaxTimeoutMin));
             return;
         }
         if (parallel < 0)
         {
-            Warn($"Le parallélisme doit être compris entre {AppSettings.MinParallel} et {AppSettings.MaxParallelLimit}.");
+            Warn(string.Format(Strings.Settings_ParallelInvalid, AppSettings.MinParallel, AppSettings.MaxParallelLimit));
             return;
         }
         if (port < 0)
         {
-            Warn($"Le port WinRM doit être compris entre {AppSettings.MinPort} et {AppSettings.MaxPort}.");
+            Warn(string.Format(Strings.Settings_PortInvalid, AppSettings.MinPort, AppSettings.MaxPort));
             return;
         }
 
@@ -112,6 +118,7 @@ public partial class SettingsWindow : Window
             UseSsl = ChkUseSsl.IsChecked == true,
             SkipCertificateCheck = ChkSkipCertificate.IsChecked == true,
             TransferMode = RadTransferSmb.IsChecked == true ? TransferMode.SmbPull : TransferMode.WinRm,
+            Language = CmbLanguage.SelectedValue as string ?? AppSettings.SystemLanguage,
         };
         if (!_trySave(updated))
         {
@@ -122,5 +129,5 @@ public partial class SettingsWindow : Window
         DialogResult = true;
     }
 
-    private void Warn(string text) => MessageBox.Show(this, text, "Réglages", MessageBoxButton.OK, MessageBoxImage.Warning);
+    private void Warn(string text) => MessageBox.Show(this, text, Strings.Settings_Title, MessageBoxButton.OK, MessageBoxImage.Warning);
 }

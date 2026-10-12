@@ -1,7 +1,9 @@
 # WinPloy
 
+**Français** · [English](README.en.md)
+
 Pousser une application sur un lot de postes Windows, à la demande, depuis un poste d'administration.
-Application de bureau Windows (C# .NET 8 + WPF).
+Application de bureau Windows (C# .NET 8 + WPF), interface en français et en anglais.
 
 On choisit des postes dans l'Active Directory, on choisit des applications WinGet ou ses propres paquets,
 on clique sur **Exécuter** : WinPloy ouvre une session WinRM sur chaque poste, installe ou désinstalle, et
@@ -36,6 +38,7 @@ en bas : état par poste, détail par paquet et journal.*
 | **Intégrité** | Empreinte SHA-256 du dossier d'un paquet figée dans le catalogue, contrôlée avant chaque déploiement |
 | **Transfert** | Cache par empreinte sur le poste cible et blocs compressés, ou copie SMB tirée par le poste |
 | **WinRM** | Port et HTTPS réglables ; `TrustedHosts` laissé intact tant que Kerberos suffit |
+| **Langue** | Interface en français ou en anglais, selon Windows ou au choix dans les réglages |
 
 ## Installation ponctuelle
 
@@ -116,6 +119,17 @@ Lancer ensuite `publish\WinPloy.exe`.
    puis l'ajouter au déploiement.
 5. **Installer / Désinstaller**, puis **Exécuter**. Le suivi s'affiche en bas : état par poste, détail
    par paquet, journal. « Relancer les échecs » rejoue l'opération sur les seuls postes en échec.
+
+### Langue de l'interface
+
+WinPloy suit la langue d'affichage de Windows : français sur un Windows français, anglais sinon. Le champ
+**Langue** des réglages impose le français ou l'anglais ; le choix s'applique au prochain démarrage.
+
+Les messages renvoyés par les postes cibles suivent eux aussi la langue de l'interface. Les fichiers de
+données gardent leur format quelle que soit la langue : les noms de colonnes de l'export CSV et de
+l'historique (`Ordinateur`, `Paquet`, `Statut`…) et les statuts qui y sont écrits (`OK`, `ECHEC`,
+`ARRÊTÉ`) ne changent pas, pour que les exports existants et les scripts qui les lisent continuent de
+fonctionner.
 
 ### Paquets personnalisés
 
@@ -255,7 +269,7 @@ Dans `%ProgramData%\WinPloy` :
 
 | Fichier | Contenu |
 |---|---|
-| `config.json` | Réglages du poste d'administration |
+| `config.json` | Réglages du poste d'administration, langue de l'interface comprise |
 | `historique-deploiements.json` | Historique des résultats |
 | `gui.log` | Journal de l'application (rotation à 5 Mo) |
 
@@ -271,22 +285,33 @@ administrateurs :
 
 ```
 WinPloy.sln
-Directory.Build.props          Propriétés communes aux trois projets (TFM, version, nullable)
+Directory.Build.props          Propriétés communes aux trois projets (TFM, version, nullable, langues)
 src/WinPloy.Core/              Bibliothèque : modèles, services, moteur de déploiement WinRM
+  Properties/Strings*.resx       Messages : anglais (langue neutre) et français
   Deployment/Remote/           Scripts exécutés sur le poste cible, embarqués dans l'assembly
     RemoteAction.ps1             Installation et désinstallation des paquets
     NewWorkDir.ps1               Dossier de travail aux droits restreints (SYSTEM, Administrateurs)
     ReceiveFiles.ps1             Réception des blocs et cache adressé par empreinte
     PullFromShare.ps1            Copie tirée par le poste depuis le partage (mode SMB)
 src/WinPloy/                   Application WPF : fenêtres, ViewModel, thème
+  Properties/Strings*.resx       Textes de l'interface : anglais (langue neutre) et français
 tests/WinPloy.Tests/           Tests unitaires xUnit, sans réseau ni domaine
 tests/Remote/                  Contrôle du protocole de réception, exécuté par PowerShell
 assets/                        Icône de l'application, utilisée à la compilation
 docs/ACTIVER-WINRM.md          Préparer les postes cibles : WinRM par GPO ou à la main
+docs/ENABLE-WINRM.md           Le même, en anglais
 docs/PLAN-CONVERSION.md        Plan de la conversion PowerShell → C#
 docs/images/                   Captures d'écran du README
 legacy/Winploy-GUI.ps1         Script PowerShell d'origine (v1.0.0), conservé pour référence
 ```
+
+### Traduire
+
+Les textes sont dans `Properties/Strings.resx` (anglais, langue neutre) et `Properties/Strings.fr.resx`
+(français) de chaque projet. Une nouvelle langue est un nouveau fichier `Strings.<code>.resx` à côté, dont
+le code s'ajoute à `SatelliteResourceLanguages` dans `Directory.Build.props` et à
+`AppSettings.SupportedLanguages`. Les tests `LocalizationTests` vérifient que chaque clé est traduite avec
+les mêmes marqueurs `{0}`.
 
 ## Historique
 
@@ -301,6 +326,7 @@ Différences avec la version PowerShell :
 - Fenêtre d'identifiants propre à WinPloy au lieu de `Get-Credential`.
 - Paquets personnalisés au format `.msi` et recherche en ligne des identifiants WinGet.
 - Les nouvelles dates de l'historique sont au format ISO 8601.
+- Interface en anglais, en plus du français.
 
 Le format du catalogue n'a pas changé : les deux versions peuvent l'utiliser en même temps pendant la
 transition.

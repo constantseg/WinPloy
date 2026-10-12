@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -59,8 +60,7 @@ public sealed class DeploymentRequest
     {
         if (TransferMode == TransferMode.SmbPull && Credential is null && Packages.Any(p => p.IsCustom))
         {
-            return "Le mode de transfert SMB demande des identifiants explicites (bouton « Compte ») : "
-                + "la session WinRM ne peut pas présenter le compte courant au serveur de fichiers.";
+            return Strings.SmbNeedsCredential;
         }
         return null;
     }
@@ -69,7 +69,7 @@ public sealed class DeploymentRequest
 /// <summary>Résultat brut d'un paquet renvoyé par le poste.</summary>
 public sealed record TargetResult(string Id, string Name, string Statut, string Message)
 {
-    public const string AllPackagesName = "(tous)";
+    public static string AllPackagesName => Strings.AllPackages;
 
     /// <summary>Résultat unique qui couvre tous les paquets du poste (poste injoignable, arrêt, délai).</summary>
     public static TargetResult ForAll(string statut, string message) => new("", AllPackagesName, statut, message);

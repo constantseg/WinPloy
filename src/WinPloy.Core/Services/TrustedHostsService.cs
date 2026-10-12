@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
@@ -77,8 +78,7 @@ public sealed class TrustedHostsService
         IReadOnlyList<string> added = [];
         var written = Edit(
             current => Merge(current, computers, out added),
-            onPolicy: () => throw new InvalidOperationException(
-                "TrustedHosts est imposé par GPO : ajouter les postes dans la stratégie de groupe."));
+            onPolicy: () => throw new InvalidOperationException(Strings.TrustedHostsGpo));
 
         if (!written)
         {
@@ -86,7 +86,7 @@ public sealed class TrustedHostsService
             return [];
         }
 
-        _log.Write($"TrustedHosts WinRM : ajout de {string.Join(", ", added)}.");
+        _log.Write(string.Format(Strings.TrustedHostsAdded, string.Join(", ", added)));
         return added;
     }
 
@@ -107,14 +107,13 @@ public sealed class TrustedHostsService
 
             if (removed)
             {
-                _log.Write($"TrustedHosts WinRM : retrait de {string.Join(", ", computers)}.");
+                _log.Write(string.Format(Strings.TrustedHostsRemoved, string.Join(", ", computers)));
             }
         }
         catch (Exception ex)
         {
             _log.Write(
-                $"TrustedHosts WinRM : retrait de {string.Join(", ", computers)} impossible ({ex.Message}). "
-                + "Les postes restent dans la liste des hôtes approuvés.",
+                string.Format(Strings.TrustedHostsRemoveFailed, string.Join(", ", computers), ex.Message),
                 LogService.Warning);
         }
     }
@@ -141,7 +140,7 @@ public sealed class TrustedHostsService
 
             var document = XDocument.Parse(xml);
             var node = document.Descendants().FirstOrDefault(e => e.Name.LocalName == "TrustedHosts")
-                ?? throw new InvalidOperationException("Paramètre TrustedHosts absent de la configuration du client WinRM.");
+                ?? throw new InvalidOperationException(Strings.TrustedHostsMissing);
             var updated = change(node.Value);
             if (updated is null)
             {
@@ -189,7 +188,7 @@ public sealed class TrustedHostsService
             service.Start();
         }
         service.WaitForStatus(ServiceControllerStatus.Running, ServiceStartTimeout);
-        _log.Write("Service WinRM local démarré (nécessaire pour TrustedHosts).");
+        _log.Write(Strings.WinRmServiceStarted);
     }
 
     private static List<string> Split(string? value)

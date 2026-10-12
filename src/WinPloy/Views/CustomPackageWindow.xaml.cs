@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 using WinPloy.Core.Deployment;
 using WinPloy.Core.Models;
+using WinPloy.Properties;
 
 namespace WinPloy.Views;
 
@@ -22,12 +23,12 @@ public partial class CustomPackageWindow : Window
 
         if (existing is null)
         {
-            Title = "Créer un paquet personnalisé";
+            Title = Strings.Custom_CreateTitle;
             UpdateIntegrityState();
             return;
         }
 
-        Title = "Modifier le paquet personnalisé";
+        Title = Strings.Custom_EditTitle;
         TxtName.Text = existing.Name;
         TxtInstall.Text = existing.InstallScript;
         TxtUninstall.Text = existing.UninstallScript;
@@ -64,8 +65,8 @@ public partial class CustomPackageWindow : Window
         BtnComputeHash.IsEnabled = enabled;
         LblIntegrity.Text = enabled
             ? _files.Count > 0
-                ? $"{_files.Count} fichier(s) dans l'empreinte."
-                : "Empreinte non calculée : elle le sera à l'enregistrement."
+                ? string.Format(Strings.Custom_HashFileCount, _files.Count)
+                : Strings.Custom_HashPending
             : "";
     }
 
@@ -73,7 +74,7 @@ public partial class CustomPackageWindow : Window
     {
         if (await ComputeManifestAsync() is { } error)
         {
-            MessageBox.Show(this, error, "Empreinte", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, error, Strings.Custom_HashCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 
@@ -83,16 +84,16 @@ public partial class CustomPackageWindow : Window
         var install = TxtInstall.Text.Trim();
         if (install.Length == 0)
         {
-            return "Indiquer d'abord le script d'installation : son dossier est celui dont l'empreinte est calculée.";
+            return Strings.Custom_InstallFirst;
         }
 
         var directory = Path.GetDirectoryName(install) ?? "";
         if (!Directory.Exists(directory))
         {
-            return $"Dossier du paquet inaccessible : {directory}";
+            return string.Format(Strings.Custom_FolderUnreachable, directory);
         }
 
-        LblIntegrity.Text = "Calcul en cours…";
+        LblIntegrity.Text = Strings.Custom_Computing;
         BtnComputeHash.IsEnabled = false;
         BtnOk.IsEnabled = false;
         try
@@ -102,7 +103,7 @@ public partial class CustomPackageWindow : Window
         catch (Exception ex)
         {
             _files = new Dictionary<string, string>();
-            return $"Calcul de l'empreinte impossible : {ex.Message}";
+            return string.Format(Strings.Custom_HashFailed, ex.Message);
         }
         finally
         {
@@ -110,7 +111,7 @@ public partial class CustomPackageWindow : Window
             UpdateIntegrityState();
         }
 
-        return _files.Count == 0 ? $"Aucun fichier trouvé dans {directory}." : null;
+        return _files.Count == 0 ? string.Format(Strings.Custom_NoFiles, directory) : null;
     }
 
     private async void BtnOk_Click(object sender, RoutedEventArgs e)
@@ -123,24 +124,23 @@ public partial class CustomPackageWindow : Window
         string? error;
         if (name.Length == 0)
         {
-            error = "Nom du paquet requis.";
+            error = Strings.Custom_NameRequired;
         }
         else if (install.Length == 0)
         {
-            error = "Script d'installation requis.";
+            error = Strings.Custom_InstallRequired;
         }
         else
         {
-            error = PackageValidation.ValidateScriptPath(install, "Script d'installation", _depotRoot);
+            error = PackageValidation.ValidateScriptPath(install, Strings.Custom_InstallScript, _depotRoot);
             if (error is null && uninstall.Length > 0)
             {
-                error = PackageValidation.ValidateScriptPath(uninstall, "Script de désinstallation", _depotRoot);
+                error = PackageValidation.ValidateScriptPath(uninstall, Strings.Custom_UninstallScript, _depotRoot);
             }
             if (error is null && integrity && uninstall.Length > 0
                 && !PackageValidation.SameDirectory(Path.GetDirectoryName(install) ?? "", Path.GetDirectoryName(uninstall) ?? ""))
             {
-                error = "Contrôle d'empreinte : les deux scripts doivent être dans le même dossier, "
-                    + "puisque l'empreinte couvre un seul dossier de paquet.";
+                error = Strings.Custom_SameFolderRequired;
             }
             if (error is null && integrity && _files.Count == 0)
             {
@@ -150,7 +150,7 @@ public partial class CustomPackageWindow : Window
 
         if (error is not null)
         {
-            MessageBox.Show(this, error, "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+            MessageBox.Show(this, error, Strings.Common_Error, MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
 

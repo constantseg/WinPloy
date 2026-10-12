@@ -14,15 +14,25 @@
 # $R.StageDir   : dossier de destination sur le poste
 # $R.Credential : identifiants d'accès au partage
 # $R.Items      : objets { Rel, Sha } attendus ; vide = pas de contrôle d'empreinte
+# $R.Text       : messages d'erreur, dans la langue de l'interface
 param($R)
 
 $ErrorActionPreference = 'Stop'
+$T = $R.Text
+
+# Messages dans la langue de l'interface : table { clé = modèle {0}, {1}... } fournie par WinPloy.
+# Sans table, la clé et les valeurs restent lisibles.
+function Format-Text {
+    param([string]$Key)
+    $template = if ($T) { [string]$T[$Key] } else { '' }
+    if ($template) { $template -f $args } else { (@($Key) + $args) -join ' ' }
+}
 
 $source = [string]$R.Source
 $stage = [string]$R.StageDir
 
 if ($source -notmatch '^\\\\[^\\]+\\[^\\]+') {
-    throw "Chemin UNC attendu pour le mode SMB : $source"
+    throw (Format-Text UncExpected $source)
 }
 
 # \\serveur\partage\Paquet -> racine \\serveur\partage, reste Paquet
@@ -30,7 +40,7 @@ $parts = $source.TrimEnd('\') -split '\\+' | Where-Object { $_ }
 $shareRoot = '\\{0}\{1}' -f $parts[0], $parts[1]
 $relative = if ($parts.Count -gt 2) { ($parts[2..($parts.Count - 1)]) -join '\' } else { '' }
 if (-not $relative) {
-    throw "Le paquet doit vivre dans un sous-dossier du partage, pas à sa racine : $source"
+    throw (Format-Text ShareRoot $source)
 }
 
 $driveName = 'WinPloySrc' + [guid]::NewGuid().ToString('N').Substring(0, 8)
@@ -38,7 +48,7 @@ $null = New-PSDrive -Name $driveName -PSProvider FileSystem -Root $shareRoot -Cr
 try {
     $from = Join-Path "${driveName}:" $relative
     if (-not (Test-Path -LiteralPath $from -PathType Container)) {
-        throw "Dossier introuvable sur le partage depuis le poste : $source"
+        throw (Format-Text ShareFolderNotFound $source)
     }
 
     # Copy-Item -Recurse recrée le dossier source dans la destination. Le contenu est donc
@@ -49,7 +59,7 @@ try {
 
     $inner = @(Get-ChildItem -LiteralPath $landing -Force -Directory)
     if ($inner.Count -ne 1) {
-        throw "Copie depuis le partage inattendue : $($inner.Count) dossier(s) reçu(s)."
+        throw (Format-Text UnexpectedCopy $inner.Count)
     }
     Get-ChildItem -LiteralPath $inner[0].FullName -Force | Move-Item -Destination $stage -Force
     Remove-Item -LiteralPath $landing -Recurse -Force
@@ -65,11 +75,11 @@ if ($expected.Count -gt 0) {
         [void]$known.Add($rel)
         $file = Join-Path $stage $rel
         if (-not (Test-Path -LiteralPath $file -PathType Leaf)) {
-            throw "Contrôle d'empreinte : fichier attendu absent après la copie : $rel"
+            throw (Format-Text IntegrityMissing $rel)
         }
         $actual = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash
         if ($actual -ne ([string]$item.Sha).ToUpperInvariant()) {
-            throw "Contrôle d'empreinte : $rel ne correspond pas au catalogue (le dépôt a été modifié)."
+            throw (Format-Text IntegrityMismatch $rel)
         }
     }
 
@@ -77,7 +87,7 @@ if ($expected.Count -gt 0) {
     foreach ($file in Get-ChildItem -LiteralPath $stage -Recurse -File -Force) {
         $rel = $file.FullName.Substring($prefix.Length)
         if (-not $known.Contains($rel)) {
-            throw "Contrôle d'empreinte : fichier inattendu dans le dossier du paquet : $rel"
+            throw (Format-Text IntegrityUnexpected $rel)
         }
     }
 }

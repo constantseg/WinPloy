@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Deployment;
 
@@ -24,7 +25,7 @@ public sealed record HostOutcome(string Etat, string Info)
         var failed = results.Where(r => r.Statut != ResultStatus.Ok).ToList();
         if (failed.Count == 0)
         {
-            return new HostOutcome(HostStates.Ok, $"{results.Count} paquet(s) traité(s) avec succès.");
+            return new HostOutcome(HostStates.Ok, string.Format(Strings.OutcomeAllOk, results.Count));
         }
 
         var message = Whitespace.Replace(failed[0].Message, " ").Trim();
@@ -32,7 +33,7 @@ public sealed record HostOutcome(string Etat, string Info)
         {
             message = message[..MaxInfoLength] + "…";
         }
-        var info = results.Count > 1 ? $"{failed.Count}/{results.Count} en échec : {message}" : message;
+        var info = results.Count > 1 ? string.Format(Strings.OutcomeSomeFailed, failed.Count, results.Count, message) : message;
         return new HostOutcome(HostStates.Failed, info);
     }
 }

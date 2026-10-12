@@ -6,11 +6,21 @@
 #   TimeoutMin : délai par paquet, en minutes
 #   WorkRoot   : dossier de travail déjà créé et protégé par WinPloy (SYSTEM et administrateurs seulement) ;
 #                les scripts intermédiaires y sont écrits avant d'être exécutés en SYSTEM
-param($WingetPkgs, $CustomPkgs, $Action, [int]$TimeoutMin, [string]$WorkRoot)
+#   Text       : messages renvoyés, dans la langue de l'interface
+param($WingetPkgs, $CustomPkgs, $Action, [int]$TimeoutMin, [string]$WorkRoot, $Text)
 
 $ErrorActionPreference = 'Stop'
 $results = New-Object System.Collections.Generic.List[object]
 $workRoot = $WorkRoot
+$T = $Text
+
+# Messages dans la langue de l'interface : table { clé = modèle {0}, {1}... } fournie par WinPloy.
+# Sans table, la clé et les valeurs restent lisibles.
+function Format-Text {
+    param([string]$Key)
+    $template = if ($T) { [string]$T[$Key] } else { '' }
+    if ($template) { $template -f $args } else { (@($Key) + $args) -join ' ' }
+}
 
 function New-Result {
     param($Pkg, [bool]$Ok, [string]$Message)
@@ -84,11 +94,11 @@ if (@($WingetPkgs).Count -gt 0) {
 
     foreach ($pkg in $WingetPkgs) {
         if (-not $wingetExe -or -not (Test-Path -LiteralPath $wingetExe -PathType Leaf)) {
-            $results.Add((New-Result $pkg $false "winget.exe introuvable sur $env:COMPUTERNAME (App Installer absent)."))
+            $results.Add((New-Result $pkg $false (Format-Text WingetMissing $env:COMPUTERNAME)))
             continue
         }
         if ([string]$pkg.Id -notmatch '^[A-Za-z0-9][A-Za-z0-9._+-]*$') {
-            $results.Add((New-Result $pkg $false "Identifiant WinGet invalide : $($pkg.Id)"))
+            $results.Add((New-Result $pkg $false (Format-Text InvalidWingetId $pkg.Id)))
             continue
         }
 
@@ -114,10 +124,9 @@ if (@($WingetPkgs).Count -gt 0) {
             Set-Content -LiteralPath $psFile -Value $wrapper -Encoding UTF8
             $code = Invoke-AsSystem -ScriptPath $psFile -Minutes $TimeoutMin
             $summary = Get-LogSummary @($logFile)
-            $verb = if ($Action -eq 'Install') { 'Installation' } else { 'Désinstallation' }
 
             if ($null -eq $code) {
-                $results.Add((New-Result $pkg $false "$verb : délai de $TimeoutMin min dépassé, tâche arrêtée."))
+                $results.Add((New-Result $pkg $false (Format-Text "${Action}Timeout" $TimeoutMin)))
                 continue
             }
             # 2316632161 = 0x8A150061 (déjà installé), 2316632084 = 0x8A150014 (aucun paquet trouvé),
@@ -125,12 +134,12 @@ if (@($WingetPkgs).Count -gt 0) {
             $hex = '0x{0:X8}' -f $code
             $detail = if ($summary) { " - $summary" } else { '' }
             switch ($code) {
-                0          { $results.Add((New-Result $pkg $true  "$verb terminée ($hex)$detail")) }
-                3010       { $results.Add((New-Result $pkg $true  "$verb terminée, redémarrage requis ($hex)$detail")) }
-                2316632161 { $results.Add((New-Result $pkg $true  "Déjà installé ($hex)")) }
-                2316632084 { $results.Add((New-Result $pkg ($Action -eq 'Uninstall') "Aucun paquet installé correspondant ($hex)")) }
-                3221225781 { $results.Add((New-Result $pkg $false "$verb échouée ($hex) : DLL/runtime Visual C++ manquant.")) }
-                default    { $results.Add((New-Result $pkg $false "$verb échouée ($hex)$detail")) }
+                0          { $results.Add((New-Result $pkg $true  (Format-Text "${Action}Done" $hex $detail))) }
+                3010       { $results.Add((New-Result $pkg $true  (Format-Text "${Action}DoneReboot" $hex $detail))) }
+                2316632161 { $results.Add((New-Result $pkg $true  (Format-Text AlreadyInstalled $hex))) }
+                2316632084 { $results.Add((New-Result $pkg ($Action -eq 'Uninstall') (Format-Text NoMatchingPackage $hex))) }
+                3221225781 { $results.Add((New-Result $pkg $false (Format-Text "${Action}FailedVc" $hex))) }
+                default    { $results.Add((New-Result $pkg $false (Format-Text "${Action}Failed" $hex $detail))) }
             }
         } catch {
             $results.Add((New-Result $pkg $false $_.Exception.Message))
@@ -153,7 +162,7 @@ foreach ($pkg in $CustomPkgs) {
             '.bat'  { $exe = 'cmd.exe';        $exeArgs = @('/c', $local) }
             '.cmd'  { $exe = 'cmd.exe';        $exeArgs = @('/c', $local) }
             '.exe'  { $exe = $local;           $exeArgs = @() }
-            default { throw "Extension non supportée : $($pkg.Leaf)" }
+            default { throw (Format-Text UnsupportedExtension $pkg.Leaf) }
         }
 
         if ($pkg.RunAs -eq 'System') {
@@ -165,7 +174,7 @@ foreach ($pkg in $CustomPkgs) {
                 'exit $LASTEXITCODE'
             ) -join "`r`n" | Set-Content -LiteralPath $psFile -Encoding UTF8
             $code = Invoke-AsSystem -ScriptPath $psFile -Minutes $TimeoutMin
-            if ($null -eq $code) { throw "$($pkg.Leaf) : délai de $TimeoutMin min dépassé (SYSTEM), tâche arrêtée." }
+            if ($null -eq $code) { throw (Format-Text SystemTimeout $pkg.Leaf $TimeoutMin) }
             $mode = ' (SYSTEM)'
         } else {
             # stdin vide : un script qui attend une saisie se termine au lieu de bloquer la session.
@@ -179,14 +188,14 @@ foreach ($pkg in $CustomPkgs) {
             $p = Start-Process @sp
             if (-not $p.WaitForExit($TimeoutMin * 60000)) {
                 & taskkill.exe /PID $p.Id /T /F | Out-Null
-                throw "$($pkg.Leaf) : délai de $TimeoutMin min dépassé, processus arrêté (script interactif ?)."
+                throw (Format-Text ProcessTimeout $pkg.Leaf $TimeoutMin)
             }
             $code = $p.ExitCode
             $mode = ''
         }
 
         if ($code -in 0, 3010) {
-            $reboot = if ($code -eq 3010) { ', redémarrage requis' } else { '' }
+            $reboot = if ($code -eq 3010) { Format-Text RebootRequired } else { '' }
             $results.Add((New-Result $pkg $true "$($pkg.Leaf) ExitCode=$code$reboot$mode"))
         } else {
             $summary = Get-LogSummary @($errLog, $outLog)

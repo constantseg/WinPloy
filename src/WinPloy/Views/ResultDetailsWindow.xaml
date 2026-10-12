@@ -1,18 +1,19 @@
 <Window x:Class="WinPloy.Views.ResultDetailsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="Détail du résultat"
+        xmlns:p="clr-namespace:WinPloy.Properties"
+        Style="{StaticResource DialogWindow}" WindowStartupLocation="CenterOwner" Title="{x:Static p:Strings.Details_Title}"
         SizeToContent="Manual" ResizeMode="CanResize" Width="680" Height="440" MinWidth="500" MinHeight="320">
     <DockPanel>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource DialogFooter}">
             <DockPanel>
-                <Button DockPanel.Dock="Left" Style="{StaticResource Btn.Subtle}" Tag="&#xE8C8;" Content="Copier" Click="BtnCopy_Click" Margin="-10,0,0,0" />
-                <Button Style="{StaticResource DialogPrimaryButton}" Content="Fermer" IsDefault="True" IsCancel="True" HorizontalAlignment="Right" />
+                <Button DockPanel.Dock="Left" Style="{StaticResource Btn.Subtle}" Tag="&#xE8C8;" Content="{x:Static p:Strings.Common_Copy}" Click="BtnCopy_Click" Margin="-10,0,0,0" />
+                <Button Style="{StaticResource DialogPrimaryButton}" Content="{x:Static p:Strings.Common_Close}" IsDefault="True" IsCancel="True" HorizontalAlignment="Right" />
             </DockPanel>
         </Border>
 
         <DockPanel Margin="24,20,24,16">
-            <TextBlock DockPanel.Dock="Top" Style="{StaticResource DialogHeading}" Text="Détail du résultat" Margin="0,0,0,14" />
+            <TextBlock DockPanel.Dock="Top" Style="{StaticResource DialogHeading}" Text="{x:Static p:Strings.Details_Title}" Margin="0,0,0,14" />
             <Border BorderBrush="{StaticResource Brush.ControlBorder}" BorderThickness="1" CornerRadius="4" Background="{StaticResource Brush.SurfaceAlt}">
                 <TextBox x:Name="TxtDetails" Style="{StaticResource TextBox.ReadOnly}" FontFamily="{StaticResource Font.Mono}" FontSize="12" Padding="12,10" />
             </Border>

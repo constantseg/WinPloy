@@ -4,6 +4,7 @@ using System.Windows.Input;
 using WinPloy.Core.Deployment;
 using WinPloy.Core.Models;
 using WinPloy.Core.Services;
+using WinPloy.Properties;
 using WinPloy.Services;
 
 namespace WinPloy.Views;
@@ -18,7 +19,7 @@ public partial class WingetPackageWindow : Window
     {
         InitializeComponent();
         _log = log;
-        Title = existing is null ? "Ajouter une application WinGet" : "Modifier l'application WinGet";
+        Title = existing is null ? Strings.Winget_AddTitle : Strings.Winget_EditTitle;
         if (existing is not null)
         {
             TxtName.Text = existing.Name;
@@ -55,7 +56,7 @@ public partial class WingetPackageWindow : Window
         _pending = cancellation;
 
         BtnSearch.IsEnabled = false;
-        TxtSearchStatus.Text = "Recherche en ligne…";
+        TxtSearchStatus.Text = Strings.Winget_Searching;
         try
         {
             var hits = await _search.SearchAsync(query, cancellation.Token);
@@ -66,13 +67,13 @@ public partial class WingetPackageWindow : Window
 
             LstResults.ItemsSource = hits;
             TxtSearchStatus.Text = hits.Count == 0
-                ? $"Aucune application trouvée pour « {query} »."
-                : $"{hits.Count} application(s) trouvée(s). Cliquez sur une ligne pour remplir les champs ci-dessous.";
+                ? string.Format(Strings.Winget_NotFound, query)
+                : string.Format(Strings.Winget_Found, hits.Count);
         }
         catch (WingetSearchException ex)
         {
             TxtSearchStatus.Text = ex.Message;
-            _log.Write($"Recherche WinGet : {ex.Message}", LogService.Warning);
+            _log.Write(string.Format(Strings.Winget_SearchLog, ex.Message), LogService.Warning);
         }
         catch (OperationCanceledException)
         {
@@ -80,8 +81,8 @@ public partial class WingetPackageWindow : Window
         }
         catch (Exception ex)
         {
-            TxtSearchStatus.Text = $"Recherche impossible : {ex.Message}";
-            _log.Write($"Recherche WinGet : {ex.Message}", LogService.Error);
+            TxtSearchStatus.Text = string.Format(Strings.Winget_SearchFailed, ex.Message);
+            _log.Write(string.Format(Strings.Winget_SearchLog, ex.Message), LogService.Error);
         }
         finally
         {
@@ -106,7 +107,7 @@ public partial class WingetPackageWindow : Window
     private void LnkCopy_Click(object sender, RoutedEventArgs e)
     {
         ClipboardHelper.Copy(WingetSearchService.BrowseUrl, _log);
-        TxtSearchStatus.Text = $"Lien copié : {WingetSearchService.BrowseUrl}";
+        TxtSearchStatus.Text = string.Format(Strings.Winget_LinkCopied, WingetSearchService.BrowseUrl);
     }
 
     private void BtnOk_Click(object sender, RoutedEventArgs e)
@@ -115,12 +116,12 @@ public partial class WingetPackageWindow : Window
         var id = TxtId.Text.Trim();
         if (name.Length == 0 || id.Length == 0)
         {
-            Warn("Nom et identifiant requis.");
+            Warn(Strings.Winget_NameIdRequired);
             return;
         }
         if (!PackageValidation.IsValidWingetId(id))
         {
-            Warn($"Identifiant WinGet invalide : {id}");
+            Warn(string.Format(Strings.Winget_InvalidId, id));
             return;
         }
 
@@ -128,5 +129,5 @@ public partial class WingetPackageWindow : Window
         DialogResult = true;
     }
 
-    private void Warn(string text) => MessageBox.Show(this, text, "Erreur", MessageBoxButton.OK, MessageBoxImage.Warning);
+    private void Warn(string text) => MessageBox.Show(this, text, Strings.Common_Error, MessageBoxButton.OK, MessageBoxImage.Warning);
 }

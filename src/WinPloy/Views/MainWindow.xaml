@@ -1,6 +1,7 @@
 <Window x:Class="WinPloy.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:p="clr-namespace:WinPloy.Properties"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WinPloy.ViewModels"
@@ -20,15 +21,15 @@
             <DockPanel>
                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                     <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE77B;" Command="{Binding SetCredentialCommand}"
-                            ToolTip="Compte utilisé pour ouvrir les sessions WinRM">
+                            ToolTip="{x:Static p:Strings.Main_AccountTooltip}">
                         <TextBlock>
-                            <Run Text="Compte" Foreground="{StaticResource Brush.TextSecondary}" />
+                            <Run Text="{x:Static p:Strings.Main_Account}" Foreground="{StaticResource Brush.TextSecondary}" />
                             <Run Text="{Binding CredentialLabel, Mode=OneWay}" FontWeight="SemiBold" />
                         </TextBlock>
                     </Button>
                     <Rectangle Style="{StaticResource ToolbarSeparator}" Margin="6,0" />
-                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE713;" Command="{Binding OpenSettingsCommand}" ToolTip="Réglages" />
-                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE946;" Command="{Binding ShowAboutCommand}" ToolTip="À propos de WinPloy" />
+                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE713;" Command="{Binding OpenSettingsCommand}" ToolTip="{x:Static p:Strings.Main_SettingsTooltip}" />
+                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE946;" Command="{Binding ShowAboutCommand}" ToolTip="{x:Static p:Strings.Main_About}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
@@ -38,18 +39,18 @@
                     <TextBlock Text="WinPloy" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,18,0" />
                     <Border Style="{StaticResource SegmentHost}" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal">
-                            <RadioButton Style="{StaticResource Segment}" Content="Installer" GroupName="Action" IsChecked="{Binding IsInstall}" />
-                            <RadioButton Style="{StaticResource Segment}" Content="Désinstaller" GroupName="Action" IsChecked="{Binding IsUninstall}" />
+                            <RadioButton Style="{StaticResource Segment}" Content="{x:Static p:Strings.Main_Install}" GroupName="Action" IsChecked="{Binding IsInstall}" />
+                            <RadioButton Style="{StaticResource Segment}" Content="{x:Static p:Strings.Main_Uninstall}" GroupName="Action" IsChecked="{Binding IsUninstall}" />
                         </StackPanel>
                     </Border>
-                    <Button Style="{StaticResource Btn.Primary}" Tag="&#xE768;" Content="Exécuter" MinWidth="112" Margin="12,0,0,0"
+                    <Button Style="{StaticResource Btn.Primary}" Tag="&#xE768;" Content="{x:Static p:Strings.Main_Run}" MinWidth="112" Margin="12,0,0,0"
                             Command="{Binding DeployCommand}" IsEnabled="{Binding CanDeploy}"
-                            ToolTip="Lancer l'opération sur les postes ciblés avec les applications choisies" />
-                    <Button Style="{StaticResource Btn.Danger}" Tag="&#xE71A;" Content="Arrêter" MinWidth="96" Margin="6,0,0,0"
-                            Command="{Binding StopCommand}" IsEnabled="{Binding CanStop}" ToolTip="Arrêter les opérations en cours" />
-                    <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE72C;" Content="Relancer les échecs"
+                            ToolTip="{x:Static p:Strings.Main_RunTooltip}" />
+                    <Button Style="{StaticResource Btn.Danger}" Tag="&#xE71A;" Content="{x:Static p:Strings.Main_Stop}" MinWidth="96" Margin="6,0,0,0"
+                            Command="{Binding StopCommand}" IsEnabled="{Binding CanStop}" ToolTip="{x:Static p:Strings.Main_StopTooltip}" />
+                    <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE72C;" Content="{x:Static p:Strings.Main_Retry}"
                             Command="{Binding RetryCommand}" IsEnabled="{Binding CanRetry}"
-                            ToolTip="Relancer la même opération uniquement sur les postes en échec ou arrêtés" />
+                            ToolTip="{x:Static p:Strings.Main_RetryTooltip}" />
                 </StackPanel>
             </DockPanel>
         </Border>
@@ -86,31 +87,31 @@
                         <Border DockPanel.Dock="Top" Style="{StaticResource PaneHeader}">
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource StepBadge}"><TextBlock Style="{StaticResource StepNumber}" Text="1" /></Border>
-                                <TextBlock Style="{StaticResource PaneTitle}" Text="Postes" />
+                                <TextBlock Style="{StaticResource PaneTitle}" Text="{x:Static p:Strings.Main_Computers}" />
                             </StackPanel>
                         </Border>
                         <Border DockPanel.Dock="Bottom" Style="{StaticResource PaneFooter}">
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                    <Button Style="{StaticResource Btn.Subtle}" Content="Tout" Command="{Binding AddAllComputersCommand}" ToolTip="Ajouter tous les postes trouvés" />
-                                    <Button Style="{StaticResource Btn.Primary}" Tag="&#xE710;" Content="Ajouter" Margin="6,0,0,0"
+                                    <Button Style="{StaticResource Btn.Subtle}" Content="{x:Static p:Strings.Main_All}" Command="{Binding AddAllComputersCommand}" ToolTip="{x:Static p:Strings.Main_AllTooltip}" />
+                                    <Button Style="{StaticResource Btn.Primary}" Tag="&#xE710;" Content="{x:Static p:Strings.Main_Add}" Margin="6,0,0,0"
                                             Command="{Binding AddSelectedComputersCommand}" CommandParameter="{Binding SelectedItems, ElementName=LstPcAll}"
-                                            ToolTip="Ajouter les postes sélectionnés aux postes ciblés" />
+                                            ToolTip="{x:Static p:Strings.Main_AddTooltip}" />
                                 </StackPanel>
                                 <TextBlock Text="{Binding PcFoundLabel}" Style="{StaticResource Hint}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                             </DockPanel>
                         </Border>
                         <DockPanel Margin="12,12,12,12">
                             <TextBox DockPanel.Dock="Top" Margin="0,0,0,10" Style="{StaticResource TextBox.Search}"
-                                     Tag="Nom du poste, puis Entrée" ToolTip="Recherche dans Active Directory. Le joker * est accepté."
+                                     Tag="{x:Static p:Strings.Main_PcSearchPlaceholder}" ToolTip="{x:Static p:Strings.Main_PcSearchTooltip}"
                                      Text="{Binding PcSearchText, UpdateSourceTrigger=PropertyChanged}">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Return" Command="{Binding SearchComputersCommand}" />
                                 </TextBox.InputBindings>
                             </TextBox>
                             <ListBox x:Name="LstPcAll" ItemsSource="{Binding FoundComputers}" SelectionMode="Extended"
-                                     Tag="Saisissez un nom de poste et appuyez sur Entrée."
-                                     ToolTip="Double-clic pour ajouter le poste" MouseDoubleClick="LstPcAll_MouseDoubleClick" />
+                                     Tag="{x:Static p:Strings.Main_PcListEmpty}"
+                                     ToolTip="{x:Static p:Strings.Main_PcListTooltip}" MouseDoubleClick="LstPcAll_MouseDoubleClick" />
                         </DockPanel>
                     </DockPanel>
                 </Border>
@@ -124,17 +125,17 @@
                             <DockPanel>
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                                     <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE710;" Content="WinGet" Command="{Binding AddWingetPackageCommand}"
-                                            ToolTip="Ajouter une application WinGet au catalogue" />
-                                    <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE710;" Content="Fichier" Command="{Binding AddCustomPackageCommand}"
-                                            ToolTip="Ajouter un paquet personnalisé au catalogue : .msi, .ps1, .bat, .cmd ou .exe" />
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE70F;" Command="{Binding EditSelectedPackageCommand}" ToolTip="Modifier l'application sélectionnée" />
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="Supprimer les applications sélectionnées du catalogue"
+                                            ToolTip="{x:Static p:Strings.Main_AddWingetTooltip}" />
+                                    <Button Style="{StaticResource Btn.Subtle}" Tag="&#xE710;" Content="{x:Static p:Strings.Main_File}" Command="{Binding AddCustomPackageCommand}"
+                                            ToolTip="{x:Static p:Strings.Main_AddFileTooltip}" />
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE70F;" Command="{Binding EditSelectedPackageCommand}" ToolTip="{x:Static p:Strings.Main_EditPackageTooltip}" />
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="{x:Static p:Strings.Main_RemovePackagesTooltip}"
                                             Command="{Binding RemoveFromCatalogueCommand}" CommandParameter="{Binding SelectedItems, ElementName=GridCatalogue}" />
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE72C;" Command="{Binding RefreshCatalogueCommand}" ToolTip="Recharger le catalogue partagé" />
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE72C;" Command="{Binding RefreshCatalogueCommand}" ToolTip="{x:Static p:Strings.Main_RefreshCatalogueTooltip}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
                                     <Border Style="{StaticResource StepBadge}"><TextBlock Style="{StaticResource StepNumber}" Text="2" /></Border>
-                                    <TextBlock Style="{StaticResource PaneTitle}" Text="Applications" />
+                                    <TextBlock Style="{StaticResource PaneTitle}" Text="{x:Static p:Strings.Main_Applications}" />
                                     <Border Style="{StaticResource CountBadge}">
                                         <TextBlock Style="{StaticResource CountText}" Text="{Binding CatalogueCount}" />
                                     </Border>
@@ -142,13 +143,13 @@
                             </DockPanel>
                         </Border>
                         <Border DockPanel.Dock="Bottom" Style="{StaticResource PaneFooter}">
-                            <Button HorizontalAlignment="Right" Style="{StaticResource Btn.Primary}" Tag="&#xE710;" Content="Ajouter au déploiement"
+                            <Button HorizontalAlignment="Right" Style="{StaticResource Btn.Primary}" Tag="&#xE710;" Content="{x:Static p:Strings.Main_AddToDeployment}"
                                     Command="{Binding AddToBasketCommand}" CommandParameter="{Binding SelectedItems, ElementName=GridCatalogue}"
-                                    ToolTip="Ajouter les applications sélectionnées au déploiement" />
+                                    ToolTip="{x:Static p:Strings.Main_AddToDeploymentTooltip}" />
                         </Border>
                         <DockPanel Margin="12,12,12,12">
-                            <TextBox DockPanel.Dock="Top" Style="{StaticResource TextBox.Search}" Tag="Filtrer les applications" Margin="0,0,0,10"
-                                     Text="{Binding PkgSearchText, UpdateSourceTrigger=PropertyChanged}" ToolTip="Filtre par nom ou identifiant. Échap pour effacer.">
+                            <TextBox DockPanel.Dock="Top" Style="{StaticResource TextBox.Search}" Tag="{x:Static p:Strings.Main_PkgFilterPlaceholder}" Margin="0,0,0,10"
+                                     Text="{Binding PkgSearchText, UpdateSourceTrigger=PropertyChanged}" ToolTip="{x:Static p:Strings.Main_PkgFilterTooltip}">
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Escape" Command="{Binding ClearPackageSearchCommand}" />
                                 </TextBox.InputBindings>
@@ -156,15 +157,15 @@
                             <DataGrid x:Name="GridCatalogue" ItemsSource="{Binding CatalogueView}" IsSynchronizedWithCurrentItem="False"
                                       SelectedItem="{Binding SelectedPackage}" SelectionMode="Extended" MouseDoubleClick="GridCatalogue_MouseDoubleClick">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Nom" Binding="{Binding Name, Mode=OneWay}" Width="1.3*" ElementStyle="{StaticResource Cell.Strong}" />
-                                    <DataGridTemplateColumn Header="Type" Width="100" SortMemberPath="TypeLabel">
+                                    <DataGridTextColumn Header="{x:Static p:Strings.Main_ColName}" Binding="{Binding Name, Mode=OneWay}" Width="1.3*" ElementStyle="{StaticResource Cell.Strong}" />
+                                    <DataGridTemplateColumn Header="{x:Static p:Strings.Main_ColType}" Width="100" SortMemberPath="TypeLabel">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource PackageTypeBadge}" />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Identifiant" Binding="{Binding Id, Mode=OneWay}" Width="1*" ElementStyle="{StaticResource Cell.Secondary}" />
+                                    <DataGridTextColumn Header="{x:Static p:Strings.Main_ColId}" Binding="{Binding Id, Mode=OneWay}" Width="1*" ElementStyle="{StaticResource Cell.Secondary}" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </DockPanel>
@@ -179,7 +180,7 @@
                         <Border DockPanel.Dock="Top" Style="{StaticResource PaneHeader}">
                             <StackPanel Orientation="Horizontal">
                                 <Border Style="{StaticResource StepBadge}"><TextBlock Style="{StaticResource StepNumber}" Text="3" /></Border>
-                                <TextBlock Style="{StaticResource PaneTitle}" Text="Déploiement" />
+                                <TextBlock Style="{StaticResource PaneTitle}" Text="{x:Static p:Strings.Main_Deployment}" />
                             </StackPanel>
                         </Border>
                         <Grid Margin="12,8,12,12">
@@ -193,35 +194,35 @@
 
                             <DockPanel Grid.Row="0" Margin="0,0,0,4">
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE738;" ToolTip="Retirer les postes sélectionnés"
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE738;" ToolTip="{x:Static p:Strings.Main_RemoveTargetsTooltip}"
                                             Command="{Binding RemoveTargetsCommand}" CommandParameter="{Binding SelectedItems, ElementName=LstTargets}" />
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="Vider la liste des postes" Command="{Binding ClearTargetsCommand}" />
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="{x:Static p:Strings.Main_ClearTargetsTooltip}" Command="{Binding ClearTargetsCommand}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource SectionTitle}" Text="Postes ciblés" />
+                                    <TextBlock Style="{StaticResource SectionTitle}" Text="{x:Static p:Strings.Main_TargetedComputers}" />
                                     <Border Style="{StaticResource CountBadge}">
                                         <TextBlock Style="{StaticResource CountText}" Text="{Binding TargetCount}" />
                                     </Border>
                                 </StackPanel>
                             </DockPanel>
                             <ListBox x:Name="LstTargets" Grid.Row="1" ItemsSource="{Binding Targets}" SelectionMode="Extended"
-                                     Tag="Ajoutez des postes (étape 1)." />
+                                     Tag="{x:Static p:Strings.Main_TargetsEmpty}" />
 
                             <DockPanel Grid.Row="3" Margin="0,0,0,4">
                                 <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE738;" ToolTip="Retirer les applications sélectionnées"
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE738;" ToolTip="{x:Static p:Strings.Main_RemoveBasketTooltip}"
                                             Command="{Binding RemoveFromBasketCommand}" CommandParameter="{Binding SelectedItems, ElementName=LstBasket}" />
-                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="Vider la liste des applications" Command="{Binding ClearBasketCommand}" />
+                                    <Button Style="{StaticResource Btn.Icon}" Tag="&#xE74D;" ToolTip="{x:Static p:Strings.Main_ClearBasketTooltip}" Command="{Binding ClearBasketCommand}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Style="{StaticResource SectionTitle}" Text="Applications" />
+                                    <TextBlock Style="{StaticResource SectionTitle}" Text="{x:Static p:Strings.Main_Applications}" />
                                     <Border Style="{StaticResource CountBadge}">
                                         <TextBlock Style="{StaticResource CountText}" Text="{Binding BasketCount}" />
                                     </Border>
                                 </StackPanel>
                             </DockPanel>
                             <ListBox x:Name="LstBasket" Grid.Row="4" ItemsSource="{Binding Basket}" SelectionMode="Extended"
-                                     Tag="Ajoutez des applications (étape 2).">
+                                     Tag="{x:Static p:Strings.Main_BasketEmpty}">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel>
@@ -243,7 +244,7 @@
             <Border Grid.Row="2" Style="{StaticResource Pane}">
                 <Grid>
                     <TabControl>
-                        <TabItem Header="Suivi par poste">
+                        <TabItem Header="{x:Static p:Strings.Main_TabHosts}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*" MinHeight="80" />
@@ -254,12 +255,12 @@
 
                                 <GridSplitter Grid.Row="1" Height="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                               ResizeDirection="Rows" ResizeBehavior="PreviousAndNext" Cursor="SizeNS"
-                                              ToolTip="Glisser pour changer la hauteur du détail" />
+                                              ToolTip="{x:Static p:Strings.Main_DetailSplitterTooltip}" />
 
                                 <Border Grid.Row="2" Style="{StaticResource PaneFooter}" Padding="12,6,6,6">
                                     <DockPanel>
                                         <Button DockPanel.Dock="Right" Style="{StaticResource Btn.Icon}" Tag="&#xE8C8;" VerticalAlignment="Top"
-                                                Command="{Binding CopyHostDetailCommand}" ToolTip="Copier le détail dans le presse-papiers" />
+                                                Command="{Binding CopyHostDetailCommand}" ToolTip="{x:Static p:Strings.Main_CopyDetailTooltip}" />
                                         <TextBox Style="{StaticResource TextBox.ReadOnly}" Text="{Binding HostDetail, Mode=OneWay}"
                                                  Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" />
                                     </DockPanel>
@@ -269,8 +270,8 @@
                                     <DataGrid x:Name="GridHosts" ItemsSource="{Binding HostsView}" IsSynchronizedWithCurrentItem="False"
                                               SelectedItem="{Binding SelectedHost}" BorderThickness="0" RowStyle="{StaticResource HostRow}">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="Poste" Binding="{Binding Poste, Mode=OneWay}" Width="150" ElementStyle="{StaticResource Cell.Strong}" />
-                                            <DataGridTemplateColumn Header="État" Width="120" SortMemberPath="Etat">
+                                            <DataGridTextColumn Header="{x:Static p:Strings.Main_ColComputer}" Binding="{Binding Poste, Mode=OneWay}" Width="150" ElementStyle="{StaticResource Cell.Strong}" />
+                                            <DataGridTemplateColumn Header="{x:Static p:Strings.Main_ColState}" Width="120" SortMemberPath="Etat">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <ContentPresenter Content="{Binding Etat}" ContentTemplate="{StaticResource StatusBadge}" />
@@ -278,14 +279,14 @@
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
                                             <DataGridTextColumn Header="WinRM" Binding="{Binding WinRM, Mode=OneWay}" Width="105" ElementStyle="{StaticResource Cell.Secondary}" />
-                                            <DataGridTemplateColumn Header="Détail" Width="*" SortMemberPath="Info">
+                                            <DataGridTemplateColumn Header="{x:Static p:Strings.Main_ColDetail}" Width="*" SortMemberPath="Info">
                                                 <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <TextBlock Text="{Binding Info}" ToolTip="{Binding Info}" Style="{StaticResource Cell.Text}" />
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="Durée" Binding="{Binding Duree, Mode=OneWay}" Width="70" ElementStyle="{StaticResource Cell.Secondary}" />
+                                            <DataGridTextColumn Header="{x:Static p:Strings.Main_ColDuration}" Binding="{Binding Duree, Mode=OneWay}" Width="70" ElementStyle="{StaticResource Cell.Secondary}" />
                                         </DataGrid.Columns>
                                     </DataGrid>
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Margin="0,30,0,0">
@@ -301,29 +302,29 @@
                                         </StackPanel.Style>
                                         <TextBlock Text="&#xE768;" FontFamily="{StaticResource Font.Icons}" FontSize="22" Foreground="{StaticResource Brush.Neutral}"
                                                    HorizontalAlignment="Center" Margin="0,0,0,8" />
-                                        <TextBlock Text="Choisissez des postes et des applications, puis cliquez sur Exécuter."
+                                        <TextBlock Text="{x:Static p:Strings.Main_HostsEmpty}"
                                                    Style="{StaticResource Hint}" HorizontalAlignment="Center" />
                                     </StackPanel>
                                 </Grid>
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="Détail par paquet">
+                        <TabItem Header="{x:Static p:Strings.Main_TabResults}">
                             <Grid>
                                 <DataGrid x:Name="GridResults" ItemsSource="{Binding Results}" BorderThickness="0" RowStyle="{StaticResource ResultRow}"
                                           MouseDoubleClick="GridResults_MouseDoubleClick">
                                     <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Heure" Binding="{Binding Horodatage, Mode=OneWay, StringFormat=HH:mm:ss}" Width="80" ElementStyle="{StaticResource Cell.Secondary}" />
-                                        <DataGridTextColumn Header="Poste" Binding="{Binding Ordinateur, Mode=OneWay}" Width="140" ElementStyle="{StaticResource Cell.Strong}" />
-                                        <DataGridTextColumn Header="Application" Binding="{Binding Paquet, Mode=OneWay}" Width="170" ElementStyle="{StaticResource Cell.Text}" />
-                                        <DataGridTemplateColumn Header="Statut" Width="110" SortMemberPath="Statut">
+                                        <DataGridTextColumn Header="{x:Static p:Strings.Main_ColTime}" Binding="{Binding Horodatage, Mode=OneWay, StringFormat=HH:mm:ss}" Width="80" ElementStyle="{StaticResource Cell.Secondary}" />
+                                        <DataGridTextColumn Header="{x:Static p:Strings.Main_ColComputer}" Binding="{Binding Ordinateur, Mode=OneWay}" Width="140" ElementStyle="{StaticResource Cell.Strong}" />
+                                        <DataGridTextColumn Header="{x:Static p:Strings.Main_ColApplication}" Binding="{Binding Paquet, Mode=OneWay}" Width="170" ElementStyle="{StaticResource Cell.Text}" />
+                                        <DataGridTemplateColumn Header="{x:Static p:Strings.Main_ColStatus}" Width="110" SortMemberPath="Statut">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <ContentPresenter Content="{Binding Statut}" ContentTemplate="{StaticResource StatusBadge}" />
                                                 </DataTemplate>
                                             </DataGridTemplateColumn.CellTemplate>
                                         </DataGridTemplateColumn>
-                                        <DataGridTemplateColumn Header="Message" Width="*" SortMemberPath="Message">
+                                        <DataGridTemplateColumn Header="{x:Static p:Strings.Main_ColMessage}" Width="*" SortMemberPath="Message">
                                             <DataGridTemplateColumn.CellTemplate>
                                                 <DataTemplate>
                                                     <TextBlock Text="{Binding Message}" ToolTip="{Binding Message}" Style="{StaticResource Cell.Text}" />
@@ -332,7 +333,7 @@
                                         </DataGridTemplateColumn>
                                     </DataGrid.Columns>
                                 </DataGrid>
-                                <TextBlock Text="Double-clic sur une ligne pour lire le message complet."
+                                <TextBlock Text="{x:Static p:Strings.Main_ResultsEmpty}"
                                            HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Margin="0,30,0,0">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Hint}">
@@ -348,7 +349,7 @@
                             </Grid>
                         </TabItem>
 
-                        <TabItem Header="Journal">
+                        <TabItem Header="{x:Static p:Strings.Main_TabLog}">
                             <TextBox x:Name="LogBox" Style="{StaticResource TextBox.ReadOnly}" TextWrapping="NoWrap" HorizontalScrollBarVisibility="Auto"
                                      FontFamily="{StaticResource Font.Mono}" FontSize="12" Padding="12,8" />
                         </TabItem>
@@ -369,31 +370,31 @@
                             </ProgressBar.Style>
                         </ProgressBar>
                         <TextBlock Text="{Binding ProgressText}" Foreground="{StaticResource Brush.TextSecondary}" FontSize="12" VerticalAlignment="Center" Margin="0,0,4,0" />
-                        <RadioButton Style="{StaticResource FilterChip}" GroupName="HostFilter" ToolTip="Afficher tous les postes"
+                        <RadioButton Style="{StaticResource FilterChip}" GroupName="HostFilter" ToolTip="{x:Static p:Strings.Main_FilterAllTooltip}"
                                      IsChecked="{Binding HostFilterMode, Converter={StaticResource IntEquals}, ConverterParameter=0}">
-                            <TextBlock Text="{Binding TotalCount, StringFormat={}{0} poste(s)}" />
+                            <TextBlock Text="{Binding TotalCount, StringFormat={x:Static p:Strings.Main_FilterAll}}" />
                         </RadioButton>
                         <RadioButton Style="{StaticResource FilterChip}" GroupName="HostFilter" Background="#E6F0FA" Foreground="{StaticResource Brush.Accent}"
-                                     ToolTip="Afficher les postes en cours ou en attente"
+                                     ToolTip="{x:Static p:Strings.Main_FilterRunningTooltip}"
                                      IsChecked="{Binding HostFilterMode, Converter={StaticResource IntEquals}, ConverterParameter=1}">
-                            <TextBlock Text="{Binding RunningCount, StringFormat={}{0} en cours}" />
+                            <TextBlock Text="{Binding RunningCount, StringFormat={x:Static p:Strings.Main_FilterRunning}}" />
                         </RadioButton>
                         <RadioButton Style="{StaticResource FilterChip}" GroupName="HostFilter" Background="#E5F3E3" Foreground="#0E6B0E"
-                                     ToolTip="Afficher les postes réussis"
+                                     ToolTip="{x:Static p:Strings.Main_FilterOkTooltip}"
                                      IsChecked="{Binding HostFilterMode, Converter={StaticResource IntEquals}, ConverterParameter=3}">
-                            <TextBlock Text="{Binding OkCount, StringFormat={}{0} réussi(s)}" />
+                            <TextBlock Text="{Binding OkCount, StringFormat={x:Static p:Strings.Main_FilterOk}}" />
                         </RadioButton>
                         <RadioButton Style="{StaticResource FilterChip}" GroupName="HostFilter" Background="#FBE4E2" Foreground="{StaticResource Brush.Danger}"
-                                     ToolTip="Afficher les postes en échec ou arrêtés"
+                                     ToolTip="{x:Static p:Strings.Main_FilterFailedTooltip}"
                                      IsChecked="{Binding HostFilterMode, Converter={StaticResource IntEquals}, ConverterParameter=2}">
-                            <TextBlock Text="{Binding FailedCount, StringFormat={}{0} échec(s)}" />
+                            <TextBlock Text="{Binding FailedCount, StringFormat={x:Static p:Strings.Main_FilterFailed}}" />
                         </RadioButton>
                         <TextBox Style="{StaticResource TextBox.Search}" Width="150" Margin="10,0,0,0" VerticalAlignment="Center" MinHeight="28"
-                                 Tag="Poste…" ToolTip="Filtrer le suivi par nom de poste"
+                                 Tag="{x:Static p:Strings.Main_HostFilterPlaceholder}" ToolTip="{x:Static p:Strings.Main_HostFilterTooltip}"
                                  Text="{Binding HostFilterText, UpdateSourceTrigger=PropertyChanged}" />
                         <Rectangle Style="{StaticResource ToolbarSeparator}" Margin="8,0,4,0" />
                         <Button Style="{StaticResource Btn.Icon}" Tag="&#xE78C;" Command="{Binding ExportCommand}" IsEnabled="{Binding CanExport}"
-                                ToolTip="Exporter les résultats détaillés (CSV)" />
+                                ToolTip="{x:Static p:Strings.Main_ExportTooltip}" />
                     </StackPanel>
                 </Grid>
             </Border>

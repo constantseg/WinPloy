@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="StoppedByUser" xml:space="preserve">
+    <value>Stopped by the user. An action already started on the computer may continue.</value>
+  </data>
+  <data name="NotStarted" xml:space="preserve">
+    <value>Not started (stop requested).</value>
+  </data>
+  <data name="JobTimeout" xml:space="preserve">
+    <value>Overall time limit of {0:0} min exceeded, operation stopped.</value>
+  </data>
+  <data name="NoResult" xml:space="preserve">
+    <value>No result returned by the computer.</value>
+  </data>
+  <data name="AuthFailed" xml:space="preserve">
+    <value>WinRM authentication failed (0x8009030e). Check the account format (DOMAIN\user or COMPUTER\user). Details: {0}</value>
+  </data>
+  <data name="AccessDenied" xml:space="preserve">
+    <value>Access denied: the account does not have administrator rights on the computer. Details: {0}</value>
+  </data>
+  <data name="OutcomeAllOk" xml:space="preserve">
+    <value>{0} package(s) processed successfully.</value>
+  </data>
+  <data name="OutcomeSomeFailed" xml:space="preserve">
+    <value>{0}/{1} failed: {2}</value>
+  </data>
+  <data name="IntegrityFolderNotFound" xml:space="preserve">
+    <value>package folder not found: {0}</value>
+  </data>
+  <data name="IntegrityFileMissing" xml:space="preserve">
+    <value>expected file missing from the repository: {0}</value>
+  </data>
+  <data name="IntegrityHashMismatch" xml:space="preserve">
+    <value>SHA-256 hash differs from the one in the catalogue: {0}</value>
+  </data>
+  <data name="IntegrityFileAdded" xml:space="preserve">
+    <value>file added since the hash was computed: {0}</value>
+  </data>
+  <data name="TrustedHostsAddFailed" xml:space="preserve">
+    <value>{0}: could not add the computer to the WinRM trusted hosts ({1}).</value>
+  </data>
+  <data name="FileDialogFilter" xml:space="preserve">
+    <value>Installers and scripts (*.msi;*.ps1;*.bat;*.cmd;*.exe)|*.msi;*.ps1;*.bat;*.cmd;*.exe|Windows Installer package (*.msi)|*.msi|All files|*.*</value>
+  </data>
+  <data name="ScriptUncRequired" xml:space="preserve">
+    <value>{0}: UNC path required (\\server\share\...), accessible to all administrators.</value>
+  </data>
+  <data name="ScriptBadExtension" xml:space="preserve">
+    <value>{0}: unsupported extension (msi, ps1, bat, cmd, exe).</value>
+  </data>
+  <data name="ScriptNotFound" xml:space="preserve">
+    <value>{0}: file not found ({1}).</value>
+  </data>
+  <data name="ScriptAtDepotRoot" xml:space="preserve">
+    <value>{0}: put the script in a dedicated subfolder (the whole folder is copied to the computer).</value>
+  </data>
+  <data name="SmbNeedsCredential" xml:space="preserve">
+    <value>SMB transfer mode requires explicit credentials (“Account” button): the WinRM session cannot present the current account to the file server.</value>
+  </data>
+  <data name="AllPackages" xml:space="preserve">
+    <value>(all)</value>
+  </data>
+  <data name="SessionCurrentContext" xml:space="preserve">
+    <value>the current context</value>
+  </data>
+  <data name="SessionAccount" xml:space="preserve">
+    <value>the account '{0}'</value>
+  </data>
+  <data name="SessionRefused" xml:space="preserve">
+    <value>WinRM session refused on {0} ({1}) with {2}. {3}</value>
+  </data>
+  <data name="ResourceNotFound" xml:space="preserve">
+    <value>Resource not found: {0}</value>
+  </data>
+  <data name="CopyCached" xml:space="preserve">
+    <value>, {0} already cached</value>
+  </data>
+  <data name="CopySummary" xml:space="preserve">
+    <value>{0} file(s) copied ({1}){2}</value>
+  </data>
+  <data name="CopySummaryPartial" xml:space="preserve">
+    <value>{0} file(s) copied, {1} sent out of {2}{3}</value>
+  </data>
+  <data name="Megabytes" xml:space="preserve">
+    <value>{0:0.#} MB</value>
+  </data>
+  <data name="CopyAllCached" xml:space="preserve">
+    <value>{0} file(s) already cached on the computer, nothing to send.</value>
+  </data>
+  <data name="CopyStarting" xml:space="preserve">
+    <value>Copying {0} file(s) ({1})</value>
+  </data>
+  <data name="CopyStartingCached" xml:space="preserve">
+    <value>, {0} already cached.</value>
+  </data>
+  <data name="CopySending" xml:space="preserve">
+    <value>Sending {0} — {1} of {2}</value>
+  </data>
+  <data name="CheckingPort" xml:space="preserve">
+    <value>Checking WinRM port {0}...</value>
+  </data>
+  <data name="WinRmChecking" xml:space="preserve">
+    <value>Checking...</value>
+  </data>
+  <data name="WinRmUnreachable" xml:space="preserve">
+    <value>WinRM unreachable on {0} (port {1}). Check that the computer is on, that WinRM is enabled by GPO and that the port in the settings matches the one used on your computers.</value>
+  </data>
+  <data name="WinRmReachableOpening" xml:space="preserve">
+    <value>WinRM reachable, opening the session...</value>
+  </data>
+  <data name="WinRmReachable" xml:space="preserve">
+    <value>Reachable</value>
+  </data>
+  <data name="SessionOpenRunning" xml:space="preserve">
+    <value>WinRM session open, running...</value>
+  </data>
+  <data name="WinRmActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="WorkDirFailed" xml:space="preserve">
+    <value>Could not create the working folder on the computer.</value>
+  </data>
+  <data name="PreparationFailed" xml:space="preserve">
+    <value>Preparation: {0}</value>
+  </data>
+  <data name="TrustedHostsRetry" xml:space="preserve">
+    <value>Kerberos not applicable, computer added to the WinRM trusted hosts and retrying. Initial refusal: {0}</value>
+  </data>
+  <data name="NoInstallScript" xml:space="preserve">
+    <value>No install script defined for this package.</value>
+  </data>
+  <data name="NoUninstallScript" xml:space="preserve">
+    <value>No uninstall script defined for this package.</value>
+  </data>
+  <data name="ScriptUnreachable" xml:space="preserve">
+    <value>Script not found from the admin computer: {0}</value>
+  </data>
+  <data name="ScriptAtRootRuntime" xml:space="preserve">
+    <value>The script is at the root of the repository: the whole repository would be copied. Put each package in its own subfolder.</value>
+  </data>
+  <data name="IntegrityChecking" xml:space="preserve">
+    <value>Integrity check of {0}…</value>
+  </data>
+  <data name="IntegrityRefused" xml:space="preserve">
+    <value>Integrity check refused — {0}. If the change is intended, recompute the hash from the package window.</value>
+  </data>
+  <data name="StageDirFailed" xml:space="preserve">
+    <value>Could not create the temporary folder on the computer.</value>
+  </data>
+  <data name="SmbNeedsCredentialRuntime" xml:space="preserve">
+    <value>SMB transfer mode: explicit credentials are needed for the computer to access the share (“Account” button).</value>
+  </data>
+  <data name="SmbPulling" xml:space="preserve">
+    <value>{0}: the computer is copying from the share…</value>
+  </data>
+  <data name="PackageCopied" xml:space="preserve">
+    <value>{0}: {1}.</value>
+  </data>
+  <data name="Remote_WingetMissing" xml:space="preserve">
+    <value>winget.exe not found on {0} (App Installer missing).</value>
+  </data>
+  <data name="Remote_InvalidWingetId" xml:space="preserve">
+    <value>Invalid WinGet ID: {0}</value>
+  </data>
+  <data name="Remote_InstallTimeout" xml:space="preserve">
+    <value>Installation: time limit of {0} min exceeded, task stopped.</value>
+  </data>
+  <data name="Remote_UninstallTimeout" xml:space="preserve">
+    <value>Uninstallation: time limit of {0} min exceeded, task stopped.</value>
+  </data>
+  <data name="Remote_InstallDone" xml:space="preserve">
+    <value>Installation completed ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallDone" xml:space="preserve">
+    <value>Uninstallation completed ({0}){1}</value>
+  </data>
+  <data name="Remote_InstallDoneReboot" xml:space="preserve">
+    <value>Installation completed, restart required ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallDoneReboot" xml:space="preserve">
+    <value>Uninstallation completed, restart required ({0}){1}</value>
+  </data>
+  <data name="Remote_AlreadyInstalled" xml:space="preserve">
+    <value>Already installed ({0})</value>
+  </data>
+  <data name="Remote_NoMatchingPackage" xml:space="preserve">
+    <value>No matching installed package ({0})</value>
+  </data>
+  <data name="Remote_InstallFailedVc" xml:space="preserve">
+    <value>Installation failed ({0}): Visual C++ DLL/runtime missing.</value>
+  </data>
+  <data name="Remote_UninstallFailedVc" xml:space="preserve">
+    <value>Uninstallation failed ({0}): Visual C++ DLL/runtime missing.</value>
+  </data>
+  <data name="Remote_InstallFailed" xml:space="preserve">
+    <value>Installation failed ({0}){1}</value>
+  </data>
+  <data name="Remote_UninstallFailed" xml:space="preserve">
+    <value>Uninstallation failed ({0}){1}</value>
+  </data>
+  <data name="Remote_UnsupportedExtension" xml:space="preserve">
+    <value>Unsupported extension: {0}</value>
+  </data>
+  <data name="Remote_SystemTimeout" xml:space="preserve">
+    <value>{0}: time limit of {1} min exceeded (SYSTEM), task stopped.</value>
+  </data>
+  <data name="Remote_ProcessTimeout" xml:space="preserve">
+    <value>{0}: time limit of {1} min exceeded, process stopped (interactive script?).</value>
+  </data>
+  <data name="Remote_RebootRequired" xml:space="preserve">
+    <value>, restart required</value>
+  </data>
+  <data name="Remote_TransferCorrupted" xml:space="preserve">
+    <value>Corrupted transferred file: hash {0} instead of {1}.</value>
+  </data>
+  <data name="Remote_NotInCache" xml:space="preserve">
+    <value>File missing from the computer's cache: {0}.</value>
+  </data>
+  <data name="Remote_UnknownMode" xml:space="preserve">
+    <value>Unknown receive mode: {0}.</value>
+  </data>
+  <data name="Remote_UncExpected" xml:space="preserve">
+    <value>UNC path expected for SMB mode: {0}</value>
+  </data>
+  <data name="Remote_ShareRoot" xml:space="preserve">
+    <value>The package must live in a subfolder of the share, not at its root: {0}</value>
+  </data>
+  <data name="Remote_ShareFolderNotFound" xml:space="preserve">
+    <value>Folder not found on the share from the computer: {0}</value>
+  </data>
+  <data name="Remote_UnexpectedCopy" xml:space="preserve">
+    <value>Unexpected copy from the share: {0} folder(s) received.</value>
+  </data>
+  <data name="Remote_IntegrityMissing" xml:space="preserve">
+    <value>Hash check: expected file missing after the copy: {0}</value>
+  </data>
+  <data name="Remote_IntegrityMismatch" xml:space="preserve">
+    <value>Hash check: {0} does not match the catalogue (the repository was modified).</value>
+  </data>
+  <data name="Remote_IntegrityUnexpected" xml:space="preserve">
+    <value>Hash check: unexpected file in the package folder: {0}</value>
+  </data>
+  <data name="LogInfo" xml:space="preserve">
+    <value>INFO</value>
+  </data>
+  <data name="LogError" xml:space="preserve">
+    <value>ERROR</value>
+  </data>
+  <data name="LogWarning" xml:space="preserve">
+    <value>WARNING</value>
+  </data>
+  <data name="HistoryWriteFailed" xml:space="preserve">
+    <value>Could not write the history: {0}</value>
+  </data>
+  <data name="SettingsSaveFailed" xml:space="preserve">
+    <value>Could not save the settings: {0}</value>
+  </data>
+  <data name="CatalogueNotFound" xml:space="preserve">
+    <value>Catalogue not found: {0}</value>
+  </data>
+  <data name="CatalogueLoaded" xml:space="preserve">
+    <value>Catalogue loaded: {0} application(s).</value>
+  </data>
+  <data name="CatalogueUnreadable" xml:space="preserve">
+    <value>Catalogue unreadable: {0}</value>
+  </data>
+  <data name="CatalogueDuplicateId" xml:space="preserve">
+    <value>A package with ID '{0}' already exists in the catalogue.</value>
+  </data>
+  <data name="CataloguePackageGone" xml:space="preserve">
+    <value>Package '{0}' no longer exists in the catalogue (deleted by another administrator?).</value>
+  </data>
+  <data name="CataloguePackageAdded" xml:space="preserve">
+    <value>Package added: {0} ({1}).</value>
+  </data>
+  <data name="CataloguePackageUpdated" xml:space="preserve">
+    <value>Package updated: {0} ({1}).</value>
+  </data>
+  <data name="CataloguePackageRemoved" xml:space="preserve">
+    <value>Package removed from the catalogue: {0}.</value>
+  </data>
+  <data name="WingetQueryTooShort" xml:space="preserve">
+    <value>Enter at least {0} characters.</value>
+  </data>
+  <data name="WingetHttpStatus" xml:space="preserve">
+    <value>The search service responded {0} ({1}).</value>
+  </data>
+  <data name="WingetTimeout" xml:space="preserve">
+    <value>Timed out: the search service is not responding.</value>
+  </data>
+  <data name="WingetUnreachable" xml:space="preserve">
+    <value>Online search failed ({0}). Check this computer's Internet access or proxy.</value>
+  </data>
+  <data name="WingetBadResponse" xml:space="preserve">
+    <value>Unreadable response from the search service.</value>
+  </data>
+  <data name="TrustedHostsGpo" xml:space="preserve">
+    <value>TrustedHosts is enforced by GPO: add the computers in the Group Policy.</value>
+  </data>
+  <data name="TrustedHostsAdded" xml:space="preserve">
+    <value>WinRM TrustedHosts: added {0}.</value>
+  </data>
+  <data name="TrustedHostsRemoved" xml:space="preserve">
+    <value>WinRM TrustedHosts: removed {0}.</value>
+  </data>
+  <data name="TrustedHostsRemoveFailed" xml:space="preserve">
+    <value>WinRM TrustedHosts: could not remove {0} ({1}). The computers remain in the trusted hosts list.</value>
+  </data>
+  <data name="TrustedHostsMissing" xml:space="preserve">
+    <value>TrustedHosts setting missing from the WinRM client configuration.</value>
+  </data>
+  <data name="WinRmServiceStarted" xml:space="preserve">
+    <value>Local WinRM service started (required for TrustedHosts).</value>
+  </data>
+  <data name="PackageTypeCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+</root>

@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Text.Json.Nodes;
 using WinPloy.Core.Models;
+using WinPloy.Core.Properties;
 
 namespace WinPloy.Core.Services;
 
@@ -63,7 +64,7 @@ public sealed class HistoryService
         }
         catch (Exception ex)
         {
-            _log.Write($"Impossible d'écrire l'historique : {ex.Message}", LogService.Warning);
+            _log.Write(string.Format(Strings.HistoryWriteFailed, ex.Message), LogService.Warning);
         }
     }
 }

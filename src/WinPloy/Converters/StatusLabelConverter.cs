@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using WinPloy.Core.Models;
+using WinPloy.Properties;
 
 namespace WinPloy.Converters;
 
@@ -10,15 +11,17 @@ namespace WinPloy.Converters;
 /// </summary>
 public sealed class StatusLabelConverter : IValueConverter
 {
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => value switch
+    public static string Label(string? value) => value switch
     {
-        HostStates.Pending => "En attente",
-        HostStates.Running => "En cours",
-        HostStates.Ok => "Réussi",
-        HostStates.Failed => "Échec",
-        HostStates.Stopped => "Arrêté",
-        _ => value?.ToString() ?? "",
+        HostStates.Pending => Strings.Status_Pending,
+        HostStates.Running => Strings.Status_Running,
+        HostStates.Ok => Strings.Status_Ok,
+        HostStates.Failed => Strings.Status_Failed,
+        HostStates.Stopped => Strings.Status_Stopped,
+        _ => value ?? "",
     };
+
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) => Label(value?.ToString());
 
     public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
         => throw new NotSupportedException();

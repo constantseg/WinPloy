@@ -32,6 +32,12 @@ public sealed record AppSettings
     public const int MinPort = 1;
     public const int MaxPort = 65535;
 
+    /// <summary>Langue de l'interface : celle de Windows.</summary>
+    public const string SystemLanguage = "";
+
+    /// <summary>Langues proposées. Toute autre langue de Windows retombe sur l'anglais.</summary>
+    public static readonly IReadOnlyList<string> SupportedLanguages = [SystemLanguage, "en", "fr"];
+
     public string CataloguePath { get; init; } = DefaultCataloguePath;
 
     public int PackageTimeoutMin { get; init; } = DefaultTimeoutMin;
@@ -52,6 +58,9 @@ public sealed record AppSettings
     public bool SkipCertificateCheck { get; init; }
 
     public TransferMode TransferMode { get; init; } = TransferMode.WinRm;
+
+    /// <summary>Langue de l'interface (« en », « fr ») ; vide = langue de Windows. Appliquée au démarrage.</summary>
+    public string Language { get; init; } = SystemLanguage;
 
     /// <summary>Dossier du catalogue : racine du dépôt des paquets personnalisés.</summary>
     public string DepotRoot => Path.GetDirectoryName(CataloguePath) ?? "";
