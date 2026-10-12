@@ -64,7 +64,8 @@ mobiliser pour poser une application sur quelques postes est disproportionné, q
 **Postes cibles**
 
 - WinRM activé et joignable sur le port réglé — 5985 en HTTP par défaut, 5986 en HTTPS (GPO recommandée).
-  WinPloy ne configure jamais WinRM ni le pare-feu des cibles.
+  WinPloy ne configure jamais WinRM ni le pare-feu des cibles : la marche à suivre, par GPO ou à la main,
+  est dans [Activer WinRM sur les postes cibles](docs/ACTIVER-WINRM.md).
 - WinGet (App Installer) présent pour les paquets WinGet.
 - En mode de transfert SMB uniquement : accès en lecture au partage du dépôt depuis le poste cible.
 
@@ -281,6 +282,7 @@ src/WinPloy/                   Application WPF : fenêtres, ViewModel, thème
 tests/WinPloy.Tests/           Tests unitaires xUnit, sans réseau ni domaine
 tests/Remote/                  Contrôle du protocole de réception, exécuté par PowerShell
 assets/                        Icône de l'application, utilisée à la compilation
+docs/ACTIVER-WINRM.md          Préparer les postes cibles : WinRM par GPO ou à la main
 docs/PLAN-CONVERSION.md        Plan de la conversion PowerShell → C#
 docs/images/                   Captures d'écran du README
 legacy/Winploy-GUI.ps1         Script PowerShell d'origine (v1.0.0), conservé pour référence
