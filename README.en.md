@@ -12,7 +12,7 @@ computer.
 A one-off installation tool, not fleet management: no agent on the computers, no server to set up,
 nothing to prepare in advance. See [One-off installation](#one-off-installation).
 
-![WinPloy interface: computers, applications and deployment in three panes, progress at the bottom](docs/images/interface.png)
+![WinPloy interface: computers, applications and deployment in three panes, progress at the bottom](docs/images/interface-en.png)
 
 *The three steps from left to right — choose the computers, choose the applications, run — and the
 progress at the bottom: state per computer, details per package and log. (Screenshot of the French
